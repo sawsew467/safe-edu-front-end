@@ -4,6 +4,7 @@ import * as React from "react";
 import { Provider } from "react-redux";
 import { AppProgressBar } from "next-nprogress-bar";
 import { Toaster } from "sonner";
+
 import { store } from "@/redux/store";
 
 export interface ProvidersProps {

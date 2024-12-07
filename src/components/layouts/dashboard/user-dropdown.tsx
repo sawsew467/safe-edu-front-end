@@ -1,6 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
+import { User } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,10 +15,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { User } from "lucide-react";
-import Link from "next/link";
 import { useAppSelector } from "@/hooks/redux-toolkit";
-import { useRouter } from "next/navigation";
 
 const user = {
   fullName: "Jane Doe",
@@ -36,11 +37,11 @@ function UserDropdown() {
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+        <Button className="relative h-8 w-8 rounded-full" variant="ghost">
           <Avatar className="h-8 w-8">
             <AvatarImage
-              src={userInfo?.avatarUrl}
               alt={`${userInfo?.firstname || ""} ${userInfo?.lastname || ""}`}
+              src={userInfo?.avatarUrl}
             />
             <AvatarFallback>
               <User className="h-4 w-4" />
@@ -48,7 +49,7 @@ function UserDropdown() {
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" align="end" forceMount>
+      <DropdownMenuContent forceMount align="end" className="w-56">
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">
@@ -61,17 +62,17 @@ function UserDropdown() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <Link href="/profile" className="w-full">
+          <Link className="w-full" href="/profile">
             Profile
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <Link href="/cv" className="w-full">
+          <Link className="w-full" href="/cv">
             CV Attachment
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <Link href="/settings" className="w-full">
+          <Link className="w-full" href="/settings">
             Settings
           </Link>
         </DropdownMenuItem>

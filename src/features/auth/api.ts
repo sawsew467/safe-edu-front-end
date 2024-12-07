@@ -1,7 +1,8 @@
 "use client";
 
-import { baseApi } from "@/redux/baseApi";
 import { User } from "firebase/auth";
+
+import { baseApi } from "@/redux/baseApi";
 
 export const authAPI = baseApi.injectEndpoints({
   endpoints: (build) => ({

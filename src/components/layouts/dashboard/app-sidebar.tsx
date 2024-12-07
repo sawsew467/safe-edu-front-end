@@ -9,6 +9,9 @@ import {
   School,
   Users,
 } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import {
   Sidebar,
@@ -20,9 +23,6 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import Image from "next/image";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { cn } from "@/utils/cn";
 
 const sideBarItems = [
@@ -79,15 +79,15 @@ export function AppSidebar({
         <div
           className={cn(
             "flex gap-2 items-center transition-all",
-            open ? "p-2" : "p-0"
+            open ? "p-2" : "p-0",
           )}
         >
           <Image
+            alt="logo"
+            className="w-9 h-auto"
+            height={100}
             src="/images/logo/logo.png"
             width={100}
-            height={100}
-            className="w-9 h-auto"
-            alt="logo"
           />
           {open && <h3 className="text-xl font-bold">SafeEdu</h3>}
         </div>
@@ -100,7 +100,7 @@ export function AppSidebar({
                 <SidebarMenuButton
                   asChild
                   className={cn(
-                    item.url === `/${rootPath}` && " bg-sidebar-accent"
+                    item.url === `/${rootPath}` && " bg-sidebar-accent",
                   )}
                 >
                   <Link href={item.url}>

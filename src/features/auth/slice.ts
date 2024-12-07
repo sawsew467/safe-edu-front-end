@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 import { authAPI } from "./api";
+
 import { getClientCookie, setClientCookie } from "@/lib/jsCookies";
 import constants from "@/settings/constants";
 
@@ -17,6 +18,7 @@ const initialState: AuthSliceInterface = {
   userInfo: (() => {
     try {
       const userInfo = getClientCookie(constants.USER_INFO);
+
       return userInfo ? JSON.parse(userInfo) : null;
     } catch {
       return null;
@@ -38,9 +40,9 @@ export const authSlice = createSlice({
         setClientCookie(constants.ACCESS_TOKEN, action.payload.token);
         setClientCookie(
           constants.USER_INFO,
-          JSON.stringify(action.payload.user)
+          JSON.stringify(action.payload.user),
         );
-      }
+      },
     );
   },
 });

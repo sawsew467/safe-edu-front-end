@@ -1,6 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { signInWithPopup } from "firebase/auth";
+import { useRouter } from "next/navigation";
+
+import { useLoginWithGoogleMutation } from "../api";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -12,10 +16,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { signInWithPopup } from "firebase/auth";
 import { auth, provider } from "@/services/firebase/config";
-import { useLoginWithGoogleMutation } from "../api";
-import { useRouter } from "next/navigation";
 
 export function LoginForm() {
   const router = useRouter();
@@ -25,6 +26,7 @@ export function LoginForm() {
   const handleGoogleLogin = async () => {
     try {
       const resFirebase = await signInWithPopup(auth, provider.providerGoogle);
+
       await signInWithGoogle(resFirebase.user).unwrap();
       router.push("/");
     } catch (error) {
@@ -46,27 +48,27 @@ export function LoginForm() {
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
             <Input
-              id="email"
-              type="email"
-              placeholder="m@example.com"
               required
+              id="email"
+              placeholder="m@example.com"
+              type="email"
             />
           </div>
           <div className="grid gap-2">
             <div className="flex items-center">
               <Label htmlFor="password">Mật khẩu</Label>
-              <Link href="#" className="ml-auto inline-block text-sm underline">
+              <Link className="ml-auto inline-block text-sm underline" href="#">
                 Quên mật khẩu?
               </Link>
             </div>
-            <Input id="password" type="password" required />
+            <Input required id="password" type="password" />
           </div>
-          <Button type="submit" className="w-full cursor-pointer" disabled>
+          <Button disabled className="w-full cursor-pointer" type="submit">
             Đăng nhập
           </Button>
           <Button
-            variant="outline"
             className="w-full"
+            variant="outline"
             onClick={handleGoogleLogin}
           >
             Đăng nhập với Google

@@ -1,8 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
 
 import { rtkQueryErrorLogger } from "./midleware";
-import auth from "@/features/auth/slice";
 import { baseApi } from "./baseApi";
+
+import auth from "@/features/auth/slice";
 import { authAPI } from "@/features/auth/api";
 
 export const store = configureStore({
