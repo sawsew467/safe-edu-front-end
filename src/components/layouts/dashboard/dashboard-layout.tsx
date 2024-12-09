@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import HeaderBreadcrumb from "./header-breadcrumb";
 import ThemeSwitcher from "./theme-switcher";
@@ -16,12 +16,31 @@ import {
 } from "@/components/ui/sidebar";
 import { cn } from "@/utils/cn";
 
+const getScrollbarWidth = (): number => {
+  if (typeof window === "undefined" || typeof document === "undefined") {
+    return 0; // Trả về 0 nếu không thể truy cập window hoặc document
+  }
+
+  return window.innerWidth - document.documentElement.clientWidth;
+};
+
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const [open, setIsOpen] = useState(true);
+
+  const [scrollbarWidth, setScrollbarWidth] = useState(0);
+
+  useEffect(() => {
+    const updateScrollbarWidth = () => setScrollbarWidth(getScrollbarWidth());
+
+    updateScrollbarWidth();
+    window.addEventListener("resize", updateScrollbarWidth);
+
+    return () => window.removeEventListener("resize", updateScrollbarWidth);
+  }, [open]);
 
   return (
     <SidebarProvider>
@@ -30,8 +49,12 @@ export default function DashboardLayout({
         <header
           className={cn(
             "flex dark:bg-sidebar/60 z-10 backdrop-blur-md h-16 shrink-0 items-center px-4 gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 shadow-sm fixed right-0 bg-white/60",
-            open ? "w-[calc(100vw-272px)]" : "w-[calc(100vw-64px)]",
           )}
+          style={{
+            width: open
+              ? `calc(100vw - 255px - ${scrollbarWidth}px)`
+              : `calc(100vw - 47px - ${scrollbarWidth}px)`,
+          }}
         >
           <div className="flex items-center gap-2 justify-between w-full">
             <div className="flex items-center">
