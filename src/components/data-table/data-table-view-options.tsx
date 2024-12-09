@@ -1,4 +1,3 @@
-"use client";
 "use no memo";
 
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
@@ -29,12 +28,12 @@ export function DataTableViewOptions<TData>({
           size="sm"
           variant="outline"
         >
-          <MixerHorizontalIcon className="mr-2 h-4 w-4" />
-          {"See Columns"}
+          <MixerHorizontalIcon className="" />
+          Tuỳ chỉnh
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
-        <DropdownMenuLabel>{"Edit Columns"}</DropdownMenuLabel>
+        <DropdownMenuLabel>Xem cột</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {table
           .getAllColumns()
@@ -50,7 +49,7 @@ export function DataTableViewOptions<TData>({
                 className="capitalize"
                 onCheckedChange={(value) => column.toggleVisibility(!!value)}
               >
-                {column.id}
+                {column.columnDef?.header as string}
               </DropdownMenuCheckboxItem>
             );
           })}

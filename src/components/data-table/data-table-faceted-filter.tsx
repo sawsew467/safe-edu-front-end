@@ -1,8 +1,9 @@
 "use no memo";
 
 import * as React from "react";
-import { CheckIcon, PlusCircledIcon } from "@radix-ui/react-icons";
+import { CheckIcon } from "@radix-ui/react-icons";
 import { Column } from "@tanstack/react-table";
+import { Filter } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -21,7 +22,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Separator } from "@/components/ui/separator";
 
 interface DataTableFacetedFilterProps<TData, TValue> {
   column?: Column<TData, TValue>;
@@ -31,12 +31,14 @@ interface DataTableFacetedFilterProps<TData, TValue> {
     value: string;
     icon?: React.ComponentType<{ className?: string }>;
   }[];
+  id?: string;
 }
 
 export function DataTableFacetedFilter<TData, TValue>({
   column,
   title,
   options,
+  id,
 }: DataTableFacetedFilterProps<TData, TValue>) {
   const facets = column?.getFacetedUniqueValues();
   const selectedValues = new Set(column?.getFilterValue() as string[]);
@@ -44,12 +46,17 @@ export function DataTableFacetedFilter<TData, TValue>({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button className="h-8 border-dashed" size="sm" variant="outline">
-          <PlusCircledIcon className="mr-2 h-4 w-4" />
-          {title}
-          {selectedValues?.size > 0 && (
+        <Button
+          className="h-8 border-dashed"
+          id={id}
+          size="sm"
+          variant="outline"
+        >
+          {selectedValues?.size === 0 && <Filter />}
+
+          {selectedValues?.size > 0 ? (
             <>
-              <Separator className="mx-2 h-4" orientation="vertical" />
+              {/* <Separator className="mx-2 h-4" orientation="vertical" /> */}
               <Badge
                 className="rounded-sm px-1 font-normal lg:hidden"
                 variant="secondary"
@@ -79,6 +86,8 @@ export function DataTableFacetedFilter<TData, TValue>({
                 )}
               </div>
             </>
+          ) : (
+            `Chọn ${title}`
           )}
         </Button>
       </PopoverTrigger>

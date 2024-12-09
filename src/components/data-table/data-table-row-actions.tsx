@@ -1,8 +1,6 @@
-"use client";
 "use no memo";
 
 // import { UserSchema } from "@/app/users/userSchema";
-import Link from "next/link";
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { Row } from "@tanstack/react-table";
 import { Eye, Pencil, Trash2 } from "lucide-react";
@@ -38,42 +36,18 @@ export function DataTableRowActions<TData>({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem>
-          <Button
-            asChild
-            className={"justify-start w-full"}
-            size={"sm"}
-            variant={"ghost"}
-          >
-            <Link href={"#"}>
-              <Eye className="w-4 h-4 text-blue-500" />
-              {<span className="ml-2">{"View"}</span>}
-            </Link>
-          </Button>
+          <Eye className="w-4 h-4 text-blue-500" />
+          {<span className="">{"View"}</span>}
         </DropdownMenuItem>
 
         <DropdownMenuItem>
-          <Button
-            asChild
-            className={"justify-start w-full"}
-            size={"sm"}
-            variant={"ghost"}
-          >
-            <Link href={"#"}>
-              <Pencil className="h-4 w-4 text-green-500" />
-              {<span className="ml-2">{"Update"}</span>}
-            </Link>
-          </Button>
+          <Pencil className="h-4 w-4 text-green-500" />
+          {<span className="">{"Update"}</span>}
         </DropdownMenuItem>
 
         <DropdownMenuItem>
-          <Button
-            className={"justify-start w-full"}
-            size={"sm"}
-            variant={"ghost"}
-          >
-            <Trash2 className="h-4 w-4 text-red-500" />
-            {<span className="ml-2">{"Delete"}</span>}
-          </Button>
+          <Trash2 className="h-4 w-4 text-red-500" />
+          {<span className="">{"Delete"}</span>}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

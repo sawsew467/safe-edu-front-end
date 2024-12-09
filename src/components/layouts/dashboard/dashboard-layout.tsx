@@ -48,7 +48,7 @@ export default function DashboardLayout({
         </header>
         <div
           className={cn(
-            "flex flex-1 flex-col gap-4 p-4  bg-[#fdfffa] transition-all overflow-auto",
+            "flex flex-1 flex-col gap-4 p-4  bg-[#e2e6dc] transition-all overflow-auto",
             open ? "mt-16" : "mt-12",
           )}
         >

@@ -1,5 +1,4 @@
 "use client";
-"use no memo";
 
 import React from "react";
 import {
@@ -17,6 +16,7 @@ import {
 
 import { DataTablePagination } from "./data-table-pagination";
 import { DataTableToolbar } from "./data-table-toolbar";
+import { DataTableColumnHeader } from "./data-table-column-header";
 
 import {
   Table,
@@ -36,6 +36,8 @@ export default function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
+  "use no memo";
+
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({
@@ -75,12 +77,10 @@ export default function DataTable<TData, TValue>({
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
+                      <DataTableColumnHeader
+                        column={header.column}
+                        title={header.column.columnDef.header as string}
+                      />
                     </TableHead>
                   );
                 })}

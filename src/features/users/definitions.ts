@@ -3,12 +3,12 @@ import { CheckCircledIcon, CrossCircledIcon } from "@radix-ui/react-icons";
 export const usersStatus = [
   {
     value: "active",
-    label: "Active",
+    label: "Hoạt động",
     icon: CheckCircledIcon,
   },
   {
     value: "inactive",
-    label: "Inactive",
+    label: "Tạm dừng",
     icon: CrossCircledIcon,
   },
 ];
@@ -16,10 +16,10 @@ export const usersStatus = [
 export const usersRole = [
   {
     value: "client",
-    label: "Client",
+    label: "Khách hàng",
   },
   {
     value: "provider",
-    label: "Provider",
+    label: "Nhà cung cấp",
   },
 ];
