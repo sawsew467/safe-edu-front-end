@@ -5,5 +5,5 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  return <div>Trang chu</div>;
+  return <div className="dark:bg-background">Trang chu</div>;
 }

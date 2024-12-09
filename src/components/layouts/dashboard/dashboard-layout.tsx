@@ -29,8 +29,8 @@ export default function DashboardLayout({
       <SidebarInset>
         <header
           className={cn(
-            "flex h-16 shrink-0 items-center px-4 gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 shadow-sm fixed right-0 bg-white",
-            open ? "w-[calc(100vw-255px)]" : "w-[calc(100vw-47px)]",
+            "flex dark:bg-sidebar/60 z-10 backdrop-blur-md h-16 shrink-0 items-center px-4 gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 shadow-sm fixed right-0 bg-white/60",
+            open ? "w-[calc(100vw-272px)]" : "w-[calc(100vw-64px)]",
           )}
         >
           <div className="flex items-center gap-2 justify-between w-full">
@@ -48,7 +48,7 @@ export default function DashboardLayout({
         </header>
         <div
           className={cn(
-            "flex flex-1 flex-col gap-4 p-4  bg-[#e2e6dc] transition-all overflow-auto",
+            "flex flex-1 flex-col gap-4 p-4 dark:bg-foreground/30  bg-[#e2e6dc] transition-all overflow-auto",
             open ? "mt-16" : "mt-12",
           )}
         >
