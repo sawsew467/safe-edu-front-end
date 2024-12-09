@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 function Page() {
   return (
-    <div className="bg-white p-4 rounded-xl border-[1px] border-stone-50">
+    <div className="bg-white dark:bg-background p-4 rounded-xl border-[1px] border-stone-50 dark:border-stone-800">
       <h3 className="text-2xl font-bold mb-4">Quản lý người dùng</h3>
       <DataTable columns={columns} data={users} />
     </div>
