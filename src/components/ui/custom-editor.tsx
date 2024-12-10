@@ -14,7 +14,7 @@ import ImageResize from "tiptap-extension-resize-image";
 import ToolBar from "./tool-bar";
 
 interface RichTextEditorProps {
-  content: string;
+  content?: string;
   onChange: (value: string) => void;
   label?: string;
   errorMessage?: string;

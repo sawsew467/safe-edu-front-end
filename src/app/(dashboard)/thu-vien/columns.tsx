@@ -6,7 +6,6 @@ import { Eye, Pencil, Trash2 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
-import { Library } from "@/features/users/types";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { Library } from "@/features/library/library.type";
 
 export const columns: ColumnDef<Library>[] = [
   {
@@ -24,34 +24,11 @@ export const columns: ColumnDef<Library>[] = [
     },
   },
   {
-    accessorKey: "author",
-    header: "Tác giả",
-  },
-  {
-    accessorKey: "email",
-    header: "Email",
-  },
-  {
     accessorKey: "icon",
     header: "Ảnh biểu tượng",
     cell: ({ row }) => {
       return (
         <Image alt="icon" height={100} src={row.getValue("icon")} width={100} />
-      );
-    },
-  },
-  {
-    accessorKey: "desc",
-    header: "Mô tả",
-    cell: ({ row }) => {
-      return (
-        <Link
-          className="flex gap-1"
-          href={`thu-vien/${row.original.slug}/mo-ta`}
-        >
-          <Eye className="w-4 h-4 text-blue-500" />
-          {<span className="">{"Xem"}</span>}
-        </Link>
       );
     },
   },
@@ -75,13 +52,17 @@ export const columns: ColumnDef<Library>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem>
-              <Eye className="w-4 h-4 text-blue-500" />
-              {<span className="">{"Xem"}</span>}
+              <Link
+                className="flex gap-2 w-full"
+                href={`thu-vien/${row.original.slug}/mo-ta`}
+              >
+                <Eye className="w-4 h-4 text-blue-500" />
+                {<span className="">{"Xem"}</span>}
+              </Link>
             </DropdownMenuItem>
-
             <DropdownMenuItem>
               <Link
-                className="flex gap-2"
+                className="flex gap-2 w-full"
                 href={`thu-vien/thay-doi-bai-viet/${row.original.slug}`}
               >
                 <Pencil className="h-4 w-4 text-green-500" />

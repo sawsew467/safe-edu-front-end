@@ -102,7 +102,7 @@ function DragZone({ setDataForm, setProcessing, processing }: DragZoneProps) {
   return (
     <React.Fragment>
       <button
-        className={`max-h-[300px] w-full text-center overflow-y-auto ${file ? "border-solid" : "border-dashed"} border-2 rounded-md h-fit ${file ?? "py-10"} ${dragActive == 2 ? "cursor-not-allowed" : "cursor-pointer"} ${file ? (error.length ? "border-red-500" : "border-green-500") : dragActive === 2 ? "border-red-700" : dragActive === 1 ? "border-orange-200" : "border-orange-600"}`}
+        className={`max-h-[300px] w-full text-center overflow-y-auto ${file ? "border-solid" : "border-dashed"} border-2 rounded-md h-fit ${file ?? "py-10"} ${dragActive == 2 ? "cursor-not-allowed" : "cursor-pointer"} ${file ? (error.length ? "border-red-500" : "border-green-500") : dragActive === 2 ? "border-primary" : dragActive === 1 ? "border-orange-200" : "border-primary/40"}`}
         onClick={handleClick}
         onDragEnter={handleDrag}
         onDragLeave={handleDrag}
