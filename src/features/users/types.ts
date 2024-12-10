@@ -13,3 +13,12 @@ export type User = {
   createdAt?: Date;
   updatedAt?: Date;
 };
+export type Library = {
+  id: string;
+  slug: string;
+  title: string;
+  author: string;
+  email: string;
+  icon: string;
+  desc: string;
+};

@@ -30,12 +30,12 @@ export function DataTableToolbar<TData>({
             className="h-8"
             id="search"
             placeholder="Tìm kiếm"
-            value={
-              (table.getColumn("userName")?.getFilterValue() as string) ?? ""
-            }
-            onChange={(event) =>
-              table.getColumn("userName")?.setFilterValue(event.target.value)
-            }
+            // value={
+            //   (table.getColumn("userName")?.getFilterValue() as string) ?? ""
+            // }
+            // onChange={(event) =>
+            //   table.getColumn("userName")?.setFilterValue(event.target.value)
+            // }
           />
         </div>
         {/* <div className="flex flex-col">
