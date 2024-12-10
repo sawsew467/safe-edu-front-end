@@ -5,7 +5,7 @@ import { columns } from "./columns";
 
 import DataTable from "@/components/data-table/data-table";
 import { library } from "@/features/users/data";
-import TitleLibrary from "@/features/library/components/title-library";
+import TitleLibrary from "@/components/ui/title-library";
 
 export const metadata: Metadata = {
   title: "Quản Lí Thư Viện",

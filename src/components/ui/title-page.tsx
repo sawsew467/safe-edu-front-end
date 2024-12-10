@@ -3,11 +3,10 @@ import { PlusIcon } from "@radix-ui/react-icons";
 import React from "react";
 import { useRouter } from "next-nprogress-bar";
 
-import { TypeTitleLibrary } from "../library.type";
-
 import { Button } from "@/components/ui/button";
+import { TypeTitlePage } from "@/features/library/library.type";
 
-const TitleLibrary = ({ title, href, contentHref }: TypeTitleLibrary) => {
+const TitlePage = ({ title, href, contentHref }: TypeTitlePage) => {
   const router = useRouter();
 
   return (
@@ -28,4 +27,4 @@ const TitleLibrary = ({ title, href, contentHref }: TypeTitleLibrary) => {
   );
 };
 
-export default TitleLibrary;
+export default TitlePage;
