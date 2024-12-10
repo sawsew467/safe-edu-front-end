@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 
-import HeaderBreadcrumb from "./header-breadcrumb";
 import ThemeSwitcher from "./theme-switcher";
 import UserDropdown from "./user-dropdown";
 import NotificationDropdown from "./notification-dropdown";
@@ -60,7 +59,7 @@ export default function DashboardLayout({
             <div className="flex items-center">
               <SidebarTrigger className="-ml-1" />
               <Separator className="mr-2 h-4" orientation="vertical" />
-              <HeaderBreadcrumb />
+              {/* <HeaderBreadcrumb /> */}
             </div>
           </div>
           <div className="flex items-center gap-2">
