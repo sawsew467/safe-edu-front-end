@@ -5,7 +5,7 @@ import { columns } from "./columns";
 
 import DataTable from "@/components/data-table/data-table";
 import { library } from "@/features/users/data";
-import TitleLibrary from "@/components/ui/title-library";
+import TitlePage from "@/components/ui/title-page";
 
 export const metadata: Metadata = {
   title: "Quản Lí Thư Viện",
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 const Library = () => {
   return (
     <div className="bg-white dark:bg-background p-4 rounded-xl border-[1px] border-stone-50 dark:border-stone-800">
-      <TitleLibrary
+      <TitlePage
         contentHref="Thêm danh sách"
         href="thu-vien/them-bai-viet"
         title="Quản lí thư viện"
