@@ -12,7 +12,7 @@ export type Library = {
   }>;
 };
 
-export type TypeTitleLibrary = {
+export type TypeTitlePage = {
   title: string;
   href: string;
   contentHref: string;
