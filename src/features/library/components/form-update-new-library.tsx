@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 import { formLibrarySchema } from "../library.schema";
+import { topics } from "../library.data";
 
 import { Button } from "@/components/ui/button";
 import CustomEditor from "@/components/ui/custom-editor";
@@ -20,10 +21,18 @@ import {
 } from "@/components/ui/form";
 import UploadImage from "@/components/ui/upload-image";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 const initialLibrary = {
-  title: "",
-  icon: "",
-  desc: "",
+  title: undefined,
+  icon: undefined,
+  desc: undefined,
+  topic: undefined,
 };
 const FormUpdateLibrary = () => {
   const router = useRouter();
@@ -63,14 +72,45 @@ const FormUpdateLibrary = () => {
         />
         <FormField
           control={form.control}
+          name="topic"
+          render={({ field }) => (
+            <>
+              <FormItem>
+                <FormLabel>Chủ đề</FormLabel>
+                <Select
+                  {...field}
+                  defaultValue={field.value}
+                  onValueChange={field.onChange}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Chọn chủ đề" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {topics.map(({ label, value }) => (
+                      <SelectItem key={value} value={value}>
+                        {label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormDescription>
+                  Đây là chủ đề của bài viết được nói đến
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            </>
+          )}
+        />
+        <FormField
+          control={form.control}
           name="icon"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Icon</FormLabel>
               <FormControl>
-                <>
-                  <UploadImage refetch={() => {}} {...field} />
-                </>
+                <UploadImage refetch={() => {}} {...field} />
               </FormControl>
               <FormDescription>
                 Đây là icon được hiển thị ở bên ngoài thư viện

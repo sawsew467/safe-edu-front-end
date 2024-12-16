@@ -20,10 +20,19 @@ import {
 } from "@/components/ui/form";
 import UploadImage from "@/components/ui/upload-image";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { topics } from "@/features/library/library.data";
 const initialNews = {
-  title: "",
-  thumbnail: "",
-  desc: "",
+  title: undefined,
+  thumbnail: undefined,
+  desc: undefined,
+  topic: undefined,
 };
 const FormAddNews = () => {
   const router = useRouter();
@@ -63,14 +72,45 @@ const FormAddNews = () => {
         />
         <FormField
           control={form.control}
+          name="topic"
+          render={({ field }) => (
+            <>
+              <FormItem>
+                <FormLabel>Chủ đề</FormLabel>
+                <Select
+                  {...field}
+                  defaultValue={field.value}
+                  onValueChange={field.onChange}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Chọn chủ đề" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {topics.map(({ label, value }) => (
+                      <SelectItem key={value} value={value}>
+                        {label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormDescription>
+                  Đây là chủ đề của bài viết được nói đến
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            </>
+          )}
+        />
+        <FormField
+          control={form.control}
           name="thumbnail"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Ảnh đại diện</FormLabel>
               <FormControl>
-                <>
-                  <UploadImage refetch={() => {}} {...field} />
-                </>
+                <UploadImage refetch={() => {}} {...field} />
               </FormControl>
               <FormDescription>
                 Đây là ảnh được hiển thị ở bên ngoài tin tức
