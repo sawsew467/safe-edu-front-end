@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { LibraryStatisticsChart } from "@/features/home/components/library-statistics-chart";
 
 const popularDocuments = [
   { title: "Hiểu về Nghiện Ma Túy", views: 1250 },
@@ -40,6 +41,7 @@ export function LibraryStatistics() {
           </ul>
         </CardContent>
       </Card>
+      <LibraryStatisticsChart />
     </div>
   );
 }

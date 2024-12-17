@@ -22,7 +22,7 @@ export function OrganizationManagement() {
       </Card>
       <Card>
         <CardHeader>
-          <CardTitle>Tỷ Lệ Hoàn Thành Mục Tiêu</CardTitle>
+          <CardTitle>Tỷ lệ các tổ chức đã tổ chức cuộc thi</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-4xl font-bold">85%</div>

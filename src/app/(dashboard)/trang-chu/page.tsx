@@ -5,7 +5,6 @@ import { UserOverview } from "@/features/home/components/user-overview";
 import { OrganizationManagement } from "@/features/home/components/organization-management";
 import { ContestManagement } from "@/features/home/components/contest-management";
 import { LibraryStatistics } from "@/features/home/components/library-statistics";
-import { GeneralInformation } from "@/features/home/components/general-information";
 
 export const metadata: Metadata = {
   title: "Trang chủ",
@@ -27,7 +26,6 @@ export default function Page() {
           <TabsTrigger value="library-statistics">
             Thống Kê Thư Viện
           </TabsTrigger>
-          <TabsTrigger value="general-information">Thông Tin Chung</TabsTrigger>
         </TabsList>
         <TabsContent value="user-overview">
           <UserOverview />
@@ -40,9 +38,6 @@ export default function Page() {
         </TabsContent>
         <TabsContent value="library-statistics">
           <LibraryStatistics />
-        </TabsContent>
-        <TabsContent value="general-information">
-          <GeneralInformation />
         </TabsContent>
       </Tabs>
     </div>
