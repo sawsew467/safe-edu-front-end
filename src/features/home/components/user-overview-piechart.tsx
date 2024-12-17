@@ -13,6 +13,8 @@ import {
   ChartConfig,
   ChartContainer,
   ChartLegend,
+  ChartTooltip,
+  ChartTooltipContent,
 } from "@/components/ui/chart";
 
 const userData = [
@@ -54,6 +56,10 @@ export function UserOverviewPieChart() {
           config={chartConfig}
         >
           <PieChart>
+            <ChartTooltip
+              content={<ChartTooltipContent hideLabel />}
+              cursor={false}
+            />
             <Pie data={userData} dataKey="value" />
             <ChartLegend className="-translate-y-2 flex-wrap gap-2 [&>*]:basis-1/4 [&>*]:justify-center" />
           </PieChart>
