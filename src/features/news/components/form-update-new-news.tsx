@@ -5,8 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
-import { formLibrarySchema } from "../library.schema";
-import { useAddNewLibraryMutation } from "../api";
+import { formNewsSchema } from "../news.schema";
 
 import { Button } from "@/components/ui/button";
 import CustomEditor from "@/components/ui/custom-editor";
@@ -22,21 +21,19 @@ import {
 import UploadImage from "@/components/ui/upload-image";
 import { Input } from "@/components/ui/input";
 const initialLibrary = {
-  category_name: "",
-  image: "",
-  description: "",
+  title: "",
+  thumbnail: "",
+  desc: "",
 };
-const FormAddNewLibrary = () => {
+const FormUpdateNews = () => {
   const router = useRouter();
 
-  const form = useForm<z.infer<typeof formLibrarySchema>>({
-    resolver: zodResolver(formLibrarySchema),
+  const form = useForm<z.infer<typeof formNewsSchema>>({
+    resolver: zodResolver(formNewsSchema),
     mode: "onChange",
     defaultValues: initialLibrary,
   });
-
-  const [addNewLibrary] = useAddNewLibraryMutation();
-  const onSubmit = (data: z.infer<typeof formLibrarySchema>) => {
+  const onSubmit = (data: z.infer<typeof formNewsSchema>) => {
     console.log(data);
   };
 
@@ -48,7 +45,7 @@ const FormAddNewLibrary = () => {
       >
         <FormField
           control={form.control}
-          name="category_name"
+          name="title"
           render={({ field }) => (
             <>
               <FormItem>
@@ -57,7 +54,7 @@ const FormAddNewLibrary = () => {
                   <Input placeholder="nhập tiêu đề" {...field} />
                 </FormControl>
                 <FormDescription>
-                  Đây là tiêu đề được hiển thị ở bên ngoài thư viện
+                  Đây là tiêu đề được hiển thị ở bên ngoài tin tức
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -66,7 +63,7 @@ const FormAddNewLibrary = () => {
         />
         <FormField
           control={form.control}
-          name="image"
+          name="thumbnail"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Icon</FormLabel>
@@ -76,7 +73,7 @@ const FormAddNewLibrary = () => {
                 </>
               </FormControl>
               <FormDescription>
-                Đây là icon được hiển thị ở bên ngoài thư viện
+                Đây là icon được hiển thị ở bên ngoài tin tức
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -84,7 +81,7 @@ const FormAddNewLibrary = () => {
         />
         <FormField
           control={form.control}
-          name="description"
+          name="desc"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Mô tả</FormLabel>
@@ -92,7 +89,7 @@ const FormAddNewLibrary = () => {
                 <CustomEditor onChange={field.onChange} />
               </FormControl>
               <FormDescription>
-                Đây là mô tả được hiển thị ở bên trong thư viện
+                Đây là mô tả được hiển thị ở bên trong tin tức
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -109,7 +106,7 @@ const FormAddNewLibrary = () => {
             Hủy tác vụ
           </Button>
           <Button className="text-lg font-medium" size="lg" type="submit">
-            Thêm
+            Thay đổi
           </Button>
         </div>
       </form>
@@ -117,4 +114,4 @@ const FormAddNewLibrary = () => {
   );
 };
 
-export default FormAddNewLibrary;
+export default FormUpdateNews;

@@ -1,18 +1,30 @@
 export type Library = {
-  id: string;
-  slug: string;
-  title: string;
-  icon: any;
-  subtitle: Array<{
-    id: string;
-    title: string;
-    content: Array<string>;
-    image: Array<any>;
-    imageDescription: Array<string>;
-  }>;
+  _id: string;
+  category_name: string;
+  image_url: any;
+  description: string;
+  topic_id: string;
 };
 
-export type TypeTitleLibrary = {
+export type TypeAddNewLibrary = {
+  category_name: string;
+  topic_id: string;
+  description: string;
+  image: string;
+};
+export type TypeUpdateLibrary = {
+  params: {
+    id: string;
+  };
+  body: {
+    category_name: "string";
+    topic_id: "string";
+    description: "string";
+    image: "string";
+  };
+};
+
+export type TypeTitlePage = {
   title: string;
   href: string;
   contentHref: string;

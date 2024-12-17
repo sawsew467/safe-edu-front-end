@@ -3,12 +3,12 @@ export type User = {
   userName: string;
   phone: string;
   email: string;
+  password: string;
   location: string;
-  role: "client" | "provider";
+  organizationId: string;
+  gender: "male" | "female";
+  role: "admin" | "moderator" | "resident" | "student";
   status: "active" | "inactive";
-  image: string;
-  rtn?: string;
-  otherInformation?: string;
 
   createdAt?: Date;
   updatedAt?: Date;

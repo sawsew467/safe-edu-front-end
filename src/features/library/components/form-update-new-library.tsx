@@ -45,7 +45,7 @@ const FormUpdateLibrary = () => {
       >
         <FormField
           control={form.control}
-          name="title"
+          name="category_name"
           render={({ field }) => (
             <>
               <FormItem>
@@ -63,7 +63,7 @@ const FormUpdateLibrary = () => {
         />
         <FormField
           control={form.control}
-          name="icon"
+          name="image"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Icon</FormLabel>
@@ -81,7 +81,7 @@ const FormUpdateLibrary = () => {
         />
         <FormField
           control={form.control}
-          name="desc"
+          name="description"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Mô tả</FormLabel>

@@ -15,11 +15,19 @@ export const usersStatus = [
 
 export const usersRole = [
   {
-    value: "client",
-    label: "Khách hàng",
+    value: "admin",
+    label: "Quản trị viên",
   },
   {
-    value: "provider",
-    label: "Nhà cung cấp",
+    value: "moderator",
+    label: "Quản lí",
+  },
+  {
+    value: "resident",
+    label: "Người dân",
+  },
+  {
+    value: "student",
+    label: "Học sinh",
   },
 ];

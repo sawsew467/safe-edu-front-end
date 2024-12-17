@@ -13,33 +13,37 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Library } from "@/features/library/library.type";
+import { TypeNews } from "@/features/news/news.type";
 
-export const columns: ColumnDef<Library>[] = [
+export const columns: ColumnDef<TypeNews>[] = [
   {
-    accessorKey: "category_name",
+    accessorKey: "title",
     header: "Tiêu đề",
     cell: ({ row }) => {
-      return <div className="font-medium">{row.getValue("category_name")}</div>;
+      return <div className="font-medium">{row.getValue("title")}</div>;
     },
   },
   {
-    accessorKey: "image_url",
-    header: "Ảnh biểu tượng",
+    accessorKey: "author",
+    header: "Tác giả",
+  },
+  {
+    accessorKey: "email",
+    header: "Email Tác giả",
+  },
+  {
+    accessorKey: "thumbnail",
+    header: "Ảnh đại diện",
     cell: ({ row }) => {
       return (
         <Image
           alt="icon"
           height={100}
-          src={row.getValue("image_url")}
+          src={row.getValue("thumbnail")}
           width={100}
         />
       );
     },
-  },
-  {
-    accessorKey: "topic_name",
-    header: "Chủ đề",
   },
   {
     accessorKey: "otherInformation",
@@ -63,7 +67,7 @@ export const columns: ColumnDef<Library>[] = [
             <DropdownMenuItem>
               <Link
                 className="flex gap-2 w-full"
-                href={`thu-vien/${row.original._id}/mo-ta`}
+                href={`tin-tuc/${row.original.slug}/mo-ta`}
               >
                 <Eye className="w-4 h-4 text-blue-500" />
                 {<span className="">{"Xem"}</span>}
@@ -72,7 +76,7 @@ export const columns: ColumnDef<Library>[] = [
             <DropdownMenuItem>
               <Link
                 className="flex gap-2 w-full"
-                href={`thu-vien/thay-doi-bai-viet/${row.original._id}`}
+                href={`tin-tuc/thay-doi-tin-tuc/${row.original.slug}`}
               >
                 <Pencil className="h-4 w-4 text-green-500" />
                 {<span className="">{"Thay đổi"}</span>}

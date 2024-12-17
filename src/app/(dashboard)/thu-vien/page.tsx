@@ -1,11 +1,8 @@
-import { Metadata } from "next";
 import React from "react";
+import { Metadata } from "next";
 
-import { columns } from "./columns";
-
-import DataTable from "@/components/data-table/data-table";
-import { library } from "@/features/users/data";
-import TitleLibrary from "@/features/library/components/title-library";
+import TitlePage from "@/components/ui/title-page";
+import LibraryTable from "@/features/library/components/library-table";
 
 export const metadata: Metadata = {
   title: "Quản Lí Thư Viện",
@@ -13,12 +10,12 @@ export const metadata: Metadata = {
 const Library = () => {
   return (
     <div className="bg-white dark:bg-background p-4 rounded-xl border-[1px] border-stone-50 dark:border-stone-800">
-      <TitleLibrary
+      <TitlePage
         contentHref="Thêm danh sách"
         href="thu-vien/them-bai-viet"
         title="Quản lí thư viện"
       />
-      <DataTable columns={columns} data={library} />
+      <LibraryTable />
     </div>
   );
 };
