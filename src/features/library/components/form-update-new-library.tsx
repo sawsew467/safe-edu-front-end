@@ -6,7 +6,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 import { formLibrarySchema } from "../library.schema";
-import { topics } from "../library.data";
 
 import { Button } from "@/components/ui/button";
 import CustomEditor from "@/components/ui/custom-editor";
@@ -36,7 +35,9 @@ const initialLibrary = {
 };
 const FormUpdateLibrary = () => {
   const router = useRouter();
-
+  const [topics, setTopics] = React.useState<
+    Array<{ label: string; value: string }>
+  >([]);
   const form = useForm<z.infer<typeof formLibrarySchema>>({
     resolver: zodResolver(formLibrarySchema),
     mode: "onChange",
@@ -87,9 +88,22 @@ const FormUpdateLibrary = () => {
                       <SelectValue placeholder="Chọn chủ đề" />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent>
+                  <SelectContent
+                    isAddItem
+                    onAddItem={(value) => {
+                      setTopics((prev) => [...prev, { label: value, value }]);
+                    }}
+                  >
                     {topics.map(({ label, value }) => (
-                      <SelectItem key={value} value={value}>
+                      <SelectItem
+                        key={value}
+                        value={value}
+                        onDeleteItem={(value) => {
+                          setTopics((prev) =>
+                            prev.filter((i) => i.value !== value),
+                          );
+                        }}
+                      >
                         {label}
                       </SelectItem>
                     ))}

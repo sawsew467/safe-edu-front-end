@@ -27,7 +27,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { topics } from "@/features/library/library.data";
 const initialNews = {
   title: undefined,
   thumbnail: undefined,
@@ -36,6 +35,10 @@ const initialNews = {
 };
 const FormAddNews = () => {
   const router = useRouter();
+
+  const [topics, setTopics] = React.useState<
+    Array<{ label: string; value: string }>
+  >([]);
 
   const form = useForm<z.infer<typeof formNewsSchema>>({
     resolver: zodResolver(formNewsSchema),
@@ -87,9 +90,22 @@ const FormAddNews = () => {
                       <SelectValue placeholder="Chọn chủ đề" />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent>
+                  <SelectContent
+                    isAddItem
+                    onAddItem={(value) => {
+                      setTopics((prev) => [...prev, { label: value, value }]);
+                    }}
+                  >
                     {topics.map(({ label, value }) => (
-                      <SelectItem key={value} value={value}>
+                      <SelectItem
+                        key={value}
+                        value={value}
+                        onDeleteItem={(value) => {
+                          setTopics((prev) =>
+                            prev.filter((i) => i.value !== value),
+                          );
+                        }}
+                      >
                         {label}
                       </SelectItem>
                     ))}
