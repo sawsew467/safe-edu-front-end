@@ -34,9 +34,9 @@ type Props = {};
 
 const formSchema = z.object({
   name_7502870039: z.string(),
-  name_7922188466: z.string(),
-  name_5438378062: z.string(),
-  name_1827310782: z.string(),
+  name_7922188466: z.string().optional(),
+  name_5438378062: z.string().optional(),
+  name_1827310782: z.string().optional(),
 });
 
 function AddButton({}: Props) {
@@ -61,117 +61,121 @@ function AddButton({}: Props) {
   }
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button className="ml-auto hidden lg:flex" type="submit">
-          Submit
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader className="border-b pb-2">
-          <DialogTitle>Thêm tổ chức</DialogTitle>
-          {/* <DialogDescription>Thêm tổ chức ở đây</DialogDescription> */}
-        </DialogHeader>
-        <Form {...form}>
-          <form
-            className="space-y-4 max-w-3xl mx-auto py-10"
-            onSubmit={form.handleSubmit(onSubmit)}
+    <>
+      {/* <Button onClick={() => form.reset()}>clear</Button> */}
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button
+            className="ml-auto hidden lg:flex"
+            onClick={() => form.reset()}
           >
-            <FormField
-              control={form.control}
-              name="name_7502870039"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="">Tên tổ chức</FormLabel>
-                  <FormControl>
-                    <Input
-                      className=""
-                      placeholder="Tên tổ chức"
-                      type="text"
-                      {...field}
-                    />
-                  </FormControl>
+            Thêm tổ chức
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[525px]">
+          <DialogHeader className="border-b pb-2">
+            <DialogTitle>Thêm tổ chức</DialogTitle>
+            {/* <DialogDescription>Thêm tổ chức ở đây</DialogDescription> */}
+          </DialogHeader>
+          <Form {...form}>
+            <form
+              className="space-y-4 max-w-3xl mx-2 py-4"
+              onSubmit={form.handleSubmit(onSubmit)}
+            >
+              <FormField
+                control={form.control}
+                name="name_7502870039"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="">Tên tổ chức</FormLabel>
+                    <FormControl>
+                      <Input
+                        className=""
+                        placeholder="Tên tổ chức"
+                        type="text"
+                        {...field}
+                      />
+                    </FormControl>
 
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="name_7922188466"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="pt-6">Email</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Email" type="" {...field} />
-                  </FormControl>
+              <FormField
+                control={form.control}
+                name="name_7922188466"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="pt-6">Email</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Email" type="" {...field} />
+                    </FormControl>
 
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="name_5438378062"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Tỉnh Thành</FormLabel>
-                  <FormControl>
-                    <Select
-                      defaultValue={field.value}
-                      onValueChange={field.onChange}
-                    >
-                      {/* <FormControl> */}
-                      <SelectTrigger>
-                        <SelectValue placeholder="Chọn tỉnh thành" />
-                      </SelectTrigger>
-                      {/* </FormControl> */}
-                      <SelectContent>
-                        {provinces.map((province) => (
-                          <SelectItem key={province} value={province}>
-                            {province}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div className="grid grid-cols-12 gap-4">
-              <div className="col-span-4">
-                <FormField
-                  control={form.control}
-                  name="name_1827310782"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Mô tả</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          className="resize-none"
-                          placeholder=""
-                          {...field}
-                        />
-                      </FormControl>
+              <FormField
+                control={form.control}
+                name="name_5438378062"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tỉnh Thành</FormLabel>
+                    <FormControl>
+                      <Select
+                        defaultValue={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Chọn tỉnh thành" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {provinces.map((province) => (
+                            <SelectItem key={province} value={province}>
+                              {province}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="grid grid-cols-12 gap-4">
+                <div className="col-span-12">
+                  <FormField
+                    control={form.control}
+                    name="name_1827310782"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Mô tả</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            className="resize-none h-24"
+                            placeholder=""
+                            {...field}
+                          />
+                        </FormControl>
 
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
               </div>
-            </div>
-            <div className="flex flex-1 items-end justify-end">
-              <Button className="" type="submit">
-                Submit
-              </Button>
-            </div>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
+              <div className="flex flex-1 items-end justify-end">
+                <Button className="" type="submit">
+                  Tạo
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 
