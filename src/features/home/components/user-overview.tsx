@@ -13,7 +13,9 @@ export function UserOverview() {
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       <Card>
         <CardHeader>
-          <CardTitle>Tổng Số Người Dùng</CardTitle>
+          <CardTitle className="h-8 flex leading-tight">
+            Tổng Số Người Dùng
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-4xl font-bold">
@@ -23,7 +25,10 @@ export function UserOverview() {
       </Card>
       <Card>
         <CardHeader>
-          <CardTitle>Người Dùng Hoạt Động (7 Ngày Qua)</CardTitle>
+          <CardTitle className="h-8 flex leading-tight">
+            Người Dùng Hoạt Động <br />
+            (7 Ngày Qua)
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-4xl font-bold">3.245</div>
@@ -31,7 +36,9 @@ export function UserOverview() {
       </Card>
       <Card>
         <CardHeader>
-          <CardTitle>Người Tham Gia Cuộc Thi</CardTitle>
+          <CardTitle className="h-8 flex leading-tight">
+            Người Tham Gia Cuộc Thi
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-4xl font-bold">1.890</div>
@@ -39,7 +46,9 @@ export function UserOverview() {
       </Card>
       <Card>
         <CardHeader>
-          <CardTitle>Người Dùng Thư Viện</CardTitle>
+          <CardTitle className="h-8 flex leading-tight">
+            Người Dùng Thư Viện
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-4xl font-bold">2.567</div>

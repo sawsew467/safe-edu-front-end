@@ -4,6 +4,8 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
+  Line,
+  LineChart,
   ResponsiveContainer,
   XAxis,
   YAxis,
@@ -22,13 +24,22 @@ const documentData = [
   { category: "Báo cáo nghiên cứu", count: 75 },
 ];
 
+const viewsTrendData = [
+  { month: "T1", views: 5000 },
+  { month: "T2", views: 6200 },
+  { month: "T3", views: 7800 },
+  { month: "T4", views: 9100 },
+  { month: "T5", views: 11000 },
+  { month: "T6", views: 13500 },
+];
+
 export function LibraryStatisticsChart() {
   return (
     <Card className="md:col-span-2 lg:col-span-3">
       <CardHeader>
         <CardTitle>Tài Liệu theo Danh Mục</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="grid lg:grid-cols-2 md:grid-cols-1">
         <ChartContainer className="h-[300px]" config={{}}>
           <ResponsiveContainer height="100%" width="100%">
             <BarChart data={documentData}>
@@ -38,6 +49,21 @@ export function LibraryStatisticsChart() {
               <ChartTooltip content={<ChartTooltipContent />} />
               <Bar dataKey="count" fill="hsl(var(--chart-1))" />
             </BarChart>
+          </ResponsiveContainer>
+        </ChartContainer>
+        <ChartContainer className="h-[300px]" config={{}}>
+          <ResponsiveContainer height="100%" width="100%">
+            <LineChart data={viewsTrendData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="month" />
+              <YAxis />
+              <ChartTooltip content={<ChartTooltipContent />} />
+              <Line
+                dataKey="views"
+                stroke="hsl(var(--chart-2))"
+                type="monotone"
+              />
+            </LineChart>
           </ResponsiveContainer>
         </ChartContainer>
       </CardContent>
