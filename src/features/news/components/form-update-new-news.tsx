@@ -26,7 +26,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/topic-select";
 const initialLibrary = {
   title: "",
   thumbnail: "",
@@ -34,6 +34,7 @@ const initialLibrary = {
 };
 const FormUpdateNews = () => {
   const router = useRouter();
+
   const [topics, setTopics] = React.useState<
     Array<{ label: string; value: string }>
   >([]);
@@ -150,15 +151,14 @@ const FormUpdateNews = () => {
         />
         <div className="flex gap-2 justify-center">
           <Button
-            className="text-lg font-medium"
-            size="lg"
+            className="font-medium"
             type="submit"
             variant="destructive"
             onClick={() => router.back()}
           >
             Hủy tác vụ
           </Button>
-          <Button className="text-lg font-medium" size="lg" type="submit">
+          <Button className="font-medium" type="submit">
             Thay đổi
           </Button>
         </div>
