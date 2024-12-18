@@ -11,7 +11,13 @@ import {
   YAxis,
 } from "recharts";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   ChartContainer,
   ChartTooltip,
@@ -37,7 +43,10 @@ export function LibraryStatisticsChart() {
   return (
     <Card className="md:col-span-2 lg:col-span-3">
       <CardHeader>
-        <CardTitle>Tài Liệu theo Danh Mục</CardTitle>
+        <CardTitle>Thống Kê Tài Liệu</CardTitle>
+        <CardDescription>
+          Phân loại tài liệu và xu hướng lượt xem
+        </CardDescription>
       </CardHeader>
       <CardContent className="grid lg:grid-cols-2 md:grid-cols-1">
         <ChartContainer className="h-[300px]" config={{}}>
