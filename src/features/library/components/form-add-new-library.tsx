@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next-nprogress-bar";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -20,17 +20,28 @@ import {
 } from "@/components/ui/form";
 import UploadImage from "@/components/ui/upload-image";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/topic-select";
 const initialLibrary = {
-  title: "",
-  icon: "",
-  desc: "",
+  title: undefined,
+  icon: undefined,
+  desc: undefined,
+  topic: undefined,
 };
 const FormAddNewLibrary = () => {
+  const [topics, setTopics] = useState<Array<{ label: string; value: string }>>(
+    [],
+  );
   const router = useRouter();
 
   const form = useForm<z.infer<typeof formLibrarySchema>>({
     resolver: zodResolver(formLibrarySchema),
-    mode: "onChange",
+    mode: "onSubmit",
     defaultValues: initialLibrary,
   });
   const onSubmit = (data: z.infer<typeof formLibrarySchema>) => {
@@ -39,10 +50,7 @@ const FormAddNewLibrary = () => {
 
   return (
     <Form {...form}>
-      <form
-        className="space-y-8 flex flex-col"
-        onSubmit={form.handleSubmit(onSubmit)}
-      >
+      <form className="w-2/3 space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
         <FormField
           control={form.control}
           name="title"
@@ -63,14 +71,58 @@ const FormAddNewLibrary = () => {
         />
         <FormField
           control={form.control}
+          name="topic"
+          render={({ field }) => (
+            <>
+              <FormItem>
+                <FormLabel>Chủ đề</FormLabel>
+                <Select
+                  {...field}
+                  defaultValue={field.value}
+                  onValueChange={field.onChange}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Chọn chủ đề" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent
+                    isAddItem
+                    onAddItem={(value) => {
+                      setTopics((prev) => [...prev, { label: value, value }]);
+                    }}
+                  >
+                    {topics.map(({ label, value }) => (
+                      <SelectItem
+                        key={value}
+                        value={value}
+                        onDeleteItem={(value) => {
+                          setTopics((prev) =>
+                            prev.filter((i) => i.value !== value),
+                          );
+                        }}
+                      >
+                        {label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormDescription>
+                  Đây là chủ đề của bài viết được nói đến
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            </>
+          )}
+        />
+        <FormField
+          control={form.control}
           name="icon"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Icon</FormLabel>
               <FormControl>
-                <>
-                  <UploadImage refetch={() => {}} {...field} />
-                </>
+                <UploadImage refetch={() => {}} {...field} />
               </FormControl>
               <FormDescription>
                 Đây là icon được hiển thị ở bên ngoài thư viện
@@ -97,15 +149,14 @@ const FormAddNewLibrary = () => {
         />
         <div className="flex gap-2 justify-center">
           <Button
-            className="text-lg font-medium"
-            size="lg"
+            className="font-medium"
             type="submit"
             variant="destructive"
             onClick={() => router.back()}
           >
             Hủy tác vụ
           </Button>
-          <Button className="text-lg font-medium" size="lg" type="submit">
+          <Button className="font-medium" type="submit">
             Thêm
           </Button>
         </div>

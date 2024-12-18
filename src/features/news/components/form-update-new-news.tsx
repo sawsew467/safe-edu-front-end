@@ -20,6 +20,13 @@ import {
 } from "@/components/ui/form";
 import UploadImage from "@/components/ui/upload-image";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/topic-select";
 const initialLibrary = {
   title: "",
   thumbnail: "",
@@ -28,6 +35,9 @@ const initialLibrary = {
 const FormUpdateNews = () => {
   const router = useRouter();
 
+  const [topics, setTopics] = React.useState<
+    Array<{ label: string; value: string }>
+  >([]);
   const form = useForm<z.infer<typeof formNewsSchema>>({
     resolver: zodResolver(formNewsSchema),
     mode: "onChange",
@@ -63,14 +73,58 @@ const FormUpdateNews = () => {
         />
         <FormField
           control={form.control}
+          name="topic"
+          render={({ field }) => (
+            <>
+              <FormItem>
+                <FormLabel>Chủ đề</FormLabel>
+                <Select
+                  {...field}
+                  defaultValue={field.value}
+                  onValueChange={field.onChange}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Chọn chủ đề" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent
+                    isAddItem
+                    onAddItem={(value) => {
+                      setTopics((prev) => [...prev, { label: value, value }]);
+                    }}
+                  >
+                    {topics.map(({ label, value }) => (
+                      <SelectItem
+                        key={value}
+                        value={value}
+                        onDeleteItem={(value) => {
+                          setTopics((prev) =>
+                            prev.filter((i) => i.value !== value),
+                          );
+                        }}
+                      >
+                        {label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormDescription>
+                  Đây là chủ đề của bài viết được nói đến
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            </>
+          )}
+        />
+        <FormField
+          control={form.control}
           name="thumbnail"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Icon</FormLabel>
               <FormControl>
-                <>
-                  <UploadImage refetch={() => {}} {...field} />
-                </>
+                <UploadImage refetch={() => {}} {...field} />
               </FormControl>
               <FormDescription>
                 Đây là icon được hiển thị ở bên ngoài tin tức
@@ -97,15 +151,14 @@ const FormUpdateNews = () => {
         />
         <div className="flex gap-2 justify-center">
           <Button
-            className="text-lg font-medium"
-            size="lg"
+            className="font-medium"
             type="submit"
             variant="destructive"
             onClick={() => router.back()}
           >
             Hủy tác vụ
           </Button>
-          <Button className="text-lg font-medium" size="lg" type="submit">
+          <Button className="font-medium" type="submit">
             Thay đổi
           </Button>
         </div>
