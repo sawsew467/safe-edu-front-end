@@ -57,7 +57,7 @@ const LoadingTable = ({ length }: { length: number }) => (
             fill="currentColor"
           />
         </svg>
-        loading...
+        đang tải...
       </div>
     </TableCell>
   </TableRow>

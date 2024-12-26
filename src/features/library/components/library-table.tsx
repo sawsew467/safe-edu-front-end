@@ -12,11 +12,23 @@ import { DataTopic } from "@/features/topic/topic.type";
 
 const LibraryTable = () => {
   const params = useSearchParams();
-  const { data: librarys, isLoading } = useGetAllLibraryQuery({});
+  const { librarys, isLoading } = useGetAllLibraryQuery(
+    {},
+    {
+      refetchOnMountOrArgChange: true,
+      selectFromResult: ({ data, isLoading }) => {
+        return {
+          librarys: data?.items?.filter((item: Library) => item.isActive) ?? [],
+          isLoading,
+        };
+      },
+    },
+  );
+
   const { data: topics } = useGetAllTopicQuery({});
 
   const data = useMemo(() => {
-    return librarys?.items?.map((library: Library) => ({
+    return librarys?.map((library: Library) => ({
       ...library,
       topic_name: topics?.data?.find(
         (topic: DataTopic) => topic._id === library.topic_id,

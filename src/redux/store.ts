@@ -5,12 +5,19 @@ import { baseApi } from "./baseApi";
 
 import auth from "@/features/auth/slice";
 import { authAPI } from "@/features/auth/api";
+import { baseApi as uploadApi } from "@/services/common/upload/baseApi.upload";
+import { UploadApi } from "@/services/common/upload/api.upload";
 
 export const store = configureStore({
-  reducer: { [authAPI.reducerPath]: authAPI.reducer, auth },
+  reducer: {
+    [UploadApi.reducerPath]: UploadApi.reducer,
+    [authAPI.reducerPath]: authAPI.reducer,
+    auth,
+  },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
       .concat(baseApi.middleware)
+      .concat(uploadApi.middleware)
       .concat(rtkQueryErrorLogger),
 });
 

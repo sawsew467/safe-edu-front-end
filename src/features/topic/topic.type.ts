@@ -4,6 +4,7 @@ export type DataTopic = {
   topic_name: string;
   description: string;
   image: string;
+  isActive: boolean;
 };
 export type Topic = {
   data: DataTopic[];
@@ -11,7 +12,6 @@ export type Topic = {
 export type TypeAddNewTopic = {
   topic_name: string;
   description: string;
-  image: string;
 };
 export type TypeUpdateTopic = {
   params: {

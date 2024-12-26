@@ -4,6 +4,7 @@ export type Library = {
   image_url: any;
   description: string;
   topic_id: string;
+  isActive: boolean;
 };
 
 export type TypeAddNewLibrary = {
@@ -17,10 +18,10 @@ export type TypeUpdateLibrary = {
     id: string;
   };
   body: {
-    category_name: "string";
-    topic_id: "string";
-    description: "string";
-    image: "string";
+    category_name: string;
+    topic_id: string;
+    description: string;
+    image: string;
   };
 };
 

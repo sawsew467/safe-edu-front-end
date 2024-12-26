@@ -13,6 +13,7 @@ export const authAPI = baseApi.injectEndpoints({
         method: "GET",
         flashError: true,
       }),
+      providesTags: ["Library"],
     }),
     getLibrary: build.query({
       query: ({ id }) => ({
@@ -50,6 +51,7 @@ export const authAPI = baseApi.injectEndpoints({
           flashError: true,
         };
       },
+      invalidatesTags: ["Library"],
     }),
   }),
 });

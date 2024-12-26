@@ -1,10 +1,11 @@
 "use client";
 
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, Row } from "@tanstack/react-table";
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { Eye, Pencil, Trash2 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { toast } from "sonner";
 
 import {
   DropdownMenu,
@@ -14,6 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Library } from "@/features/library/library.type";
+import { useDeleteLibraryMutation } from "@/features/library/api";
 
 export const columns: ColumnDef<Library>[] = [
   {
@@ -24,16 +26,15 @@ export const columns: ColumnDef<Library>[] = [
     },
   },
   {
-    accessorKey: "image_url",
+    accessorKey: "image",
     header: "Ảnh biểu tượng",
     cell: ({ row }) => {
-      return (
-        <Image
-          alt="icon"
-          height={100}
-          src={row.getValue("image_url")}
-          width={100}
-        />
+      const value: string = row.getValue("image");
+
+      return value ? (
+        <Image alt="icon" height={400} src={value} width={400} />
+      ) : (
+        <p className="text-red-500">*không tìm thấy ảnh</p>
       );
     },
   },
@@ -47,45 +48,62 @@ export const columns: ColumnDef<Library>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => {
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
-              variant="ghost"
-            >
-              <DotsHorizontalIcon className="h-4 w-4" />
-              <span className="sr-only">{"Open Menu"}</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem>
-              <Link
-                className="flex gap-2 w-full"
-                href={`thu-vien/${row.original._id}/mo-ta`}
-              >
-                <Eye className="w-4 h-4 text-blue-500" />
-                {<span className="">{"Xem"}</span>}
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Link
-                className="flex gap-2 w-full"
-                href={`thu-vien/thay-doi-bai-viet/${row.original._id}`}
-              >
-                <Pencil className="h-4 w-4 text-green-500" />
-                {<span className="">{"Thay đổi"}</span>}
-              </Link>
-            </DropdownMenuItem>
-
-            <DropdownMenuItem>
-              <Trash2 className="h-4 w-4 text-red-500" />
-              {<span className="">{"Xóa"}</span>}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
+    cell: ({ row }) => ActionRow({ row }),
   },
 ];
+
+const ActionRow = ({ row }: { row: Row<Library> }) => {
+  const [deleteLibrary] = useDeleteLibraryMutation({
+    fixedCacheKey: "shared-update-post",
+  });
+  const handleDeleteLibrary = async (id: string) => {
+    try {
+      await deleteLibrary({ id }).unwrap();
+      toast.success("Xóa thư viện thành công");
+    } catch (err) {}
+  };
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
+          variant="ghost"
+        >
+          <DotsHorizontalIcon className="h-4 w-4" />
+          <span className="sr-only">{"Open Menu"}</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem>
+          <Link
+            className="flex gap-2 w-full"
+            href={`thu-vien/${row.original._id}/mo-ta`}
+          >
+            <Eye className="w-4 h-4 text-blue-500" />
+            {<span className="">{"Xem"}</span>}
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <Link
+            className="flex gap-2 w-full"
+            href={`thu-vien/thay-doi-bai-viet/${row.original._id}`}
+          >
+            <Pencil className="h-4 w-4 text-green-500" />
+            {<span className="">{"Thay đổi"}</span>}
+          </Link>
+        </DropdownMenuItem>
+
+        <DropdownMenuItem>
+          <button
+            className="flex gap-2 w-full"
+            onClick={() => handleDeleteLibrary(row.original._id)}
+          >
+            <Trash2 className="h-4 w-4 text-red-500" />
+            {<span className="">{"Xóa"}</span>}
+          </button>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};

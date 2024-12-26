@@ -15,11 +15,12 @@ import ToolBar from "./tool-bar";
 
 interface RichTextEditorProps {
   content?: string;
-  onChange: (value: string) => void;
+  onChange?: (value: string) => void;
   label?: string;
   errorMessage?: string;
   isInvalid?: boolean;
   required?: boolean;
+  editable?: boolean;
 }
 
 export default function RichTextEditor({
@@ -29,6 +30,7 @@ export default function RichTextEditor({
   errorMessage,
   isInvalid = false,
   required = false,
+  editable = true,
   ...props
 }: RichTextEditorProps) {
   const editor = useEditor({
@@ -66,9 +68,15 @@ export default function RichTextEditor({
     onUpdate: ({ editor }) => {
       const editorContent = editor.getHTML();
 
-      onChange(editorContent);
+      onChange && onChange(editorContent);
     },
+    editable: editable,
   });
+
+  React.useEffect(() => {
+    if (editor?.getHTML() === content) return;
+    editor?.commands.setContent(content ?? "");
+  }, [content]);
 
   return (
     <div className="w-full">
@@ -77,7 +85,7 @@ export default function RichTextEditor({
           {label} {required && <span className="text-red-500">*</span>}
         </label>
       )}
-      <ToolBar editor={editor} />
+      {editable && <ToolBar editor={editor} />}
       <EditorContent editor={editor} {...props} />
       {isInvalid && errorMessage && (
         <p className="mt-1 text-sm text-red-500">{errorMessage}</p>

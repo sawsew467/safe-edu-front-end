@@ -1,19 +1,25 @@
 import React from "react";
-import { useCallback, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { Cross2Icon as Cancel, UploadIcon } from "@radix-ui/react-icons";
+import Image from "next/image";
+import { ControllerRenderProps, FieldPath, FieldValues } from "react-hook-form";
 
-import { Progress } from "./progress";
-import { Button } from "./button";
+import { Spinner } from "./spinner";
 
-export interface ImportModalProps {
-  refetch: Function;
+import { useUploadImageMutation } from "@/services/common/upload/api.upload";
+
+export interface ImportModalProps
+  extends ControllerRenderProps<FieldValues, FieldPath<FieldValues>> {
+  value: string;
 }
 
 interface DragZoneProps {
-  setDataForm: any;
-  processing: boolean;
-  setProcessing: Function;
+  setFormData: Function;
+  onChange: (e: any) => void;
+  isLoading: boolean;
+  value: string;
+  error: any;
 }
 
 interface ErrorLineProps {
@@ -29,11 +35,9 @@ function ErrorLine({ children }: ErrorLineProps) {
   );
 }
 
-function DragZone({ setDataForm, setProcessing, processing }: DragZoneProps) {
+function DragZone({ setFormData, isLoading, value, error }: DragZoneProps) {
   const ref = useRef<any>();
   const [dragActive, setDragActive] = useState<number>(0);
-  const [progress, setProgress] = useState<number>(0);
-  const [error, setError] = useState<any>([]);
   const [file, setFile] = useState<any>();
 
   const handleClick = () => {
@@ -47,7 +51,6 @@ function DragZone({ setDataForm, setProcessing, processing }: DragZoneProps) {
       const items = e.dataTransfer.items;
 
       if (items.length > 1) {
-        // More than one file is being dragged
         setDragActive(2);
       } else {
         const fileType = items[0].type;
@@ -84,14 +87,17 @@ function DragZone({ setDataForm, setProcessing, processing }: DragZoneProps) {
     }
   };
 
-  const handleFileChange = (e: any) => {
+  const handleFileChange = async (e: any) => {
     if (e.target.files && e.target.files.length === 1) {
       const selectedFile = e.target.files[0];
       const fileType = selectedFile.type;
 
       if (fileType.startsWith("image/")) {
         setFile(selectedFile);
-        setDataForm(selectedFile);
+        const formData = new FormData();
+
+        formData.append("image", selectedFile);
+        await setFormData(formData);
       } else {
         toast.error("Chỉ thêm được ảnh!");
         e.target.value = ""; // Reset the input if invalid
@@ -102,7 +108,7 @@ function DragZone({ setDataForm, setProcessing, processing }: DragZoneProps) {
   return (
     <React.Fragment>
       <button
-        className={`max-h-[300px] w-full text-center overflow-y-auto ${file ? "border-solid" : "border-dashed"} border-2 rounded-md h-fit ${file ?? "py-10"} ${dragActive == 2 ? "cursor-not-allowed" : "cursor-pointer"} ${file ? (error.length ? "border-red-500" : "border-green-500") : dragActive === 2 ? "border-primary" : dragActive === 1 ? "border-orange-200" : "border-primary/40"}`}
+        className={`${value ? "" : "max-h-[300px] py-10"} w-full text-center overflow-y-auto ${value ? "border-solid" : "border-dashed"} border-2 rounded-md h-fit ${dragActive == 2 ? "cursor-not-allowed" : "cursor-pointer"} ${file ? (error ? "border-red-500" : "border-green-500") : dragActive === 2 ? "border-primary" : dragActive === 1 ? "border-orange-200" : "border-primary/40"}`}
         onClick={handleClick}
         onDragEnter={handleDrag}
         onDragLeave={handleDrag}
@@ -116,9 +122,9 @@ function DragZone({ setDataForm, setProcessing, processing }: DragZoneProps) {
           type="file"
           onChange={handleFileChange}
         />
-        {processing || (
+        {isLoading || (
           <>
-            {!file && (
+            {!value && (
               <div className="my-auto text-center">
                 <UploadIcon className="mx-auto" />
                 <div className="pointer-events-none">
@@ -129,68 +135,55 @@ function DragZone({ setDataForm, setProcessing, processing }: DragZoneProps) {
                 </div>
               </div>
             )}
-            {error.length !== 0 && (
-              <div>
-                {error.map((data: any, ind: number) => (
-                  <ErrorLine
-                    key={ind}
-                  >{`Error at ${data.line}: ${data.msg}`}</ErrorLine>
-                ))}
-              </div>
-            )}
-            {file && error.length === 0 && (
-              <div className="p-5">
-                <h1 className="text-[30px] text-green-500">
-                  Đã kiểm tra xong!
-                </h1>
-                <p className="text-green-300 text-[15px]">
-                  Nhấp Thêm ảnh để hoàn tất
-                </p>
-                <p className="text-green-300 text-[15px]">
-                  Hoặc nhấn vào đây để hủy
-                </p>
+            {value && !error && (
+              <div className="flex w-full justify-center p-4">
+                <Image
+                  alt="image upload"
+                  height={400}
+                  src={value}
+                  width={400}
+                />
               </div>
             )}
           </>
         )}
-        {processing && <Progress value={progress} />}
+        {isLoading && (
+          <div className="w-full h-full py-8 flex flex-col gap-3 justify-center items-center">
+            <Spinner />
+            <p>đang tải ảnh lên...</p>
+          </div>
+        )}
       </button>
     </React.Fragment>
   );
 }
 
-function ImportExcelModal({ refetch }: ImportModalProps) {
-  const [dataForm, setDataForm] = useState<any>();
-  //   const [importUser, { isLoading }] = useImportUserMutation();
-  //   const [getImport, importState] = useGetImportMutation();
-  const [generating, setGenerating] = useState<boolean>(false);
-  const [processing, setProcessing] = useState<boolean>(false);
+function ImportExcelModal({ onChange, value }: ImportModalProps) {
+  const [upload, { isLoading }] = useUploadImageMutation();
+  const [error, setError] = useState<any>();
 
-  const handleUpload = useCallback(async () => {
-    try {
-      refetch();
-    } catch (ex) {
-      toast.error("Upload failed!");
+  const onUploadImage = async (formData: FormData) => {
+    if (formData) {
+      try {
+        const res = await upload(formData).unwrap();
+
+        onChange({ target: { value: res?.data } });
+        setError(null);
+      } catch (err) {
+        setError(err);
+      }
     }
-    close();
-  }, [dataForm]);
-
-  React.useEffect(() => {
-    console.log("dataForm", dataForm);
-  }, [dataForm]);
+  };
 
   return (
-    <div className=" space-y-8">
+    <div className="space-y-8">
       <DragZone
-        processing={processing}
-        setDataForm={setDataForm}
-        setProcessing={setProcessing}
+        error={error}
+        isLoading={isLoading}
+        setFormData={onUploadImage}
+        value={value}
+        onChange={onChange}
       />
-      {dataForm && (
-        <Button disabled={processing} variant="outline" onClick={handleUpload}>
-          Thêm Ảnh
-        </Button>
-      )}
     </div>
   );
 }
