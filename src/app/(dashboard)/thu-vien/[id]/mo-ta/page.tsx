@@ -5,7 +5,9 @@ import DescriptionModule from "@/features/library/components/description-library
 export const metadata: Metadata = {
   title: "Mô tả bài viết thư viện",
 };
-const DescPage = ({ params: { id } }: { params: { id: string } }) => {
+const DescPage = ({ params }: { params: Promise<{ id: string }> }) => {
+  const { id } = React.use(params);
+
   return <DescriptionModule id={id} />;
 };
 

@@ -124,7 +124,7 @@ const FormUpdateNews = () => {
             <FormItem>
               <FormLabel>Icon</FormLabel>
               <FormControl>
-                <UploadImage refetch={() => {}} {...field} />
+                <UploadImage {...field} />
               </FormControl>
               <FormDescription>
                 Đây là icon được hiển thị ở bên ngoài tin tức
