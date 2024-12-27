@@ -21,6 +21,7 @@ export const authAPI = baseApi.injectEndpoints({
         method: "GET",
         flashError: true,
       }),
+      providesTags: (result, error, { id }) => [{ type: "Library", id }],
     }),
     addNewLibrary: build.mutation({
       query: (data: TypeAddNewLibrary) => ({
@@ -42,6 +43,9 @@ export const authAPI = baseApi.injectEndpoints({
           flashError: true,
         };
       },
+      invalidatesTags: (result, error, { params: { id } }) => [
+        { type: "Library", id },
+      ],
     }),
     deleteLibrary: build.mutation({
       query: ({ id }) => {

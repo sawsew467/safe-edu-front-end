@@ -24,7 +24,7 @@ interface RichTextEditorProps {
 }
 
 export default function RichTextEditor({
-  content,
+  content = "<p></p>",
   onChange,
   label,
   errorMessage,

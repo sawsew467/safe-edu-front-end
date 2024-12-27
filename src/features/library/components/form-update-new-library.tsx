@@ -47,7 +47,7 @@ const FormUpdateLibrary = ({ id }: { id: string }) => {
   >([]);
   const { data: library } = useGetLibraryQuery({ id });
   const [addTopic] = useAddNewTopicMutation();
-  const [updateLibrary] = useUpdateLibraryMutation();
+  const [updateLibrary, { isLoading }] = useUpdateLibraryMutation();
   const [deleteTopic] = useDeleteTopicMutation();
   const { dataTopic } = useGetAllTopicQuery(undefined, {
     selectFromResult: ({ data: topic }) => {
@@ -76,6 +76,7 @@ const FormUpdateLibrary = ({ id }: { id: string }) => {
       topic_id: library?.topic_id,
     });
   }, [library]);
+  console.log("first", form.getValues("topic_id"));
 
   React.useEffect(() => {
     if (dataTopic) {
@@ -83,12 +84,16 @@ const FormUpdateLibrary = ({ id }: { id: string }) => {
     }
   }, [dataTopic]);
 
-  const handleRouterBack = (e: React.MouseEvent) => {
-    e.preventDefault();
+  const handleRouterBack = () => {
     router.back();
   };
 
   const handleDeleteTopic = async (id: string) => {
+    if (id === form.getValues("topic_id")) {
+      toast.error("Không thể xóa chủ đề đang chọn");
+
+      return;
+    }
     try {
       await deleteTopic({ id }).unwrap();
       setTopics((prev) => prev.filter((item) => item.value !== id));
@@ -117,8 +122,6 @@ const FormUpdateLibrary = ({ id }: { id: string }) => {
       toast.success("Thay đổi nội dung thư viện thành công");
     } catch (err) {}
   };
-
-  console.log("first", form.getValues());
 
   return (
     <Form {...form}>
@@ -151,24 +154,30 @@ const FormUpdateLibrary = ({ id }: { id: string }) => {
             <>
               <FormItem>
                 <FormLabel>Chủ đề</FormLabel>
-                <FormControl>
-                  <Select {...field} onValueChange={field.onChange}>
+                <Select
+                  defaultValue={field.value}
+                  onValueChange={(e) => {
+                    if (e) field.onChange(e);
+                  }}
+                  {...field}
+                >
+                  <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Chọn chủ đề" />
                     </SelectTrigger>
-                    <SelectContent isAddItem onAddItem={handleAddNewTopic}>
-                      {topics.map(({ label, value }) => (
-                        <SelectItem
-                          key={value}
-                          value={value}
-                          onDeleteItem={handleDeleteTopic}
-                        >
-                          {label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </FormControl>
+                  </FormControl>
+                  <SelectContent isAddItem onAddItem={handleAddNewTopic}>
+                    {topics.map(({ label, value }) => (
+                      <SelectItem
+                        key={value}
+                        value={value}
+                        onDeleteItem={handleDeleteTopic}
+                      >
+                        {label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <FormDescription>
                   Đây là chủ đề của bài viết được nói đến
                 </FormDescription>
@@ -212,12 +221,13 @@ const FormUpdateLibrary = ({ id }: { id: string }) => {
         <div className="flex gap-2 justify-center">
           <Button
             className="font-medium"
+            type="button"
             variant="destructive"
             onClick={handleRouterBack}
           >
             Hủy tác vụ
           </Button>
-          <Button className="font-medium" type="submit">
+          <Button className="font-medium" isLoading={isLoading} type="submit">
             Thay đổi
           </Button>
         </div>

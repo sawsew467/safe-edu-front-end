@@ -158,7 +158,7 @@ function DragZone({ setFormData, isLoading, value, error }: DragZoneProps) {
   );
 }
 
-function ImportExcelModal({ onChange, value }: ImportModalProps) {
+function ImportExcelModal({ onChange, value = "" }: ImportModalProps) {
   const [upload, { isLoading }] = useUploadImageMutation();
   const [error, setError] = useState<any>();
 

@@ -74,6 +74,11 @@ const FormAddNewLibrary = () => {
   }, [dataTopic]);
 
   const handleDeleteTopic = async (id: string) => {
+    if (id === form.getValues("topic_id")) {
+      toast.error("Không thể xóa chủ đề đang chọn");
+
+      return;
+    }
     try {
       await deleteTopic({ id }).unwrap();
       setTopics((prev) => prev.filter((item) => item.value !== id));
@@ -103,6 +108,9 @@ const FormAddNewLibrary = () => {
     } catch (err) {
       console.log("err", err);
     }
+  };
+  const handleRouterBack = () => {
+    router.back();
   };
 
   return (
@@ -194,8 +202,9 @@ const FormAddNewLibrary = () => {
         <div className="flex gap-2 justify-center">
           <Button
             className="font-medium"
+            type="button"
             variant="destructive"
-            onClick={() => router.back()}
+            onClick={handleRouterBack}
           >
             Hủy tác vụ
           </Button>
