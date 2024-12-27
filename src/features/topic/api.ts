@@ -13,8 +13,9 @@ export const authAPI = baseApi.injectEndpoints({
         method: "GET",
         flashError: true,
       }),
+      providesTags: ["Topic"],
     }),
-    getTopic: build.query({
+    getTopic: build.mutation({
       query: ({ id }) => ({
         url: `/topics/${id}`,
         method: "GET",
@@ -28,6 +29,7 @@ export const authAPI = baseApi.injectEndpoints({
         body: data,
         flashError: true,
       }),
+      invalidatesTags: ["Topic"],
     }),
     updateTopic: build.mutation({
       query: (data: TypeUpdateTopic) => {
@@ -50,13 +52,14 @@ export const authAPI = baseApi.injectEndpoints({
           flashError: true,
         };
       },
+      invalidatesTags: ["Topic"],
     }),
   }),
 });
 
 export const {
   useGetAllTopicQuery,
-  useGetTopicQuery,
+  useGetTopicMutation,
   useAddNewTopicMutation,
   useUpdateTopicMutation,
   useDeleteTopicMutation,

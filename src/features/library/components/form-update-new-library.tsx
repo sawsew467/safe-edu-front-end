@@ -42,11 +42,8 @@ const initialLibrary = {
 };
 const FormUpdateLibrary = ({ id }: { id: string }) => {
   const router = useRouter();
-  const [topics, setTopics] = React.useState<
-    Array<{ label: string; value: string }>
-  >([]);
   const { data: library } = useGetLibraryQuery({ id });
-  const [addTopic] = useAddNewTopicMutation();
+  const [addTopic, { isLoading: isTopicLoading }] = useAddNewTopicMutation();
   const [updateLibrary, { isLoading }] = useUpdateLibraryMutation();
   const [deleteTopic] = useDeleteTopicMutation();
   const { dataTopic } = useGetAllTopicQuery(undefined, {
@@ -76,13 +73,6 @@ const FormUpdateLibrary = ({ id }: { id: string }) => {
       topic_id: library?.topic_id,
     });
   }, [library]);
-  console.log("first", form.getValues("topic_id"));
-
-  React.useEffect(() => {
-    if (dataTopic) {
-      setTopics(dataTopic);
-    }
-  }, [dataTopic]);
 
   const handleRouterBack = () => {
     router.back();
@@ -95,20 +85,26 @@ const FormUpdateLibrary = ({ id }: { id: string }) => {
       return;
     }
     try {
-      await deleteTopic({ id }).unwrap();
-      setTopics((prev) => prev.filter((item) => item.value !== id));
+      const promise = () =>
+        new Promise((resolve) => {
+          resolve(deleteTopic({ id }).unwrap());
+        });
+
+      toast.promise(promise, {
+        loading: "đang xóa chủ đề...",
+        success: "Xóa chủ đề thành công",
+        error: "Không thể xóa",
+      });
     } catch (err) {}
   };
   const handleAddNewTopic = async (topic_name: string) => {
-    const newTopic = await addTopic({
-      topic_name,
-      description: topic_name,
-    });
-
-    setTopics((prev) => [
-      ...prev,
-      { label: newTopic?.data?.topic_name, value: newTopic?.data?._id },
-    ]);
+    try {
+      await addTopic({
+        topic_name,
+        description: topic_name,
+      });
+      toast.success("Thêm chủ đề mới thành công");
+    } catch (err) {}
   };
 
   const onSubmit = async (data: z.infer<typeof formLibrarySchema>) => {
@@ -166,8 +162,12 @@ const FormUpdateLibrary = ({ id }: { id: string }) => {
                       <SelectValue placeholder="Chọn chủ đề" />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent isAddItem onAddItem={handleAddNewTopic}>
-                    {topics.map(({ label, value }) => (
+                  <SelectContent
+                    isAddItem
+                    isLoading={isTopicLoading}
+                    onAddItem={handleAddNewTopic}
+                  >
+                    {dataTopic.map(({ label, value }) => (
                       <SelectItem
                         key={value}
                         value={value}

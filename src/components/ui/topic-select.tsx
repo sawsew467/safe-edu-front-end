@@ -6,6 +6,7 @@ import { Check, ChevronDown, ChevronUp, Plus, X } from "lucide-react";
 
 import { Input } from "./input";
 import { Button } from "./button";
+import { Spinner } from "./spinner";
 
 import { cn } from "@/lib/utils";
 
@@ -78,6 +79,7 @@ const SelectContent = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content> & {
     onAddItem?: (value: string) => void;
     isAddItem?: boolean;
+    isLoading?: boolean;
   }
 >(
   (
@@ -85,6 +87,7 @@ const SelectContent = React.forwardRef<
       className,
       children,
       onAddItem,
+      isLoading = false,
       position = "popper",
       isAddItem,
       ...props
@@ -131,6 +134,12 @@ const SelectContent = React.forwardRef<
           >
             {children}
             {!hasItem && <p className="p-2">Thêm chủ đề mới...</p>}
+            {isLoading && (
+              <div className="w-full flex ml-2 py-2 gap-2 opacity-50">
+                <Spinner />
+                <p>đang tải...</p>
+              </div>
+            )}
             {isAddItem && (
               <div className={cn("p-2", hasItem && "border-t")}>
                 <div className="flex gap-2">

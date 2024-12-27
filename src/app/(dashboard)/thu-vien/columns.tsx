@@ -58,8 +58,16 @@ const ActionRow = ({ row }: { row: Row<Library> }) => {
   });
   const handleDeleteLibrary = async (id: string) => {
     try {
-      await deleteLibrary({ id }).unwrap();
-      toast.success("Xóa thư viện thành công");
+      const promise = () =>
+        new Promise((resolve) => {
+          resolve(deleteLibrary({ id }).unwrap());
+        });
+
+      toast.promise(promise, {
+        loading: "đang xóa thư viện...",
+        success: "Xóa thư viện thành công",
+        error: "Không thể xóa",
+      });
     } catch (err) {}
   };
 
@@ -78,7 +86,7 @@ const ActionRow = ({ row }: { row: Row<Library> }) => {
         <DropdownMenuItem>
           <Link
             className="flex gap-2 w-full"
-            href={`thu-vien/${row.original._id}/mo-ta`}
+            href={`thu-vien/${row.original._id}`}
           >
             <Eye className="w-4 h-4 text-blue-500" />
             {<span className="">{"Xem"}</span>}
@@ -87,7 +95,7 @@ const ActionRow = ({ row }: { row: Row<Library> }) => {
         <DropdownMenuItem>
           <Link
             className="flex gap-2 w-full"
-            href={`thu-vien/thay-doi-bai-viet/${row.original._id}`}
+            href={`thu-vien/${row.original._id}/chinh-sua`}
           >
             <Pencil className="h-4 w-4 text-green-500" />
             {<span className="">{"Thay đổi"}</span>}

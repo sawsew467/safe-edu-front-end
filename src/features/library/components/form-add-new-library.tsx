@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import { useRouter } from "next-nprogress-bar";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -41,9 +41,6 @@ const initialLibrary = {
   topic_id: "",
 };
 const FormAddNewLibrary = () => {
-  const [topics, setTopics] = useState<Array<{ label: string; value: string }>>(
-    [],
-  );
   const router = useRouter();
 
   const form = useForm<z.infer<typeof formLibrarySchema>>({
@@ -57,21 +54,15 @@ const FormAddNewLibrary = () => {
 
       return {
         dataTopic: data?.map((topic) => ({
-          value: topic._id,
-          label: topic.topic_name,
+          value: topic?._id,
+          label: topic?.topic_name,
         })),
       };
     },
   });
-  const [addTopic] = useAddNewTopicMutation();
+  const [addTopic, { isLoading: isTopicLoading }] = useAddNewTopicMutation();
   const [deleteTopic] = useDeleteTopicMutation();
   const [addNewLibrary] = useAddNewLibraryMutation();
-
-  React.useEffect(() => {
-    if (dataTopic) {
-      setTopics(dataTopic);
-    }
-  }, [dataTopic]);
 
   const handleDeleteTopic = async (id: string) => {
     if (id === form.getValues("topic_id")) {
@@ -81,19 +72,17 @@ const FormAddNewLibrary = () => {
     }
     try {
       await deleteTopic({ id }).unwrap();
-      setTopics((prev) => prev.filter((item) => item.value !== id));
+      toast.success("Xóa chủ đề mới thành công");
     } catch (err) {}
   };
   const handleAddNewTopic = async (topic_name: string) => {
-    const newTopic = await addTopic({
-      topic_name,
-      description: topic_name,
-    });
-
-    setTopics((prev) => [
-      ...prev,
-      { label: newTopic?.data?.topic_name, value: newTopic?.data?._id },
-    ]);
+    try {
+      await addTopic({
+        topic_name,
+        description: topic_name,
+      });
+      toast.success("Thêm chủ đề mới thành công");
+    } catch (err) {}
   };
 
   const onSubmit = async (data: z.infer<typeof formLibrarySchema>) => {
@@ -105,9 +94,7 @@ const FormAddNewLibrary = () => {
     try {
       await addNewLibrary(newLibrary).unwrap();
       toast.success("Thêm thư viện thành công");
-    } catch (err) {
-      console.log("err", err);
-    }
+    } catch (err) {}
   };
   const handleRouterBack = () => {
     router.back();
@@ -148,8 +135,12 @@ const FormAddNewLibrary = () => {
                     <SelectValue placeholder="Chọn chủ đề" />
                   </SelectTrigger>
                 </FormControl>
-                <SelectContent isAddItem onAddItem={handleAddNewTopic}>
-                  {topics.map(({ label, value }) => (
+                <SelectContent
+                  isAddItem
+                  isLoading={isTopicLoading}
+                  onAddItem={handleAddNewTopic}
+                >
+                  {dataTopic.map(({ label, value }) => (
                     <SelectItem
                       key={value}
                       value={value}
@@ -190,7 +181,11 @@ const FormAddNewLibrary = () => {
             <FormItem>
               <FormLabel>Mô tả</FormLabel>
               <FormControl>
-                <CustomEditor {...field} />
+                <CustomEditor
+                  {...field}
+                  content={field?.value}
+                  onChange={field?.onChange}
+                />
               </FormControl>
               <FormDescription>
                 Đây là mô tả được hiển thị ở bên trong thư viện

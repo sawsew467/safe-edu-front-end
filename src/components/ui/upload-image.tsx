@@ -10,16 +10,24 @@ import { Spinner } from "./spinner";
 import { useUploadImageMutation } from "@/services/common/upload/api.upload";
 
 export interface ImportModalProps
-  extends ControllerRenderProps<FieldValues, FieldPath<FieldValues>> {
-  value: string;
+  extends Omit<
+    ControllerRenderProps<FieldValues, FieldPath<FieldValues>>,
+    "onChange" | "onBlur" | "value" | "ref" | "name"
+  > {
+  onChange?: Function;
+  onBlur?: Function;
+  value?: any;
+  ref?: React.Ref<any>;
+  name?: string;
 }
 
 interface DragZoneProps {
   setFormData: Function;
-  onChange: (e: any) => void;
+  onChange: Function;
   isLoading: boolean;
   value: string;
   error: any;
+  disabled: boolean;
 }
 
 interface ErrorLineProps {
@@ -35,7 +43,13 @@ function ErrorLine({ children }: ErrorLineProps) {
   );
 }
 
-function DragZone({ setFormData, isLoading, value, error }: DragZoneProps) {
+function DragZone({
+  setFormData,
+  isLoading,
+  value,
+  error,
+  disabled,
+}: DragZoneProps) {
   const ref = useRef<any>();
   const [dragActive, setDragActive] = useState<number>(0);
   const [file, setFile] = useState<any>();
@@ -115,13 +129,15 @@ function DragZone({ setFormData, isLoading, value, error }: DragZoneProps) {
         onDragOver={handleDrag}
         onDrop={handleDrop}
       >
-        <input
-          ref={ref}
-          accept="image/*"
-          className="hidden"
-          type="file"
-          onChange={handleFileChange}
-        />
+        {disabled || (
+          <input
+            ref={ref}
+            accept="image/*"
+            className="hidden"
+            type="file"
+            onChange={handleFileChange}
+          />
+        )}
         {isLoading || (
           <>
             {!value && (
@@ -158,7 +174,11 @@ function DragZone({ setFormData, isLoading, value, error }: DragZoneProps) {
   );
 }
 
-function ImportExcelModal({ onChange, value = "" }: ImportModalProps) {
+function ImportExcelModal({
+  onChange = () => {},
+  value = "",
+  disabled = false,
+}: ImportModalProps) {
   const [upload, { isLoading }] = useUploadImageMutation();
   const [error, setError] = useState<any>();
 
@@ -178,6 +198,7 @@ function ImportExcelModal({ onChange, value = "" }: ImportModalProps) {
   return (
     <div className="space-y-8">
       <DragZone
+        disabled={disabled}
         error={error}
         isLoading={isLoading}
         setFormData={onUploadImage}

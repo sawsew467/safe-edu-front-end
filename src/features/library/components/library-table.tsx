@@ -12,14 +12,14 @@ import { DataTopic } from "@/features/topic/topic.type";
 
 const LibraryTable = () => {
   const params = useSearchParams();
-  const { librarys, isLoading } = useGetAllLibraryQuery(
+  const { librarys, isFetching } = useGetAllLibraryQuery(
     {},
     {
       refetchOnMountOrArgChange: true,
-      selectFromResult: ({ data, isLoading }) => {
+      selectFromResult: ({ data, isFetching }) => {
         return {
           librarys: data?.items?.filter((item: Library) => item.isActive) ?? [],
-          isLoading,
+          isFetching,
         };
       },
     },
@@ -36,7 +36,7 @@ const LibraryTable = () => {
     }));
   }, [topics, librarys]);
 
-  return <DataTable columns={columns} data={data} isLoading={isLoading} />;
+  return <DataTable columns={columns} data={data} isLoading={isFetching} />;
 };
 
 export default LibraryTable;
