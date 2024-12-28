@@ -126,6 +126,7 @@ const FormUpdateLibrary = ({ id }: { id: string }) => {
   return (
     <>
       <TitlePage
+        isReplace
         contentHref="Xem mô tả"
         href={`/thu-vien/${id}`}
         startIcon={<Eye className=" h-4 w-4" />}

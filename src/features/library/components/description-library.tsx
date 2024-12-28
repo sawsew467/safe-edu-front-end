@@ -38,6 +38,7 @@ const DescriptionModule = ({ id }: { id: string }) => {
   return (
     <>
       <TitlePage
+        isReplace
         contentHref="Chỉnh sửa"
         href={`/thu-vien/${id}/chinh-sua`}
         startIcon={<Edit className=" h-4 w-4" />}

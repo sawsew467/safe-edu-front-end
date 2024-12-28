@@ -6,7 +6,13 @@ import { useRouter } from "next-nprogress-bar";
 import { Button } from "@/components/ui/button";
 import { TypeTitlePage } from "@/features/library/library.type";
 
-const TitlePage = ({ title, href, contentHref, startIcon }: TypeTitlePage) => {
+const TitlePage = ({
+  title,
+  href,
+  contentHref,
+  startIcon,
+  isReplace = false,
+}: TypeTitlePage) => {
   const router = useRouter();
 
   return (
@@ -17,7 +23,8 @@ const TitlePage = ({ title, href, contentHref, startIcon }: TypeTitlePage) => {
           className="h-8 px-2 lg:px-3"
           variant="outline"
           onClick={() => {
-            router.push(href);
+            if (isReplace) router.replace(href);
+            else router.push(href);
           }}
         >
           {startIcon ? <>{startIcon}</> : <PlusIcon className=" h-4 w-4" />}

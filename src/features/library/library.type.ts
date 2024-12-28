@@ -30,4 +30,5 @@ export type TypeTitlePage = {
   href: string;
   contentHref: string;
   startIcon?: React.ReactNode;
+  isReplace?: boolean;
 };
