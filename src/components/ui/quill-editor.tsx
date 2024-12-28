@@ -1,14 +1,14 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import ReactQuill, { Quill } from "react-quill-new";
 import "@/config/editor.css";
 import "react-quill-new/dist/quill.snow.css";
 import { toast } from "sonner";
 
-import ImageResize from "@/config/editor/imageResize";
 import { useUploadImageMutation } from "@/services/common/upload/api.upload";
-import ImageUpload from "@/config/editor/imageUpload";
+import ImageResize from "@/lib/imageResize";
+import ImageUpload from "@/lib/imageUpload";
 
 Quill.register("modules/imageResize", ImageResize);
 Quill.register("modules/imageUpload", ImageUpload);
@@ -35,6 +35,7 @@ export default function QuillEditor({
   errorMessage,
   isInvalid = false,
   required = false,
+  editable = true,
 }: EditorProps) {
   const [value, setValue] = useState<string>(content);
   const reactQuillRef = useRef<ReactQuill>(null);
@@ -42,11 +43,14 @@ export default function QuillEditor({
 
   const handleOnChange = (content: string) => {
     setValue(content);
-
     if (onChange) {
       onChange(content);
     }
   };
+
+  useEffect(() => {
+    setValue(content);
+  }, [content]);
 
   const handleUploadImage = useCallback(async (file: any) => {
     const formData = new FormData();
@@ -128,6 +132,7 @@ export default function QuillEditor({
           "size",
           "bold",
           "italic",
+          "align",
           "underline",
           "strike",
           "blockquote",
@@ -143,6 +148,12 @@ export default function QuillEditor({
             container: [
               [{ header: "1" }, { header: "2" }, { font: [] }],
               [{ size: [] }],
+              [
+                { align: "" },
+                { align: "center" },
+                { align: "right" },
+                { align: "justify" },
+              ],
               ["bold", "italic", "underline", "strike", "blockquote"],
               [
                 { list: "ordered" },
@@ -167,6 +178,7 @@ export default function QuillEditor({
           },
         }}
         placeholder="viết..."
+        readOnly={!editable}
         theme="snow"
         value={value}
         onChange={handleOnChange}

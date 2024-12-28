@@ -1,8 +1,26 @@
 "use client";
 
-import { baseApi } from "./baseApi.upload";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-export const UploadApi = baseApi.injectEndpoints({
+import { getClientCookie } from "@/lib/jsCookies";
+import constants from "@/settings/constants";
+
+const baseQuery = fetchBaseQuery({
+  baseUrl: constants.API_SERVER,
+  prepareHeaders: (headers) => {
+    const accessToken = getClientCookie("accessToken");
+
+    if (accessToken) {
+      headers.set("Authorization", `Bearer ${accessToken}`);
+    }
+
+    return headers;
+  },
+});
+
+export const UploadApi = createApi({
+  reducerPath: "uploadApi",
+  baseQuery: baseQuery,
   endpoints: (build) => ({
     uploadImage: build.mutation({
       query: (body: FormData) => {

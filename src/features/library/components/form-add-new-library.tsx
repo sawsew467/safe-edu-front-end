@@ -48,8 +48,8 @@ const FormAddNewLibrary = () => {
     mode: "onSubmit",
     defaultValues: initialLibrary,
   });
-  const { dataTopic } = useGetAllTopicQuery(undefined, {
-    selectFromResult: ({ data: topic }) => {
+  const { dataTopic, isTopicLoading } = useGetAllTopicQuery(undefined, {
+    selectFromResult: ({ data: topic, isFetching }) => {
       const data = topic?.data?.filter((topic) => topic.isActive) ?? [];
 
       return {
@@ -57,12 +57,14 @@ const FormAddNewLibrary = () => {
           value: topic?._id,
           label: topic?.topic_name,
         })),
+        isTopicLoading: isFetching,
       };
     },
   });
-  const [addTopic, { isLoading: isTopicLoading }] = useAddNewTopicMutation();
+  const [addTopic, { isLoading: isAddTopicLoading }] = useAddNewTopicMutation();
   const [deleteTopic] = useDeleteTopicMutation();
-  const [addNewLibrary] = useAddNewLibraryMutation();
+  const [addNewLibrary, { isLoading: isAddLibrary }] =
+    useAddNewLibraryMutation();
 
   const handleDeleteTopic = async (id: string) => {
     if (id === form.getValues("topic_id")) {
@@ -90,11 +92,14 @@ const FormAddNewLibrary = () => {
       ...data,
       category_name: data?.category_name?.replaceAll('"', '\"'),
     };
+    let toasID = toast.loading("Đang tải thư viện...");
 
     try {
       await addNewLibrary(newLibrary).unwrap();
-      toast.success("Thêm thư viện thành công");
-    } catch (err) {}
+      toast.success("Thêm thư viện thành công", { id: toasID });
+    } catch (err) {
+      toast.error("Thêm thư viện thất bại", { id: toasID });
+    }
   };
   const handleRouterBack = () => {
     router.back();
@@ -131,13 +136,13 @@ const FormAddNewLibrary = () => {
                 onValueChange={field.onChange}
               >
                 <FormControl>
-                  <SelectTrigger>
+                  <SelectTrigger isLoading={isTopicLoading}>
                     <SelectValue placeholder="Chọn chủ đề" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent
                   isAddItem
-                  isLoading={isTopicLoading}
+                  isAddItemLoading={isAddTopicLoading}
                   onAddItem={handleAddNewTopic}
                 >
                   {dataTopic.map(({ label, value }) => (
@@ -203,7 +208,11 @@ const FormAddNewLibrary = () => {
           >
             Hủy tác vụ
           </Button>
-          <Button className="font-medium" type="submit">
+          <Button
+            className="font-medium"
+            isLoading={isAddLibrary}
+            type="submit"
+          >
             Thêm
           </Button>
         </div>

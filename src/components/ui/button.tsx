@@ -69,12 +69,14 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={props.disabled || isLoading}
         {...props}
       >
-        {isLoading && (
-          <div className="flex items-center justify-center bg-inherit rounded-md">
+        {isLoading ? (
+          <div className="flex gap-2 items-center justify-center bg-inherit rounded-md">
             <Spinner />
+            <p>đang tải...</p>
           </div>
+        ) : (
+          <>{children}</>
         )}
-        {children}
       </Comp>
     );
   },

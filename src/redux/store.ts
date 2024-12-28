@@ -5,7 +5,6 @@ import { baseApi } from "./baseApi";
 
 import auth from "@/features/auth/slice";
 import { authAPI } from "@/features/auth/api";
-import { baseApi as uploadApi } from "@/services/common/upload/baseApi.upload";
 import { UploadApi } from "@/services/common/upload/api.upload";
 
 export const store = configureStore({
@@ -17,7 +16,7 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
       .concat(baseApi.middleware)
-      .concat(uploadApi.middleware)
+      .concat(UploadApi.middleware)
       .concat(rtkQueryErrorLogger),
 });
 

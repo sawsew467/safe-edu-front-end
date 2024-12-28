@@ -43,11 +43,12 @@ const initialLibrary = {
 const FormUpdateLibrary = ({ id }: { id: string }) => {
   const router = useRouter();
   const { data: library } = useGetLibraryQuery({ id });
-  const [addTopic, { isLoading: isTopicLoading }] = useAddNewTopicMutation();
-  const [updateLibrary, { isLoading }] = useUpdateLibraryMutation();
+  const [addTopic, { isLoading: isAddTopicLoading }] = useAddNewTopicMutation();
+  const [updateLibrary, { isLoading: isUpdateLibraryLoading }] =
+    useUpdateLibraryMutation();
   const [deleteTopic] = useDeleteTopicMutation();
-  const { dataTopic } = useGetAllTopicQuery(undefined, {
-    selectFromResult: ({ data: topic }) => {
+  const { dataTopic, isTopicLoading } = useGetAllTopicQuery(undefined, {
+    selectFromResult: ({ data: topic, isFetching }) => {
       const data = topic?.data?.filter((topic) => topic.isActive) ?? [];
 
       return {
@@ -55,6 +56,7 @@ const FormUpdateLibrary = ({ id }: { id: string }) => {
           value: topic._id,
           label: topic.topic_name,
         })),
+        isTopicLoading: isFetching,
       };
     },
   });
@@ -152,19 +154,20 @@ const FormUpdateLibrary = ({ id }: { id: string }) => {
                 <FormLabel>Chủ đề</FormLabel>
                 <Select
                   defaultValue={field.value}
+                  disabled={isTopicLoading}
                   onValueChange={(e) => {
                     if (e) field.onChange(e);
                   }}
                   {...field}
                 >
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger isLoading={isTopicLoading}>
                       <SelectValue placeholder="Chọn chủ đề" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent
                     isAddItem
-                    isLoading={isTopicLoading}
+                    isAddItemLoading={isAddTopicLoading}
                     onAddItem={handleAddNewTopic}
                   >
                     {dataTopic.map(({ label, value }) => (
@@ -227,7 +230,11 @@ const FormUpdateLibrary = ({ id }: { id: string }) => {
           >
             Hủy tác vụ
           </Button>
-          <Button className="font-medium" isLoading={isLoading} type="submit">
+          <Button
+            className="font-medium"
+            isLoading={isUpdateLibraryLoading}
+            type="submit"
+          >
             Thay đổi
           </Button>
         </div>

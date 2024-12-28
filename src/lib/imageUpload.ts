@@ -36,7 +36,6 @@ class ImageUpload {
   }
 
   handlePaste(event: ClipboardEvent) {
-    event.preventDefault();
     if (
       event.clipboardData &&
       event.clipboardData.files &&

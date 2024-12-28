@@ -15,7 +15,7 @@ export const authAPI = baseApi.injectEndpoints({
       }),
       providesTags: ["Topic"],
     }),
-    getTopic: build.mutation({
+    getTopic: build.query({
       query: ({ id }) => ({
         url: `/topics/${id}`,
         method: "GET",
@@ -59,7 +59,7 @@ export const authAPI = baseApi.injectEndpoints({
 
 export const {
   useGetAllTopicQuery,
-  useGetTopicMutation,
+  useGetTopicQuery,
   useAddNewTopicMutation,
   useUpdateTopicMutation,
   useDeleteTopicMutation,

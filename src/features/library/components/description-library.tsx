@@ -12,28 +12,28 @@ import {
   SelectValue,
 } from "@/components/ui/topic-select";
 import UploadImage from "@/components/ui/upload-image";
-import { useGetTopicMutation } from "@/features/topic/api";
+import { useGetTopicQuery } from "@/features/topic/api";
+import CustomEditor from "@/components/ui/custom-editor";
 
 const DescriptionModule = ({ id }: { id: string }) => {
-  const { data, isFetching } = useGetLibraryQuery(
+  const { data, isFetching, isSuccess } = useGetLibraryQuery(
     { id },
     {
-      selectFromResult: ({ data, isFetching }) => ({
+      selectFromResult: ({ data, isFetching, isSuccess }) => ({
         data: data,
         isFetching,
+        isSuccess,
       }),
+      refetchOnMountOrArgChange: true,
     },
   );
 
-  const [getTopic] = useGetTopicMutation();
-  const topic_name = React.useMemo(async () => {
-    if (!data) return "";
-    try {
-      const { topic_name } = await getTopic({ id: data?.topic_id }).unwrap();
+  const { data: topic } = useGetTopicQuery(
+    { id: data?.topic_id },
+    { skip: !isSuccess },
+  );
 
-      return topic_name;
-    } catch (err) {}
-  }, [data]);
+  console.log("", topic);
 
   return (
     <div>
@@ -68,7 +68,7 @@ const DescriptionModule = ({ id }: { id: string }) => {
             </Label>
             <Select disabled defaultValue={data?.topic_id}>
               <SelectTrigger className="max-w-sm">
-                <SelectValue>{topic_name}</SelectValue>
+                <SelectValue>{topic?.topic_name}</SelectValue>
               </SelectTrigger>
             </Select>
           </div>
@@ -88,10 +88,7 @@ const DescriptionModule = ({ id }: { id: string }) => {
             >
               Mô tả
             </Label>
-            <div
-              dangerouslySetInnerHTML={{ __html: data?.description }}
-              className="p-4 border-2 rounded-md"
-            />
+            <CustomEditor content={data?.description} editable={false} />
           </div>
         </div>
       )}
