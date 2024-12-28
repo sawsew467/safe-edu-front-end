@@ -33,7 +33,11 @@ class ImageResize {
   }
 
   handleClick(evt: MouseEvent) {
-    if (evt.target && (evt.target as HTMLElement).tagName === "IMG") {
+    if (
+      evt.target &&
+      (evt.target as HTMLElement).tagName === "IMG" &&
+      !this.quill.options.readOnly
+    ) {
       if (this.currentImg === evt.target) return;
       if (this.currentImg) this.hide();
       this.show(evt.target as HTMLElement);

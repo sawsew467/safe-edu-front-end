@@ -29,7 +29,8 @@ class ImageUpload {
     if (
       event.dataTransfer &&
       event.dataTransfer.files &&
-      event.dataTransfer.files.length
+      event.dataTransfer.files.length &&
+      !this.quill.options.readOnly
     ) {
       this.readFiles(event.dataTransfer.files);
     }
@@ -39,7 +40,8 @@ class ImageUpload {
     if (
       event.clipboardData &&
       event.clipboardData.files &&
-      event.clipboardData.files.length
+      event.clipboardData.files.length &&
+      !this.quill.options.readOnly
     ) {
       event.preventDefault();
       this.readFiles(event.clipboardData.files);

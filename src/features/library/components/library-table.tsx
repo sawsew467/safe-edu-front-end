@@ -1,6 +1,5 @@
 "use client";
-import React, { useMemo } from "react";
-import { useSearchParams } from "next/navigation";
+import React from "react";
 
 import { useGetAllLibraryQuery } from "../api";
 import { Library } from "../library.type";
@@ -11,7 +10,6 @@ import { useGetAllTopicQuery } from "@/features/topic/api";
 import { DataTopic } from "@/features/topic/topic.type";
 
 const LibraryTable = () => {
-  const params = useSearchParams();
   const { librarys, isFetching } = useGetAllLibraryQuery(
     {},
     {
@@ -27,16 +25,17 @@ const LibraryTable = () => {
 
   const { data: topics } = useGetAllTopicQuery({});
 
-  const data = useMemo(() => {
+  const data = () => {
     return librarys?.map((library: Library) => ({
       ...library,
       topic_name: topics?.data?.find(
         (topic: DataTopic) => topic._id === library.topic_id,
       )?.topic_name,
     }));
-  }, [topics, librarys]);
+  };
+  const newData = data();
 
-  return <DataTable columns={columns} data={data} isLoading={isFetching} />;
+  return <DataTable columns={columns} data={newData} isLoading={isFetching} />;
 };
 
 export default LibraryTable;

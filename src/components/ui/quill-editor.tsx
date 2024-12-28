@@ -7,8 +7,8 @@ import "react-quill-new/dist/quill.snow.css";
 import { toast } from "sonner";
 
 import { useUploadImageMutation } from "@/services/common/upload/api.upload";
-import ImageResize from "@/lib/imageResize";
-import ImageUpload from "@/lib/imageUpload";
+import ImageResize from "@/lib/editor/imageResize";
+import ImageUpload from "@/lib/editor/imageUpload";
 
 Quill.register("modules/imageResize", ImageResize);
 Quill.register("modules/imageUpload", ImageUpload);

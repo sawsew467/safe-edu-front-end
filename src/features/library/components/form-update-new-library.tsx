@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
+import { Eye } from "lucide-react";
 
 import { formLibrarySchema } from "../library.schema";
 import { useGetLibraryQuery, useUpdateLibraryMutation } from "../api";
@@ -34,6 +35,7 @@ import {
   useDeleteTopicMutation,
   useGetAllTopicQuery,
 } from "@/features/topic/api";
+import TitlePage from "@/components/ui/title-page";
 const initialLibrary = {
   category_name: "",
   image: "",
@@ -122,124 +124,135 @@ const FormUpdateLibrary = ({ id }: { id: string }) => {
   };
 
   return (
-    <Form {...form}>
-      <form
-        className="space-y-8 flex flex-col"
-        onSubmit={form.handleSubmit(onSubmit)}
-      >
-        <FormField
-          control={form.control}
-          name="category_name"
-          render={({ field }) => (
-            <>
+    <>
+      <TitlePage
+        contentHref="Xem mô tả"
+        href={`/thu-vien/${id}`}
+        startIcon={<Eye className=" h-4 w-4" />}
+        title="Chỉnh sửa nội dung"
+      />
+      <Form {...form}>
+        <form
+          className="space-y-8 flex flex-col"
+          onSubmit={form.handleSubmit(onSubmit)}
+        >
+          <FormField
+            control={form.control}
+            name="category_name"
+            render={({ field }) => (
+              <>
+                <FormItem>
+                  <FormLabel>Tiêu đề</FormLabel>
+                  <FormControl>
+                    <Input placeholder="nhập tiêu đề" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    Đây là tiêu đề được hiển thị ở bên ngoài thư viện
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              </>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="topic_id"
+            render={({ field }) => (
+              <>
+                <FormItem>
+                  <FormLabel>Chủ đề</FormLabel>
+                  <Select
+                    defaultValue={field.value}
+                    disabled={isTopicLoading}
+                    onValueChange={(e) => {
+                      if (e) field.onChange(e);
+                    }}
+                    {...field}
+                  >
+                    <FormControl>
+                      <SelectTrigger isLoading={isTopicLoading}>
+                        <SelectValue placeholder="Chọn chủ đề" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent
+                      isAddItem
+                      isAddItemLoading={isAddTopicLoading}
+                      onAddItem={handleAddNewTopic}
+                    >
+                      {dataTopic.map(({ label, value }) => (
+                        <SelectItem
+                          key={value}
+                          value={value}
+                          onDeleteItem={handleDeleteTopic}
+                        >
+                          {label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormDescription>
+                    Đây là chủ đề của bài viết được nói đến
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              </>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="image"
+            render={({ field }) => (
               <FormItem>
-                <FormLabel>Tiêu đề</FormLabel>
+                <FormLabel>Icon</FormLabel>
                 <FormControl>
-                  <Input placeholder="nhập tiêu đề" {...field} />
+                  <UploadImage {...field} />
                 </FormControl>
                 <FormDescription>
-                  Đây là tiêu đề được hiển thị ở bên ngoài thư viện
+                  Đây là icon được hiển thị ở bên ngoài thư viện
                 </FormDescription>
                 <FormMessage />
               </FormItem>
-            </>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="topic_id"
-          render={({ field }) => (
-            <>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
               <FormItem>
-                <FormLabel>Chủ đề</FormLabel>
-                <Select
-                  defaultValue={field.value}
-                  disabled={isTopicLoading}
-                  onValueChange={(e) => {
-                    if (e) field.onChange(e);
-                  }}
-                  {...field}
-                >
-                  <FormControl>
-                    <SelectTrigger isLoading={isTopicLoading}>
-                      <SelectValue placeholder="Chọn chủ đề" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent
-                    isAddItem
-                    isAddItemLoading={isAddTopicLoading}
-                    onAddItem={handleAddNewTopic}
-                  >
-                    {dataTopic.map(({ label, value }) => (
-                      <SelectItem
-                        key={value}
-                        value={value}
-                        onDeleteItem={handleDeleteTopic}
-                      >
-                        {label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <FormLabel>Mô tả</FormLabel>
+                <FormControl>
+                  <CustomEditor
+                    content={field.value}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
                 <FormDescription>
-                  Đây là chủ đề của bài viết được nói đến
+                  Đây là mô tả được hiển thị ở bên trong thư viện
                 </FormDescription>
                 <FormMessage />
               </FormItem>
-            </>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="image"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Icon</FormLabel>
-              <FormControl>
-                <UploadImage {...field} />
-              </FormControl>
-              <FormDescription>
-                Đây là icon được hiển thị ở bên ngoài thư viện
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Mô tả</FormLabel>
-              <FormControl>
-                <CustomEditor content={field.value} onChange={field.onChange} />
-              </FormControl>
-              <FormDescription>
-                Đây là mô tả được hiển thị ở bên trong thư viện
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div className="flex gap-2 justify-center">
-          <Button
-            className="font-medium"
-            type="button"
-            variant="destructive"
-            onClick={handleRouterBack}
-          >
-            Hủy tác vụ
-          </Button>
-          <Button
-            className="font-medium"
-            isLoading={isUpdateLibraryLoading}
-            type="submit"
-          >
-            Thay đổi
-          </Button>
-        </div>
-      </form>
-    </Form>
+            )}
+          />
+          <div className="flex gap-2 justify-center">
+            <Button
+              className="font-medium"
+              type="button"
+              variant="destructive"
+              onClick={handleRouterBack}
+            >
+              Hủy tác vụ
+            </Button>
+            <Button
+              className="font-medium"
+              isLoading={isUpdateLibraryLoading}
+              type="submit"
+            >
+              Thay đổi
+            </Button>
+          </div>
+        </form>
+      </Form>
+    </>
   );
 };
 
