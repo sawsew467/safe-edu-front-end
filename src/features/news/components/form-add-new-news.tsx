@@ -77,46 +77,44 @@ const FormAddNews = () => {
           control={form.control}
           name="topic"
           render={({ field }) => (
-            <>
-              <FormItem>
-                <FormLabel>Chủ đề</FormLabel>
-                <Select
-                  {...field}
-                  defaultValue={field.value}
-                  onValueChange={field.onChange}
+            <FormItem>
+              <FormLabel>Chủ đề</FormLabel>
+              <Select
+                {...field}
+                defaultValue={field.value}
+                onValueChange={field.onChange}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Chọn chủ đề" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent
+                  isAddItem
+                  onAddItem={(value) => {
+                    setTopics((prev) => [...prev, { label: value, value }]);
+                  }}
                 >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Chọn chủ đề" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent
-                    isAddItem
-                    onAddItem={(value) => {
-                      setTopics((prev) => [...prev, { label: value, value }]);
-                    }}
-                  >
-                    {topics.map(({ label, value }) => (
-                      <SelectItem
-                        key={value}
-                        value={value}
-                        onDeleteItem={(value) => {
-                          setTopics((prev) =>
-                            prev.filter((i) => i.value !== value),
-                          );
-                        }}
-                      >
-                        {label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormDescription>
-                  Đây là chủ đề của bài viết được nói đến
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            </>
+                  {topics.map(({ label, value }) => (
+                    <SelectItem
+                      key={value}
+                      value={value}
+                      onDeleteItem={(value) => {
+                        setTopics((prev) =>
+                          prev.filter((i) => i.value !== value),
+                        );
+                      }}
+                    >
+                      {label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormDescription>
+                Đây là chủ đề của bài viết được nói đến
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
           )}
         />
         <FormField
@@ -126,7 +124,7 @@ const FormAddNews = () => {
             <FormItem>
               <FormLabel>Ảnh đại diện</FormLabel>
               <FormControl>
-                <UploadImage refetch={() => {}} {...field} />
+                <UploadImage {...field} />
               </FormControl>
               <FormDescription>
                 Đây là ảnh được hiển thị ở bên ngoài tin tức

@@ -6,6 +6,7 @@ import { Check, ChevronDown, ChevronUp, Plus, X } from "lucide-react";
 
 import { Input } from "./input";
 import { Button } from "./button";
+import { Spinner } from "./spinner";
 
 import { cn } from "@/lib/utils";
 
@@ -17,8 +18,10 @@ const SelectValue = SelectPrimitive.Value;
 
 const SelectTrigger = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Trigger>,
-  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>
->(({ className, children, ...props }, ref) => (
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger> & {
+    isLoading?: boolean;
+  }
+>(({ className, children, isLoading = false, ...props }, ref) => (
   <SelectPrimitive.Trigger
     ref={ref}
     className={cn(
@@ -27,7 +30,14 @@ const SelectTrigger = React.forwardRef<
     )}
     {...props}
   >
-    {children}
+    {isLoading ? (
+      <div className="w-full items-center flex ml-2 py-2 gap-2 opacity-50">
+        <Spinner />
+        <p>đang tải...</p>
+      </div>
+    ) : (
+      <>{children}</>
+    )}
     <SelectPrimitive.Icon asChild>
       <ChevronDown className="h-4 w-4 opacity-50" />
     </SelectPrimitive.Icon>
@@ -78,6 +88,7 @@ const SelectContent = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content> & {
     onAddItem?: (value: string) => void;
     isAddItem?: boolean;
+    isAddItemLoading?: boolean;
   }
 >(
   (
@@ -85,6 +96,7 @@ const SelectContent = React.forwardRef<
       className,
       children,
       onAddItem,
+      isAddItemLoading = false,
       position = "popper",
       isAddItem,
       ...props
@@ -142,6 +154,7 @@ const SelectContent = React.forwardRef<
                   />
                   <Button
                     className="shrink-0"
+                    isLoading={isAddItemLoading}
                     variant="outline"
                     onClick={handleAddItem}
                   >
