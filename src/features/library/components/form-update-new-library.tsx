@@ -120,6 +120,7 @@ const FormUpdateLibrary = ({ id }: { id: string }) => {
     try {
       await updateLibrary({ params: { id }, body: newLibrary }).unwrap();
       toast.success("Thay đổi nội dung thư viện thành công");
+      router.back();
     } catch (err) {}
   };
 

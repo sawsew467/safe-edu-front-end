@@ -116,6 +116,7 @@ const FormUpdateNews = ({ id }: { id: string }) => {
     try {
       await updateNews({ params: { id: id }, body: data }).unwrap();
       toast.success("Thay đổi bài báo thành công", { id: toastID });
+      router.back();
     } catch (err) {
       toast.error("Thay đổi bài báo thất bại", { id: toastID });
     }

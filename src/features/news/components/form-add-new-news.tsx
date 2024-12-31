@@ -92,6 +92,7 @@ const FormAddNews = () => {
     try {
       await addNewNews(data).unwrap();
       toast.success("Thêm bài báo thành công", { id: toastID });
+      router.back();
     } catch (err) {
       toast.error("Thêm bài báo thất bại", { id: toastID });
     }
