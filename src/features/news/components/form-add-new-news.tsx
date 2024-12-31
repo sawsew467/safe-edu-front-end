@@ -4,8 +4,10 @@ import { useRouter } from "next-nprogress-bar";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { toast } from "sonner";
 
 import { formNewsSchema } from "../news.schema";
+import { useAddNewNewsMutation } from "../api";
 
 import { Button } from "@/components/ui/button";
 import CustomEditor from "@/components/ui/custom-editor";
@@ -20,21 +22,79 @@ import {
 } from "@/components/ui/form";
 import UploadImage from "@/components/ui/upload-image";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/topic-select";
+import {
+  useAddNewTopicMutation,
+  useDeleteTopicMutation,
+  useGetAllTopicQuery,
+} from "@/features/topic/api";
 const initialNews = {
-  title: "",
-  thumbnail: "",
-  desc: "",
+  title: undefined,
+  thumbnail: undefined,
+  desc: undefined,
+  topic: undefined,
 };
 const FormAddNews = () => {
   const router = useRouter();
 
+  const { dataTopic, isTopicLoading } = useGetAllTopicQuery(undefined, {
+    selectFromResult: ({ data: topic, isFetching }) => {
+      const data = topic?.data?.filter((topic) => topic.isActive) ?? [];
+
+      return {
+        dataTopic: data?.map((topic) => ({
+          value: topic?._id,
+          label: topic?.topic_name,
+        })),
+        isTopicLoading: isFetching,
+      };
+    },
+  });
+  const [addTopic, { isLoading: isAddTopicLoading }] = useAddNewTopicMutation();
+  const [deleteTopic] = useDeleteTopicMutation();
+  const [addNewNews, { isLoading: isAddNews }] = useAddNewNewsMutation();
+
+  const handleDeleteTopic = async (id: string) => {
+    if (id === form.getValues("topic_id")) {
+      toast.error("Không thể xóa chủ đề đang chọn");
+
+      return;
+    }
+    try {
+      await deleteTopic({ id }).unwrap();
+      toast.success("Xóa chủ đề mới thành công");
+    } catch (err) {}
+  };
+  const handleAddNewTopic = async (topic_name: string) => {
+    try {
+      await addTopic({
+        topic_name,
+        description: topic_name,
+      });
+      toast.success("Thêm chủ đề mới thành công");
+    } catch (err) {}
+  };
+
   const form = useForm<z.infer<typeof formNewsSchema>>({
     resolver: zodResolver(formNewsSchema),
-    mode: "onChange",
+    mode: "onSubmit",
     defaultValues: initialNews,
   });
-  const onSubmit = (data: z.infer<typeof formNewsSchema>) => {
-    console.log(data);
+  const onSubmit = async (data: z.infer<typeof formNewsSchema>) => {
+    let toastID = toast.loading("Đang thêm bài báo mới");
+
+    try {
+      await addNewNews(data).unwrap();
+      toast.success("Thêm bài báo thành công", { id: toastID });
+    } catch (err) {
+      toast.error("Thêm bài báo thất bại", { id: toastID });
+    }
   };
 
   return (
@@ -63,17 +123,38 @@ const FormAddNews = () => {
         />
         <FormField
           control={form.control}
-          name="thumbnail"
+          name="topic_id"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Ảnh đại diện</FormLabel>
-              <FormControl>
-                <>
-                  <UploadImage refetch={() => {}} {...field} />
-                </>
-              </FormControl>
+              <FormLabel>Chủ đề</FormLabel>
+              <Select
+                {...field}
+                defaultValue={field.value}
+                onValueChange={field.onChange}
+              >
+                <FormControl>
+                  <SelectTrigger isLoading={isTopicLoading}>
+                    <SelectValue placeholder="Chọn chủ đề" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent
+                  isAddItem
+                  isAddItemLoading={isAddTopicLoading}
+                  onAddItem={handleAddNewTopic}
+                >
+                  {dataTopic.map(({ label, value }) => (
+                    <SelectItem
+                      key={value}
+                      value={value}
+                      onDeleteItem={handleDeleteTopic}
+                    >
+                      {label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormDescription>
-                Đây là ảnh được hiển thị ở bên ngoài tin tức
+                Đây là chủ đề của bài viết được nói đến
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -81,7 +162,39 @@ const FormAddNews = () => {
         />
         <FormField
           control={form.control}
-          name="desc"
+          name="author"
+          render={({ field }) => (
+            <>
+              <FormItem>
+                <FormLabel>Tác giả</FormLabel>
+                <FormControl>
+                  <Input placeholder="nhập tên tác giả" {...field} />
+                </FormControl>
+                <FormDescription>Đây là tác giả của bài báo</FormDescription>
+                <FormMessage />
+              </FormItem>
+            </>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="image"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Ảnh Bìa</FormLabel>
+              <FormControl>
+                <UploadImage {...field} />
+              </FormControl>
+              <FormDescription>
+                Đây là Ảnh Bìa được hiển thị ở bên ngoài tin tức
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="content"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Mô tả</FormLabel>
@@ -97,15 +210,14 @@ const FormAddNews = () => {
         />
         <div className="flex gap-2 justify-center">
           <Button
-            className="text-lg font-medium"
-            size="lg"
-            type="submit"
+            className="font-medium"
+            type="button"
             variant="destructive"
             onClick={() => router.back()}
           >
             Hủy tác vụ
           </Button>
-          <Button className="text-lg font-medium" size="lg" type="submit">
+          <Button className="font-medium" isLoading={isAddNews} type="submit">
             Thêm
           </Button>
         </div>

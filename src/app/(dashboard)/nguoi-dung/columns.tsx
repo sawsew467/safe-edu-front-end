@@ -55,14 +55,6 @@ export const columns: ColumnDef<User>[] = [
     },
   },
   {
-    accessorKey: "rtn",
-    header: "RTN",
-  },
-  {
-    accessorKey: "otherInformation",
-    header: "Thông tin khác",
-  },
-  {
     accessorKey: "status",
     header: "Trạng thái",
     cell: ({ row }) => {
