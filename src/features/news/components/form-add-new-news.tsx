@@ -92,10 +92,14 @@ const FormAddNews = () => {
     try {
       await addNewNews(data).unwrap();
       toast.success("Thêm bài báo thành công", { id: toastID });
-      router.back();
+      router.replace("/tin-tuc");
     } catch (err) {
       toast.error("Thêm bài báo thất bại", { id: toastID });
     }
+  };
+
+  const handleRouterBack = () => {
+    router.replace("/tin-tuc");
   };
 
   return (
@@ -214,7 +218,7 @@ const FormAddNews = () => {
             className="font-medium"
             type="button"
             variant="destructive"
-            onClick={() => router.back()}
+            onClick={handleRouterBack}
           >
             Hủy tác vụ
           </Button>

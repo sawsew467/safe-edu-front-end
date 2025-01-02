@@ -116,10 +116,14 @@ const FormUpdateNews = ({ id }: { id: string }) => {
     try {
       await updateNews({ params: { id: id }, body: data }).unwrap();
       toast.success("Thay đổi bài báo thành công", { id: toastID });
-      router.back();
+      router.replace("/tin-tuc");
     } catch (err) {
       toast.error("Thay đổi bài báo thất bại", { id: toastID });
     }
+  };
+
+  const handleRouterBack = () => {
+    router.replace("/tin-tuc");
   };
 
   return (
@@ -253,7 +257,7 @@ const FormUpdateNews = ({ id }: { id: string }) => {
               className="font-medium"
               type="button"
               variant="destructive"
-              onClick={() => router.back()}
+              onClick={handleRouterBack}
             >
               Hủy tác vụ
             </Button>

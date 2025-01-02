@@ -79,7 +79,7 @@ const FormUpdateLibrary = ({ id }: { id: string }) => {
   }, [library]);
 
   const handleRouterBack = () => {
-    router.back();
+    router.replace("/thu-vien");
   };
 
   const handleDeleteTopic = async (id: string) => {
@@ -112,15 +112,10 @@ const FormUpdateLibrary = ({ id }: { id: string }) => {
   };
 
   const onSubmit = async (data: z.infer<typeof formLibrarySchema>) => {
-    const newLibrary = {
-      ...data,
-      category_name: data?.category_name?.replaceAll('"', '\"'),
-    };
-
     try {
-      await updateLibrary({ params: { id }, body: newLibrary }).unwrap();
+      await updateLibrary({ params: { id }, body: data }).unwrap();
       toast.success("Thay đổi nội dung thư viện thành công");
-      router.back();
+      router.replace("/thu-vien");
     } catch (err) {}
   };
 
