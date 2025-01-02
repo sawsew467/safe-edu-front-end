@@ -4,7 +4,7 @@ import { Label } from "@radix-ui/react-label";
 import { Edit } from "lucide-react";
 import { useParams } from "next/navigation";
 
-import { useGetLibraryQuery } from "../api";
+import { useGetNewsQuery } from "../api";
 
 import { Spinner } from "@/components/ui/spinner";
 import { Input } from "@/components/ui/input";
@@ -18,10 +18,10 @@ import { useGetTopicQuery } from "@/features/topic/api";
 import CustomEditor from "@/components/ui/custom-editor";
 import TitlePage from "@/components/ui/title-page";
 
-const DescriptionModule = () => {
+const DescriptionNewsModule = () => {
   const { id } = useParams<{ id: string }>();
 
-  const { data, isFetching, isSuccess } = useGetLibraryQuery(
+  const { data, isFetching, isSuccess } = useGetNewsQuery(
     { id },
     {
       selectFromResult: ({ data, isFetching, isSuccess }) => ({
@@ -29,7 +29,6 @@ const DescriptionModule = () => {
         isFetching,
         isSuccess,
       }),
-      refetchOnMountOrArgChange: true,
     },
   );
 
@@ -43,7 +42,7 @@ const DescriptionModule = () => {
       <TitlePage
         isReplace
         contentHref="Chỉnh sửa"
-        href={`/thu-vien/${id}/chinh-sua`}
+        href={`/tin-tuc/${id}/chinh-sua`}
         startIcon={<Edit className=" h-4 w-4" />}
         title="Mô tả nội dung"
       />
@@ -66,7 +65,7 @@ const DescriptionModule = () => {
                 disabled
                 className="max-w-sm"
                 id="category_name"
-                value={data?.category_name}
+                value={data?.title}
               />
             </div>
 
@@ -86,9 +85,23 @@ const DescriptionModule = () => {
             <div className="space-y-2">
               <Label
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                htmlFor="category_name"
+              >
+                Tác giả
+              </Label>
+              <Input
+                disabled
+                className="max-w-sm"
+                id="category_name"
+                value={data?.author}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 htmlFor="topic"
               >
-                Icon
+                Ảnh Bìa
               </Label>
               <UploadImage disabled value={data?.image} />
             </div>
@@ -99,7 +112,7 @@ const DescriptionModule = () => {
               >
                 Mô tả
               </Label>
-              <CustomEditor content={data?.description} editable={false} />
+              <CustomEditor content={data?.content} editable={false} />
             </div>
           </div>
         )}
@@ -108,4 +121,4 @@ const DescriptionModule = () => {
   );
 };
 
-export default DescriptionModule;
+export default DescriptionNewsModule;

@@ -74,6 +74,9 @@ export default function QuillEditor({
   }, []);
 
   const imageHandler = useCallback(() => {
+    const quill = reactQuillRef?.current;
+
+    if (quill?.props?.readOnly) return;
     const input = document.createElement("input");
 
     input.setAttribute("type", "file");
@@ -97,8 +100,6 @@ export default function QuillEditor({
           toast.success("Tải ảnh thành công", {
             id: toastId,
           });
-
-          const quill = reactQuillRef?.current;
 
           if (quill) {
             const range = (quill as any)!.getEditorSelection();

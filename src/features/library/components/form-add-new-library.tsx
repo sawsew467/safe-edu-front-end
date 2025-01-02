@@ -88,21 +88,18 @@ const FormAddNewLibrary = () => {
   };
 
   const onSubmit = async (data: z.infer<typeof formLibrarySchema>) => {
-    const newLibrary = {
-      ...data,
-      category_name: data?.category_name?.replaceAll('"', '\"'),
-    };
     let toasID = toast.loading("Đang tải thư viện...");
 
     try {
-      await addNewLibrary(newLibrary).unwrap();
+      await addNewLibrary(data).unwrap();
       toast.success("Thêm thư viện thành công", { id: toasID });
+      router.replace("/thu-vien");
     } catch (err) {
       toast.error("Thêm thư viện thất bại", { id: toasID });
     }
   };
   const handleRouterBack = () => {
-    router.back();
+    router.replace("/thu-vien");
   };
 
   return (
