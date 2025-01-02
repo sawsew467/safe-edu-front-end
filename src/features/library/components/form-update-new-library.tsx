@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
 import { Eye } from "lucide-react";
+import { useParams } from "next/navigation";
 
 import { formLibrarySchema } from "../library.schema";
 import { useGetLibraryQuery, useUpdateLibraryMutation } from "../api";
@@ -42,7 +43,8 @@ const initialLibrary = {
   description: "<p></p>",
   topic_id: "",
 };
-const FormUpdateLibrary = ({ id }: { id: string }) => {
+const FormUpdateLibrary = () => {
+  const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const { data: library } = useGetLibraryQuery({ id });
   const [addTopic, { isLoading: isAddTopicLoading }] = useAddNewTopicMutation();

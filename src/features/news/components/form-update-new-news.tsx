@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
 import { Eye } from "lucide-react";
+import { useParams } from "next/navigation";
 
 import { formNewsSchema } from "../news.schema";
 import { useGetNewsQuery, useUpdateNewsMutation } from "../api";
@@ -44,7 +45,8 @@ const initialNews = {
   author: "",
   topic_id: "",
 };
-const FormUpdateNews = ({ id }: { id: string }) => {
+const FormUpdateNews = () => {
+  const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const { data: news } = useGetNewsQuery({ id });
   const [addTopic, { isLoading: isAddTopicLoading }] = useAddNewTopicMutation();
