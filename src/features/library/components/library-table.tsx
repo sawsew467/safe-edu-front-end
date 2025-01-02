@@ -10,32 +10,30 @@ import { useGetAllTopicQuery } from "@/features/topic/api";
 import { DataTopic } from "@/features/topic/topic.type";
 
 const LibraryTable = () => {
+  const { data: topics, isSuccess } = useGetAllTopicQuery({});
   const { librarys, isFetching } = useGetAllLibraryQuery(
     {},
     {
-      refetchOnMountOrArgChange: true,
+      skip: !isSuccess,
       selectFromResult: ({ data, isFetching }) => {
         return {
-          librarys: data?.items?.filter((item: Library) => item.isActive) ?? [],
+          librarys:
+            data?.items
+              ?.filter((item: Library) => item.isActive)
+              ?.map((item: Library) => ({
+                ...item,
+                topic_name: topics?.data?.find(
+                  (topic: DataTopic) => topic._id === item.topic_id,
+                )?.topic_name,
+              })) ?? [],
           isFetching,
         };
       },
+      refetchOnMountOrArgChange: true,
     },
   );
 
-  const { data: topics } = useGetAllTopicQuery({});
-
-  const data = () => {
-    return librarys?.map((library: Library) => ({
-      ...library,
-      topic_name: topics?.data?.find(
-        (topic: DataTopic) => topic._id === library.topic_id,
-      )?.topic_name,
-    }));
-  };
-  const newData = data();
-
-  return <DataTable columns={columns} data={newData} isLoading={isFetching} />;
+  return <DataTable columns={columns} data={librarys} isLoading={isFetching} />;
 };
 
 export default LibraryTable;
