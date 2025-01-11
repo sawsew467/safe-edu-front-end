@@ -16,6 +16,7 @@ import UploadImage from "@/components/ui/upload-image";
 import { useGetTopicQuery } from "@/features/topic/api";
 import CustomEditor from "@/components/ui/custom-editor";
 import TitlePage from "@/components/ui/title-page";
+import useBreadcrumb from "@/hooks/useBreadcrumb";
 
 const DescriptionModule = ({ id }: { id: string }) => {
   const { data, isFetching, isSuccess } = useGetLibraryQuery(
@@ -27,13 +28,18 @@ const DescriptionModule = ({ id }: { id: string }) => {
         isSuccess,
       }),
       refetchOnMountOrArgChange: true,
-    },
+    }
   );
 
   const { data: topic } = useGetTopicQuery(
     { id: data?.topic_id },
-    { skip: !isSuccess },
+    { skip: !isSuccess }
   );
+
+  useBreadcrumb([
+    { label: "Thư viện", href: "/thu-vien" },
+    { label: data?.category_name },
+  ]);
 
   return (
     <>

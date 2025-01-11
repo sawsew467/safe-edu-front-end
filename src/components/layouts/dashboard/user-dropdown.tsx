@@ -17,12 +17,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAppSelector } from "@/hooks/redux-toolkit";
 
-const user = {
-  fullName: "Jane Doe",
-  imageUrl: "https://randomuser",
-  emailAddresses: "thangtvb.dev@gmail.com",
-};
-
 function UserDropdown() {
   const router = useRouter();
 
@@ -40,8 +34,8 @@ function UserDropdown() {
         <Button className="relative h-8 w-8 rounded-full" variant="ghost">
           <Avatar className="h-8 w-8">
             <AvatarImage
-              alt={`${userInfo?.firstname || ""} ${userInfo?.lastname || ""}`}
-              src={userInfo?.avatarUrl}
+              alt={`${userInfo?.displayName || ""}`}
+              src={userInfo?.photoURL}
             />
             <AvatarFallback>
               <User className="h-4 w-4" />
@@ -53,10 +47,10 @@ function UserDropdown() {
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">
-              {`${userInfo?.firstname || ""} ${userInfo?.lastname || ""}`}
+              {`${userInfo?.displayName || ""}`}
             </p>
             <p className="text-xs leading-none text-muted-foreground">
-              {user?.emailAddresses}
+              {userInfo?.email}
             </p>
           </div>
         </DropdownMenuLabel>
