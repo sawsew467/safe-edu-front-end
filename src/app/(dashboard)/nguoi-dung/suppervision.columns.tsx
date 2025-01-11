@@ -16,9 +16,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { isImageLink } from "@/utils/checkimage";
-import { Admin } from "@/features/users/user.types";
+import { Suppervision } from "@/features/users/user.types";
 
-export const columns: ColumnDef<Admin>[] = [
+export const columns: ColumnDef<Suppervision>[] = [
   {
     accessorKey: "avatar",
     header: "Ảnh đại diện",
@@ -103,7 +103,7 @@ export const columns: ColumnDef<Admin>[] = [
   },
 ];
 
-const Action = ({ row }: { row: Row<Admin> }) => {
+const Action = ({ row }: { row: Row<Suppervision> }) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

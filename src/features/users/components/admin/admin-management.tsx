@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 
-import { useGetAllAdminQuery } from "../admin.api";
+import { useGetAllAdminQuery } from "../../admin.api";
 
 import { columns } from "@/app/(dashboard)/nguoi-dung/admin.columns";
 import DataTable from "@/components/data-table/data-table";
@@ -21,8 +21,8 @@ const AdminManagement = () => {
   return (
     <>
       <TitlePage
-        contentHref="Thêm Quản lí"
-        href="nguoi-dung/them-quan-li"
+        contentHref="Thêm Quản trị viên"
+        href="nguoi-dung/quan-tri-vien/them"
         title="Quản lí Quản trị viên"
       />
       <DataTable columns={columns} data={adminData} isLoading={isFetching} />

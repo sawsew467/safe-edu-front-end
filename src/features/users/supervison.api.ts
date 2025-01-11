@@ -1,69 +1,69 @@
 "use client";
 
-import { TypeAddNewAdmin } from "./user.types";
+import { TypeAddNewSupervision } from "./user.types";
 
 import { baseApi } from "@/redux/baseApi";
 
 export const authAPI = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    getAllAdmin: build.query({
+    getAllSupervision: build.query({
       query: (params) => ({
-        url: "/admin",
+        url: "/supervisors",
         params: params,
         method: "GET",
         flashError: true,
       }),
-      providesTags: ["Admin"],
+      providesTags: ["Supervisions"],
     }),
-    getAdmin: build.query({
+    getSupervision: build.query({
       query: ({ id }) => ({
-        url: `/admin/${id}`,
+        url: `/supervisors/${id}`,
         method: "GET",
         flashError: true,
       }),
-      providesTags: (result, error, { id }) => [{ type: "Admin", id }],
+      providesTags: (result, error, { id }) => [{ type: "Supervisions", id }],
     }),
-    addNewAdmin: build.mutation({
-      query: (data: TypeAddNewAdmin) => ({
-        url: "/admin",
+    addNewSupervision: build.mutation({
+      query: (data: TypeAddNewSupervision) => ({
+        url: "/supervisors",
         method: "POST",
         body: data,
         flashError: true,
       }),
     }),
-    updateAdmin: build.mutation({
+    updateSupervision: build.mutation({
       query: (data) => {
         const { params, body } = data;
         const { id } = params;
 
         return {
-          url: `/admin/${id}`,
+          url: `/supervisors/${id}`,
           method: "PATCH",
           body: body,
           flashError: true,
         };
       },
       invalidatesTags: (result, error, { params: { id } }) => [
-        { type: "Admin", id },
+        { type: "Supervisions", id },
       ],
     }),
-    deleteAdmin: build.mutation({
+    deleteSupervision: build.mutation({
       query: ({ id }) => {
         return {
-          url: `/admin/${id}`,
+          url: `/supervisors/${id}`,
           method: "DELETE",
           flashError: true,
         };
       },
-      invalidatesTags: ["Admin"],
+      invalidatesTags: ["Supervisions"],
     }),
   }),
 });
 
 export const {
-  useGetAllAdminQuery,
-  useGetAdminQuery,
-  useAddNewAdminMutation,
-  useUpdateAdminMutation,
-  useDeleteAdminMutation,
+  useGetAllSupervisionQuery,
+  useGetSupervisionQuery,
+  useAddNewSupervisionMutation,
+  useUpdateSupervisionMutation,
+  useDeleteSupervisionMutation,
 } = authAPI;

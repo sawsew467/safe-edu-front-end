@@ -13,7 +13,7 @@ export const newsAPI = baseApi.injectEndpoints({
         method: "GET",
         flashError: true,
       }),
-      providesTags: ["New"],
+      providesTags: ["News"],
     }),
     getNews: build.query({
       query: ({ id }) => ({
@@ -21,7 +21,7 @@ export const newsAPI = baseApi.injectEndpoints({
         method: "GET",
         flashError: true,
       }),
-      providesTags: (result, error, { id }) => [{ type: "New", id }],
+      providesTags: (result, error, { id }) => [{ type: "News", id }],
     }),
     addNewNews: build.mutation({
       query: (data: TypeAddNewNews) => ({
@@ -44,7 +44,7 @@ export const newsAPI = baseApi.injectEndpoints({
         };
       },
       invalidatesTags: (result, error, { params: { id } }) => [
-        { type: "New", id },
+        { type: "News", id },
       ],
     }),
     deleteNews: build.mutation({
@@ -55,7 +55,7 @@ export const newsAPI = baseApi.injectEndpoints({
           flashError: true,
         };
       },
-      invalidatesTags: ["New"],
+      invalidatesTags: ["News"],
     }),
   }),
 });

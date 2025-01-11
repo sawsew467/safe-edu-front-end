@@ -32,10 +32,32 @@ export type Admin = {
   phone: string;
   email: string;
 };
+export type Suppervision = {
+  avatar: string;
+  created_at: string;
+  created_by: string;
+  deleted_at: string;
+  deleted_by: string;
+  email: string;
+  first_name: string;
+  full_name: string;
+  id: string;
+  isActive: boolean;
+  last_name: string;
+  province_id: string[];
+  update_by: string;
+  updated_at: string;
+};
 export type TypeAddNewAdmin = {
   first_name: string;
   last_name: string;
   email: string;
   phone_number: string;
-  password: string;
+};
+export type TypeAddNewSupervision = {
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone_number: string;
+  password?: string;
 };

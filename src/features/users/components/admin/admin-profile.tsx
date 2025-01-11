@@ -2,28 +2,25 @@
 
 import { CheckCircledIcon, CrossCircledIcon } from "@radix-ui/react-icons";
 import { Edit } from "lucide-react";
+import { useParams } from "next/navigation";
 
-import { useGetAdminQuery } from "../admin.api";
-
-import AdminProfileSkeleton from "./sekeleton/admin.sekeleton";
+import { useGetAdminQuery } from "../../admin.api";
+import AdminProfileSkeleton from "../sekeleton/admin.sekeleton";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import TitlePage from "@/components/ui/title-page";
 import { formatDate } from "@/utils/format-date";
 
-interface UserProfileProps {
-  id: string;
-}
-
-export default function UserProfileModule({ id }: UserProfileProps) {
+export default function UserProfileModule() {
+  const { id } = useParams();
   const { data: adminProfile, isFetching } = useGetAdminQuery({ id });
 
   return (
     <>
       <TitlePage
         contentHref="Chỉnh sửa thông tin"
-        href={`/nguoi-dung/${id}/chinh-sua-quan-tri-vien`}
+        href={`/nguoi-dung/quan-tri-vien/${id}/chinh-sua`}
         startIcon={<Edit />}
         title="Trang cá nhân"
       />
@@ -80,12 +77,6 @@ export default function UserProfileModule({ id }: UserProfileProps) {
                 <h4>Chỉnh sửa gần nhất vào:</h4>
                 <p className="text-primary/40">
                   {formatDate(adminProfile?.updated_at)}
-                </p>
-              </span>
-              <span className="flex gap-2 text-sm">
-                <h4>Được tạo bởi tài khoảng Google:</h4>
-                <p className="text-primary/40">
-                  {adminProfile?.is_registered_with_google ? "Có" : "Không"}
                 </p>
               </span>
             </div>
