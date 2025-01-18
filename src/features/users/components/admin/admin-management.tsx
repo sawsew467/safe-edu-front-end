@@ -1,9 +1,9 @@
 "use client";
 import React from "react";
 
-import { useGetAllAdminQuery } from "../../admin.api";
+import { useGetAllAdminQuery } from "../../api/admin.api";
 
-import { columns } from "@/app/(dashboard)/nguoi-dung/admin.columns";
+import { columns } from "@/app/(dashboard)/nguoi-dung/quan-tri-vien/admin.columns";
 import DataTable from "@/components/data-table/data-table";
 import TitlePage from "@/components/ui/title-page";
 

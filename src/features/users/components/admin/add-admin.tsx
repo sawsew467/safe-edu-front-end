@@ -6,7 +6,7 @@ import * as z from "zod";
 import { useRouter } from "next-nprogress-bar";
 
 import { formAdminSchema } from "../../user.schema";
-import { useAddNewAdminMutation } from "../../admin.api";
+import { useAddNewAdminMutation } from "../../api/admin.api";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -21,6 +21,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { PhoneInput } from "@/components/ui/phone-input";
 import TitlePage from "@/components/ui/title-page";
+import useBreadcrumb from "@/hooks/useBreadcrumb";
 const initialForm = {
   first_name: "",
   last_name: "",
@@ -32,6 +33,16 @@ const initialForm = {
 
 export default function AddNewAdminModule() {
   const router = useRouter();
+
+  useBreadcrumb([
+    {
+      label: "Quản trị viên",
+      href: "/nguoi-dung?tab=admin",
+    },
+    {
+      label: "Thêm quản trị viên mới",
+    },
+  ]);
   const [createAdminAccount] = useAddNewAdminMutation();
   const form = useForm<z.infer<typeof formAdminSchema>>({
     mode: "onSubmit",

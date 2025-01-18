@@ -1,10 +1,10 @@
 "use client";
 import React from "react";
 
-import { useGetAllSupervisionQuery } from "../../supervison.api";
-import { Suppervision } from "../../user.types";
+import { useGetAllSupervisionQuery } from "../../api/supervison.api";
+import { Supervision } from "../../user.types";
 
-import { columns } from "@/app/(dashboard)/nguoi-dung/admin.columns";
+import { columns } from "@/app/(dashboard)/nguoi-dung/quan-sat-vien/suppervision.columns";
 import DataTable from "@/components/data-table/data-table";
 import TitlePage from "@/components/ui/title-page";
 
@@ -14,7 +14,7 @@ const SuperVisionManagement = () => {
     {
       selectFromResult: ({ data, isFetching }) => ({
         adminData:
-          data?.items?.map((item: Suppervision) => ({
+          data?.items?.map((item: Supervision) => ({
             ...item,
             full_name: `${item.first_name} ${item.last_name}`,
           })) ?? [],

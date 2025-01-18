@@ -8,6 +8,7 @@ import DataTable from "@/components/data-table/data-table";
 import { useGetAllTopicQuery } from "@/features/topic/api";
 import { DataTopic } from "@/features/topic/topic.type";
 import { columns } from "@/app/(dashboard)/tin-tuc/columns";
+import useBreadcrumb from "@/hooks/useBreadcrumb";
 
 const NewsTableModule = () => {
   const { librarys, isFetching } = useGetAllNewsQuery(
@@ -23,6 +24,8 @@ const NewsTableModule = () => {
       },
     },
   );
+
+  useBreadcrumb([{ label: "Tin tức" }]);
 
   const { data: topics } = useGetAllTopicQuery({});
 

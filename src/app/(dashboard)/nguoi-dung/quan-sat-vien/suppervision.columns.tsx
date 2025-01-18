@@ -7,6 +7,7 @@ import { Eye } from "lucide-react";
 import { CheckCircledIcon, CrossCircledIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
 import Link from "next/link";
+import { toast } from "sonner";
 
 import {
   DropdownMenu,
@@ -16,9 +17,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { isImageLink } from "@/utils/checkimage";
-import { Suppervision } from "@/features/users/user.types";
+import { Province, Supervision } from "@/features/users/user.types";
+import {
+  useActiveSupervisionMutation,
+  useDeleteSupervisionMutation,
+} from "@/features/users/api/supervison.api";
 
-export const columns: ColumnDef<Suppervision>[] = [
+export const columns: ColumnDef<Supervision>[] = [
   {
     accessorKey: "avatar",
     header: "Ảnh đại diện",
@@ -29,7 +34,7 @@ export const columns: ColumnDef<Suppervision>[] = [
 
       return image ? (
         <Image
-          alt={`Ảnh đại diện của ${row.original.full_name}`}
+          alt={`Ảnh đại diện của ${row.original?.full_name}`}
           className="rounded-full"
           height={100}
           src={image}
@@ -48,15 +53,23 @@ export const columns: ColumnDef<Suppervision>[] = [
     },
   },
   {
-    accessorKey: "phone_number",
-    header: "Số điện thoại",
+    accessorKey: "province_id",
+    header: "Tỉnh / thành phố",
     cell: ({ row }) => {
-      const phone_number: string = row.getValue("phone_number");
+      const provinces: Province[] = row.getValue("province_id");
 
-      return phone_number ? (
-        <div className="font-medium">{phone_number}</div>
+      return provinces?.length > 0 ? (
+        <div className="">
+          {provinces?.map((province: Province) => (
+            <div key={province?._id} className="font-medium">
+              {province?.name}
+            </div>
+          ))}
+        </div>
       ) : (
-        <p className="text-red-500">*không tìm thấy sdt</p>
+        <p className="text-red-500">
+          *Quan sát viên này không quan sát tỉnh / thành phố nào
+        </p>
       );
     },
   },
@@ -79,16 +92,16 @@ export const columns: ColumnDef<Suppervision>[] = [
       return (
         <div
           className={clsx("flex w-[100px] items-center", {
-            "text-red-500": status.value === "inactive",
-            "text-green-500": status.value === "active",
+            "text-red-500": status?.value === "inactive",
+            "text-green-500": status?.value === "active",
           })}
         >
-          {status.value === "active" ? (
+          {status?.value === "active" ? (
             <CheckCircledIcon className="mr-2 h-4 w-4 text-muted-foreground" />
           ) : (
             <CrossCircledIcon className="mr-2 h-4 w-4 text-muted-foreground" />
           )}
-          <span>{status.label}</span>
+          <span>{status?.label}</span>
         </div>
       );
     },
@@ -103,7 +116,41 @@ export const columns: ColumnDef<Suppervision>[] = [
   },
 ];
 
-const Action = ({ row }: { row: Row<Suppervision> }) => {
+const Action = ({ row }: { row: Row<Supervision> }) => {
+  const [unActiveSupervision] = useDeleteSupervisionMutation();
+  const [ActiveSupervision] = useActiveSupervisionMutation();
+  const handleUnActiveSupervision = async (id: string) => {
+    const toastID = toast.loading("Đang tạm dừng tài khoản...");
+
+    try {
+      await unActiveSupervision({ id }).unwrap();
+      toast.success("Tạm dừng thành công", {
+        id: toastID,
+      });
+    } catch (err) {
+      toast.error("Tạm dừng thất bại", { id: toastID });
+    }
+  };
+  const handleActiveSupervision = async (id: string) => {
+    const toastID = toast.loading("Đang mở lại tài khoản...");
+
+    try {
+      await ActiveSupervision({
+        params: { id },
+        body: { isActive: true },
+      }).unwrap();
+      toast.success("Mở lại thành công", {
+        id: toastID,
+      });
+    } catch (err) {
+      toast.error("Mở lại thất bại", { id: toastID });
+    }
+  };
+  const handleSupervision = async (id: string) => {
+    if (row.original?.isActive) handleUnActiveSupervision(id);
+    else handleActiveSupervision(id);
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -119,11 +166,28 @@ const Action = ({ row }: { row: Row<Suppervision> }) => {
         <DropdownMenuItem>
           <Link
             className="flex gap-2 w-full"
-            href={`nguoi-dung/quan-tri-vien/${row.original.id}`}
+            href={`nguoi-dung/quan-sat-vien/${row.original?.id}`}
           >
             <Eye className="w-4 h-4 text-blue-500" />
             {<span className="">{"Xem"}</span>}
           </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <button
+            className="flex gap-2 w-full"
+            onClick={() => handleSupervision(row.original?.id)}
+          >
+            {row.original?.isActive ? (
+              <CrossCircledIcon className="h-4 w-4 text-red-500" />
+            ) : (
+              <CheckCircledIcon className="h-4 w-4 text-green-500" />
+            )}
+            {
+              <span className="">
+                {row.original?.isActive ? "Tạm dừng" : "Hoạt động"}
+              </span>
+            }
+          </button>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

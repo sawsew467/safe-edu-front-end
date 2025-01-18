@@ -1,6 +1,6 @@
 "use client";
 
-import { TypeAddNewSupervision } from "./user.types";
+import { TypeAddNewSupervision, TypeUpdateSupervision } from "../user.types";
 
 import { baseApi } from "@/redux/baseApi";
 
@@ -30,9 +30,14 @@ export const authAPI = baseApi.injectEndpoints({
         body: data,
         flashError: true,
       }),
+      invalidatesTags: (result, error) => {
+        if (error) return [];
+
+        return ["Supervisions"];
+      },
     }),
     updateSupervision: build.mutation({
-      query: (data) => {
+      query: (data: TypeUpdateSupervision) => {
         const { params, body } = data;
         const { id } = params;
 
@@ -55,6 +60,24 @@ export const authAPI = baseApi.injectEndpoints({
           flashError: true,
         };
       },
+      invalidatesTags: (result, error) => {
+        if (error) return [];
+
+        return ["Supervisions"];
+      },
+    }),
+    activeSupervision: build.mutation({
+      query: (data: TypeUpdateSupervision) => {
+        const { params, body } = data;
+        const { id } = params;
+
+        return {
+          url: `/supervisors/${id}/setIsActive`,
+          method: "PATCH",
+          flashError: true,
+          body: body,
+        };
+      },
       invalidatesTags: ["Supervisions"],
     }),
   }),
@@ -66,4 +89,5 @@ export const {
   useAddNewSupervisionMutation,
   useUpdateSupervisionMutation,
   useDeleteSupervisionMutation,
+  useActiveSupervisionMutation,
 } = authAPI;

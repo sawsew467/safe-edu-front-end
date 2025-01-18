@@ -7,6 +7,7 @@ import { Eye } from "lucide-react";
 import { CheckCircledIcon, CrossCircledIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
 import Link from "next/link";
+import { toast } from "sonner";
 
 import {
   DropdownMenu,
@@ -16,9 +17,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { isImageLink } from "@/utils/checkimage";
-import { Admin } from "@/features/users/user.types";
+import { Citizens } from "@/features/users/user.types";
+import { formatDate } from "@/utils/format-date";
+import {
+  useActiveCitizenMutation,
+  useDeleteCitizenMutation,
+} from "@/features/users/api/citizen.api";
 
-export const columns: ColumnDef<Admin>[] = [
+export const columns: ColumnDef<Citizens>[] = [
   {
     accessorKey: "avatar",
     header: "Ảnh đại diện",
@@ -29,7 +35,7 @@ export const columns: ColumnDef<Admin>[] = [
 
       return image ? (
         <Image
-          alt={`Ảnh đại diện của ${row.original.full_name}`}
+          alt={`Ảnh đại diện của ${row.original?.full_name}`}
           className="rounded-full"
           height={100}
           src={image}
@@ -49,20 +55,16 @@ export const columns: ColumnDef<Admin>[] = [
   },
   {
     accessorKey: "phone_number",
-    header: "Số điện thoại",
-    cell: ({ row }) => {
-      const phone_number: string = row.getValue("phone_number");
-
-      return phone_number ? (
-        <div className="font-medium">{phone_number}</div>
-      ) : (
-        <p className="text-red-500">*không tìm thấy sdt</p>
-      );
-    },
+    header: "SDT",
   },
   {
-    accessorKey: "email",
-    header: "Email",
+    accessorKey: "date_of_birth",
+    header: "Ngày sinh",
+    cell: ({ row }) => {
+      const dob: string = row.getValue("date_of_birth");
+
+      return <p>{formatDate(dob)}</p>;
+    },
   },
   {
     accessorKey: "location",
@@ -79,16 +81,16 @@ export const columns: ColumnDef<Admin>[] = [
       return (
         <div
           className={clsx("flex w-[100px] items-center", {
-            "text-red-500": status.value === "inactive",
-            "text-green-500": status.value === "active",
+            "text-red-500": status?.value === "inactive",
+            "text-green-500": status?.value === "active",
           })}
         >
-          {status.value === "active" ? (
+          {status?.value === "active" ? (
             <CheckCircledIcon className="mr-2 h-4 w-4 text-muted-foreground" />
           ) : (
             <CrossCircledIcon className="mr-2 h-4 w-4 text-muted-foreground" />
           )}
-          <span>{status.label}</span>
+          <span>{status?.label}</span>
         </div>
       );
     },
@@ -103,7 +105,44 @@ export const columns: ColumnDef<Admin>[] = [
   },
 ];
 
-const Action = ({ row }: { row: Row<Admin> }) => {
+const Action = ({ row }: { row: Row<Citizens> }) => {
+  const [unActiveCitizen] = useDeleteCitizenMutation();
+  const [ActiveCitizen] = useActiveCitizenMutation();
+  const handleUnActiveCitizen = async (id: string) => {
+    const toastID = toast.loading("Đang tạm dừng tài khoản...");
+
+    try {
+      await unActiveCitizen({ id }).unwrap();
+      toast.success("Tạm dừng thành công", {
+        id: toastID,
+      });
+    } catch (err) {
+      console.log("err", err);
+
+      toast.error("Tạm dừng thất bại", { id: toastID });
+    }
+  };
+  const handleActiveCitizen = async (id: string) => {
+    const toastID = toast.loading("Đang mở lại tài khoản...");
+
+    try {
+      await ActiveCitizen({
+        params: { id },
+        body: { isActive: true },
+      }).unwrap();
+      toast.success("Mở lại thành công", {
+        id: toastID,
+      });
+    } catch (err) {
+      console.log("err", err);
+      toast.error("Mở lại thất bại", { id: toastID });
+    }
+  };
+  const handleCitizen = async (id: string) => {
+    if (row.original?.isActive) handleUnActiveCitizen(id);
+    else handleActiveCitizen(id);
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -119,11 +158,28 @@ const Action = ({ row }: { row: Row<Admin> }) => {
         <DropdownMenuItem>
           <Link
             className="flex gap-2 w-full"
-            href={`nguoi-dung/quan-tri-vien/${row.original.id}`}
+            href={`nguoi-dung/hoc-sinh/${row.original?.id}`}
           >
             <Eye className="w-4 h-4 text-blue-500" />
             {<span className="">{"Xem"}</span>}
           </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <button
+            className="flex gap-2 w-full"
+            onClick={() => handleCitizen(row.original?.id)}
+          >
+            {row.original?.isActive ? (
+              <CrossCircledIcon className="h-4 w-4 text-red-500" />
+            ) : (
+              <CheckCircledIcon className="h-4 w-4 text-green-500" />
+            )}
+            {
+              <span className="">
+                {row.original?.isActive ? "Tạm dừng" : "Hoạt động"}
+              </span>
+            }
+          </button>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

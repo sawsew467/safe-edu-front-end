@@ -8,7 +8,7 @@ import { useRouter } from "next-nprogress-bar";
 import { useEffect } from "react";
 
 import { formAdminSchema } from "../../user.schema";
-import { useGetAdminQuery, useUpdateAdminMutation } from "../../admin.api";
+import { useGetAdminQuery, useUpdateAdminMutation } from "../../api/admin.api";
 
 import { Button } from "@/components/ui/button";
 import {

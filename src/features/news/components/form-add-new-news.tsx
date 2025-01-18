@@ -34,6 +34,7 @@ import {
   useDeleteTopicMutation,
   useGetAllTopicQuery,
 } from "@/features/topic/api";
+import useBreadcrumb from "@/hooks/useBreadcrumb";
 const initialNews = {
   title: undefined,
   thumbnail: undefined,
@@ -43,6 +44,10 @@ const initialNews = {
 const FormAddNews = () => {
   const router = useRouter();
 
+  useBreadcrumb([
+    { label: "Tin tức", href: "/tin-tuc" },
+    { label: "Them tin tức mới" },
+  ]);
   const { dataTopic, isTopicLoading } = useGetAllTopicQuery(undefined, {
     selectFromResult: ({ data: topic, isFetching }) => {
       const data = topic?.data?.filter((topic) => topic.isActive) ?? [];

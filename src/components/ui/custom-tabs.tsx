@@ -37,9 +37,12 @@ const TabsTrigger = React.forwardRef<
     )}
     {...props}
   >
-    <p className="transition-colors duration-300 px-4 py-1.5 group-data-[state=inactive]:rounded-lg group-data-[state=inactive]:hover:bg-background/20">
+    <span
+      className="transition-colors duration-300 px-4 py-1.5 group-data-[state=inactive]:rounded-lg group-data-[state=inactive]:hover:bg-background/20"
+      id={props.id}
+    >
       {props.children}
-    </p>
+    </span>
   </TabsPrimitive.Trigger>
 ));
 

@@ -36,6 +36,7 @@ import {
   useGetAllTopicQuery,
 } from "@/features/topic/api";
 import TitlePage from "@/components/ui/title-page";
+import useBreadcrumb from "@/hooks/useBreadcrumb";
 
 const initialNews = {
   title: "",
@@ -64,6 +65,11 @@ const FormUpdateNews = ({ id }: { id: string }) => {
       };
     },
   });
+
+  useBreadcrumb([
+    { label: "Tin tức", href: "/tin-tuc" },
+    { label: news?.title },
+  ]);
 
   const form = useForm<z.infer<typeof formNewsSchema>>({
     resolver: zodResolver(formNewsSchema),

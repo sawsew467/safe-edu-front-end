@@ -1,6 +1,6 @@
 "use client";
 
-import { TypeAddNewAdmin } from "./user.types";
+import { TypeAddNewAdmin } from "../user.types";
 
 import { baseApi } from "@/redux/baseApi";
 
@@ -30,6 +30,11 @@ export const authAPI = baseApi.injectEndpoints({
         body: data,
         flashError: true,
       }),
+      invalidatesTags: (result, error) => {
+        if (error) return [];
+
+        return ["Admin"];
+      },
     }),
     updateAdmin: build.mutation({
       query: (data) => {
@@ -55,7 +60,29 @@ export const authAPI = baseApi.injectEndpoints({
           flashError: true,
         };
       },
-      invalidatesTags: ["Admin"],
+      invalidatesTags: (result, error) => {
+        if (error) return [];
+
+        return ["Admin"];
+      },
+    }),
+    activeAdmin: build.mutation({
+      query: (data) => {
+        const { params, body } = data;
+        const { id } = params;
+
+        return {
+          url: `/admin/${id}`,
+          method: "PUT",
+          body: body,
+          flashError: true,
+        };
+      },
+      invalidatesTags: (result, error) => {
+        if (error) return [];
+
+        return ["Admin"];
+      },
     }),
   }),
 });
@@ -66,4 +93,5 @@ export const {
   useAddNewAdminMutation,
   useUpdateAdminMutation,
   useDeleteAdminMutation,
+  useActiveAdminMutation,
 } = authAPI;

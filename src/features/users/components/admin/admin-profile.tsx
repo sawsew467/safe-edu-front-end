@@ -4,17 +4,28 @@ import { CheckCircledIcon, CrossCircledIcon } from "@radix-ui/react-icons";
 import { Edit } from "lucide-react";
 import { useParams } from "next/navigation";
 
-import { useGetAdminQuery } from "../../admin.api";
 import AdminProfileSkeleton from "../sekeleton/admin.sekeleton";
+import { useGetAdminQuery } from "../../api/admin.api";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import TitlePage from "@/components/ui/title-page";
 import { formatDate } from "@/utils/format-date";
+import useBreadcrumb from "@/hooks/useBreadcrumb";
 
 export default function UserProfileModule() {
   const { id } = useParams();
   const { data: adminProfile, isFetching } = useGetAdminQuery({ id });
+
+  useBreadcrumb([
+    {
+      label: "Quản trị viên",
+      href: "/nguoi-dung?tab=admin",
+    },
+    {
+      label: adminProfile?.full_name,
+    },
+  ]);
 
   return (
     <>
