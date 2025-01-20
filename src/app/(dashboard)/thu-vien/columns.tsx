@@ -16,6 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Library } from "@/features/library/library.type";
 import { useDeleteLibraryMutation } from "@/features/library/api";
+import { isImageLink } from "@/utils/checkimage";
 
 export const columns: ColumnDef<Library>[] = [
   {
@@ -29,7 +30,9 @@ export const columns: ColumnDef<Library>[] = [
     accessorKey: "image",
     header: "Ảnh biểu tượng",
     cell: ({ row }) => {
-      const value: string = row.getValue("image");
+      const value: string | null = isImageLink(row.getValue("image"))
+        ? row.getValue("image")
+        : null;
 
       return value ? (
         <Image alt="icon" height={400} src={value} width={400} />
@@ -53,9 +56,7 @@ export const columns: ColumnDef<Library>[] = [
 ];
 
 const ActionRow = ({ row }: { row: Row<Library> }) => {
-  const [deleteLibrary] = useDeleteLibraryMutation({
-    fixedCacheKey: "shared-update-post",
-  });
+  const [deleteLibrary] = useDeleteLibraryMutation();
   const handleDeleteLibrary = async (id: string) => {
     try {
       const promise = () =>
