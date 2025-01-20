@@ -3,8 +3,10 @@
 import Link from "next/link";
 import { signInWithPopup } from "firebase/auth";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 import { useLoginWithGoogleMutation } from "../api";
+import { setAccessToken, setUserInfo } from "../slice";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -17,20 +19,36 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { auth, provider } from "@/services/firebase/config";
+import { setClientCookie } from "@/lib/jsCookies";
+import { useAppDispatch } from "@/hooks/redux-toolkit";
+import constants from "@/settings/constants";
 
 export function LoginForm() {
   const router = useRouter();
+
+  const dispatch = useAppDispatch();
 
   const [signInWithGoogle] = useLoginWithGoogleMutation();
 
   const handleGoogleLogin = async () => {
     try {
-      const resFirebase = await signInWithPopup(auth, provider.providerGoogle);
+      const resFirebase: any = await signInWithPopup(
+        auth,
+        provider.providerGoogle
+      );
 
-      await signInWithGoogle(resFirebase.user).unwrap();
+      const res = await signInWithGoogle({
+        token: resFirebase.user.accessToken,
+      }).unwrap();
+
+      setClientCookie(constants.USER_INFO, JSON.stringify(resFirebase.user));
+      dispatch(setUserInfo(resFirebase.user));
+      dispatch(setAccessToken(res?.accessToken));
       router.push("/");
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      if (error?.status === 404) {
+        toast.error("Tài khoản của bạn chưa có trong hệ thống quản trị");
+      }
     }
   };
 

@@ -19,7 +19,13 @@ import { ListOrdered } from "lucide-react";
 
 import { Toggle } from "./toggle";
 
-export default function ToolBar({ editor }: { editor: any }) {
+export default function ToolBar({
+  editor,
+  disable,
+}: {
+  editor: any;
+  disable: boolean;
+}) {
   if (!editor) return null;
   const addImage = () => {
     const url = window.prompt("URL");
@@ -107,6 +113,7 @@ export default function ToolBar({ editor }: { editor: any }) {
       {Options.map((option, i) => (
         <Toggle
           key={i}
+          disabled={disable}
           pressed={option.preesed}
           size="sm"
           onPressedChange={option.onClick}
