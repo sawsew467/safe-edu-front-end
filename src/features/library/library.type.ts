@@ -27,8 +27,8 @@ export type TypeUpdateLibrary = {
 
 export type TypeTitlePage = {
   title: string;
-  href: string;
-  contentHref: string;
+  href?: string;
+  contentHref?: string;
   startIcon?: React.ReactNode;
   isReplace?: boolean;
 };

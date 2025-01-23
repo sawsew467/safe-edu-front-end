@@ -1,8 +1,23 @@
 export type TypeNews = {
-  id: string;
+  _id: string;
   title: string;
-  slug: string;
+  content: string;
+  image: string;
   author: string;
-  email: string;
-  thumbnail: string;
+  isActive: boolean;
+  topic_id: string;
+};
+
+export type TypeAddNewNews = {
+  topic_id: string;
+  title: string;
+  content: string;
+  image: string;
+  author: string;
+};
+export type TypeUpdateNews = {
+  params: {
+    id: string;
+  };
+  body: TypeAddNewNews;
 };

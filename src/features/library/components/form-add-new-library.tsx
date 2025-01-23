@@ -34,6 +34,7 @@ import {
   useDeleteTopicMutation,
   useGetAllTopicQuery,
 } from "@/features/topic/api";
+import useBreadcrumb from "@/hooks/useBreadcrumb";
 const initialLibrary = {
   category_name: "",
   image: "",
@@ -42,6 +43,11 @@ const initialLibrary = {
 };
 const FormAddNewLibrary = () => {
   const router = useRouter();
+
+  useBreadcrumb([
+    { label: "Thư viện", href: "/thu-vien" },
+    { label: "Thêm bài mới" },
+  ]);
 
   const form = useForm<z.infer<typeof formLibrarySchema>>({
     resolver: zodResolver(formLibrarySchema),
