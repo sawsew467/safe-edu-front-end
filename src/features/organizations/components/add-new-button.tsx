@@ -3,6 +3,9 @@ import React from "react";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
+
+import { useAddNewOrganizationMutation } from "../organization.api";
 
 import {
   Dialog,
@@ -15,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -22,20 +26,14 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { provinces } from "@/features/organizations/data";
+import { useGetAllProvinceQuery } from "@/features/users/api/province.api";
+import { Combobox } from "@/components/ui/comboBox";
 type Props = {};
 
 const formSchema = z.object({
-  name_7502870039: z.string(),
+  name: z.string().min(1, { message: "Đây là trường bắt buộc." }),
   name_7922188466: z.string().optional(),
-  name_5438378062: z.string().optional(),
+  province_id: z.string().min(1, { message: "Đây là trường bắt buộc." }),
   name_1827310782: z.string().optional(),
 });
 
@@ -44,9 +42,29 @@ function AddButton({}: Props) {
     resolver: zodResolver(formSchema),
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  const { pronvinces } = useGetAllProvinceQuery(undefined, {
+    selectFromResult: ({ data }) => ({
+      pronvinces:
+        data?.items.map((item: { name: string; _id: string }) => ({
+          label: item?.name,
+          value: item?._id,
+        })) ?? [],
+    }),
+  });
+  const [addOrganization, isFetching] = useAddNewOrganizationMutation();
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      console.log(values);
+      delete values.name_1827310782;
+      delete values.name_7922188466;
+      let toastId = toast.loading("...Thêm tổ chức");
+
+      try {
+        await addOrganization(values);
+        toast.success("Thêm tổ chức thành công", { id: toastId });
+      } catch (err) {
+        toast.error("Thêm tổ chức thất bại", { id: toastId });
+      }
       // toast(
       //   <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
       //     <code className="text-red-500">
@@ -84,7 +102,7 @@ function AddButton({}: Props) {
             >
               <FormField
                 control={form.control}
-                name="name_7502870039"
+                name="name"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="">Tên tổ chức</FormLabel>
@@ -119,27 +137,22 @@ function AddButton({}: Props) {
 
               <FormField
                 control={form.control}
-                name="name_5438378062"
+                name="province_id"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Tỉnh Thành</FormLabel>
+                    <FormLabel>Tỉnh/Thành phố quan sát</FormLabel>
                     <FormControl>
-                      <Select
-                        defaultValue={field.value}
+                      <Combobox
+                        className="w-full"
+                        options={pronvinces}
+                        placeholder="Chọn Tỉnh/Thành phố"
+                        variant="outline"
                         onValueChange={field.onChange}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Chọn tỉnh thành" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {provinces.map((province) => (
-                            <SelectItem key={province} value={province}>
-                              {province}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      />
                     </FormControl>
+                    <FormDescription>
+                      Chọn tỉnh thành quan sát của quan sát viên này.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}

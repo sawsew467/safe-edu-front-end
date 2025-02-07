@@ -55,7 +55,7 @@ export const authAPI = baseApi.injectEndpoints({
           flashError: true,
         };
       },
-      invalidatesTags: (result, error, { params: { id } }) => {
+      invalidatesTags: (result, error) => {
         if (error) return [];
 
         return ["Organizations"];
