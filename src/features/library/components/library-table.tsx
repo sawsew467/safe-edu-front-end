@@ -25,17 +25,14 @@ const LibraryTable = () => {
 
   const { data: topics } = useGetAllTopicQuery({});
 
-  const data = () => {
-    return librarys?.map((library: Library) => ({
-      ...library,
-      topic_name: topics?.data?.find(
-        (topic: DataTopic) => topic._id === library.topic_id,
-      )?.topic_name,
-    }));
-  };
-  const newData = data();
+  const data = librarys?.map((library: Library) => ({
+    ...library,
+    topic_name: topics?.data?.find(
+      (topic: DataTopic) => topic._id === library.topic_id,
+    )?.topic_name,
+  }));
 
-  return <DataTable columns={columns} data={newData} isLoading={isFetching} />;
+  return <DataTable columns={columns} data={data} isLoading={isFetching} />;
 };
 
 export default LibraryTable;

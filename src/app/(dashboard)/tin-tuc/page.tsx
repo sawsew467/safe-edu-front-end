@@ -1,10 +1,7 @@
 import React from "react";
 
-import { columns } from "./columns";
-
 import TitlePage from "@/components/ui/title-page";
-import DataTable from "@/components/data-table/data-table";
-import { News } from "@/features/news/data";
+import NewsTableModule from "@/features/news/components/news-table";
 
 const NewsPage = () => {
   return (
@@ -14,7 +11,7 @@ const NewsPage = () => {
         href="tin-tuc/them-tin-tuc"
         title="Quản lí tin tức"
       />
-      <DataTable columns={columns} data={News} />
+      <NewsTableModule />
     </div>
   );
 };
