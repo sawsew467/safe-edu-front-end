@@ -6,12 +6,14 @@ import { baseApi } from "./baseApi";
 import auth from "@/features/auth/slice";
 import { authAPI } from "@/features/auth/api";
 import { UploadApi } from "@/services/common/upload/api.upload";
+import layout from "@/components/layouts/dashboard/slice";
 
 export const store = configureStore({
   reducer: {
     [UploadApi.reducerPath]: UploadApi.reducer,
     [authAPI.reducerPath]: authAPI.reducer,
     auth,
+    layout,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()

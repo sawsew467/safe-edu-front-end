@@ -6,7 +6,7 @@ import constants from "@/settings/constants";
 const baseQuery = fetchBaseQuery({
   baseUrl: constants.API_SERVER,
   prepareHeaders: (headers) => {
-    const accessToken = getClientCookie("accessToken");
+    const accessToken = getClientCookie(constants.ACCESS_TOKEN);
 
     headers.set("Content-Type", "application/json");
 
@@ -21,5 +21,5 @@ const baseQuery = fetchBaseQuery({
 export const baseApi = createApi({
   baseQuery: baseQuery,
   endpoints: () => ({}),
-  tagTypes: ["Library", "Topic"],
+  tagTypes: ["Library", "Topic", "New"],
 });
