@@ -30,7 +30,7 @@ export const authAPI = baseApi.injectEndpoints({
         body: data,
         flashError: true,
       }),
-      invalidatesTags: ["Library"],
+      invalidatesTags: ["Librarys"],
     }),
     updateLibrary: build.mutation({
       query: (data: TypeUpdateLibrary) => {
