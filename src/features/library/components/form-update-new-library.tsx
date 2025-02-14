@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
 import { Eye } from "lucide-react";
+import { useParams } from "next/navigation";
 
 import { formLibrarySchema } from "../library.schema";
 import { useGetLibraryQuery, useUpdateLibraryMutation } from "../api";
@@ -43,7 +44,8 @@ const initialLibrary = {
   description: "<p></p>",
   topic_id: "",
 };
-const FormUpdateLibrary = ({ id }: { id: string }) => {
+const FormUpdateLibrary = () => {
+  const { id } = useParams<{ id: string }>();
   const router = useRouter();
 
   const { data: library } = useGetLibraryQuery({ id });
@@ -86,7 +88,7 @@ const FormUpdateLibrary = ({ id }: { id: string }) => {
   }, [library]);
 
   const handleRouterBack = () => {
-    router.back();
+    router.replace("/thu-vien");
   };
 
   const handleDeleteTopic = async (id: string) => {
@@ -119,14 +121,10 @@ const FormUpdateLibrary = ({ id }: { id: string }) => {
   };
 
   const onSubmit = async (data: z.infer<typeof formLibrarySchema>) => {
-    const newLibrary = {
-      ...data,
-      category_name: data?.category_name?.replaceAll('"', '\"'),
-    };
-
     try {
-      await updateLibrary({ params: { id }, body: newLibrary }).unwrap();
+      await updateLibrary({ params: { id }, body: data }).unwrap();
       toast.success("Thay đổi nội dung thư viện thành công");
+      router.replace("/thu-vien");
     } catch (err) {}
   };
 

@@ -8,35 +8,32 @@ import DataTable from "@/components/data-table/data-table";
 import { useGetAllTopicQuery } from "@/features/topic/api";
 import { DataTopic } from "@/features/topic/topic.type";
 import { columns } from "@/app/(dashboard)/tin-tuc/columns";
-import useBreadcrumb from "@/hooks/useBreadcrumb";
 
 const NewsTableModule = () => {
-  const { librarys, isFetching } = useGetAllNewsQuery(
+  const { data: topics, isSuccess } = useGetAllTopicQuery({});
+  const { news, isFetching } = useGetAllNewsQuery(
     {},
     {
+      skip: !isSuccess,
       refetchOnMountOrArgChange: true,
       selectFromResult: ({ data, isFetching }) => {
         return {
-          librarys:
-            data?.items?.filter((item: TypeNews) => item.isActive) ?? [],
+          news:
+            data?.items
+              ?.filter((item: TypeNews) => item.isActive)
+              ?.map((news: TypeNews) => ({
+                ...news,
+                topic_name: topics?.data?.find(
+                  (topic: DataTopic) => topic._id === news.topic_id,
+                )?.topic_name,
+              })) ?? [],
           isFetching,
         };
       },
     },
   );
 
-  useBreadcrumb([{ label: "Tin tức" }]);
-
-  const { data: topics } = useGetAllTopicQuery({});
-
-  const data = librarys?.map((news: TypeNews) => ({
-    ...news,
-    topic_name: topics?.data?.find(
-      (topic: DataTopic) => topic._id === news.topic_id,
-    )?.topic_name,
-  }));
-
-  return <DataTable columns={columns} data={data} isLoading={isFetching} />;
+  return <DataTable columns={columns} data={news} isLoading={isFetching} />;
 };
 
 export default NewsTableModule;

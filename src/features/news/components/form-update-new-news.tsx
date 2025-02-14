@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
 import { Eye } from "lucide-react";
+import { useParams } from "next/navigation";
 
 import { formNewsSchema } from "../news.schema";
 import { useGetNewsQuery, useUpdateNewsMutation } from "../api";
@@ -36,7 +37,6 @@ import {
   useGetAllTopicQuery,
 } from "@/features/topic/api";
 import TitlePage from "@/components/ui/title-page";
-import useBreadcrumb from "@/hooks/useBreadcrumb";
 
 const initialNews = {
   title: "",
@@ -45,7 +45,8 @@ const initialNews = {
   author: "",
   topic_id: "",
 };
-const FormUpdateNews = ({ id }: { id: string }) => {
+const FormUpdateNews = () => {
+  const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const { data: news } = useGetNewsQuery({ id });
   const [addTopic, { isLoading: isAddTopicLoading }] = useAddNewTopicMutation();
@@ -65,11 +66,6 @@ const FormUpdateNews = ({ id }: { id: string }) => {
       };
     },
   });
-
-  useBreadcrumb([
-    { label: "Tin tức", href: "/tin-tuc" },
-    { label: news?.title },
-  ]);
 
   const form = useForm<z.infer<typeof formNewsSchema>>({
     resolver: zodResolver(formNewsSchema),
@@ -122,9 +118,14 @@ const FormUpdateNews = ({ id }: { id: string }) => {
     try {
       await updateNews({ params: { id: id }, body: data }).unwrap();
       toast.success("Thay đổi bài báo thành công", { id: toastID });
+      router.replace("/tin-tuc");
     } catch (err) {
       toast.error("Thay đổi bài báo thất bại", { id: toastID });
     }
+  };
+
+  const handleRouterBack = () => {
+    router.replace("/tin-tuc");
   };
 
   return (
@@ -258,7 +259,7 @@ const FormUpdateNews = ({ id }: { id: string }) => {
               className="font-medium"
               type="button"
               variant="destructive"
-              onClick={() => router.back()}
+              onClick={handleRouterBack}
             >
               Hủy tác vụ
             </Button>

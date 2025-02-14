@@ -27,6 +27,10 @@ export const columns: ColumnDef<Library>[] = [
     },
   },
   {
+    accessorKey: "topic_name",
+    header: "Chủ đề",
+  },
+  {
     accessorKey: "image",
     header: "Ảnh biểu tượng",
     cell: ({ row }) => {
@@ -40,10 +44,6 @@ export const columns: ColumnDef<Library>[] = [
         <p className="text-red-500">*không tìm thấy ảnh</p>
       );
     },
-  },
-  {
-    accessorKey: "topic_name",
-    header: "Chủ đề",
   },
   {
     accessorKey: "otherInformation",

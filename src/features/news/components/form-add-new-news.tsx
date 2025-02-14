@@ -34,7 +34,6 @@ import {
   useDeleteTopicMutation,
   useGetAllTopicQuery,
 } from "@/features/topic/api";
-import useBreadcrumb from "@/hooks/useBreadcrumb";
 const initialNews = {
   title: undefined,
   thumbnail: undefined,
@@ -44,10 +43,6 @@ const initialNews = {
 const FormAddNews = () => {
   const router = useRouter();
 
-  useBreadcrumb([
-    { label: "Tin tức", href: "/tin-tuc" },
-    { label: "Them tin tức mới" },
-  ]);
   const { dataTopic, isTopicLoading } = useGetAllTopicQuery(undefined, {
     selectFromResult: ({ data: topic, isFetching }) => {
       const data = topic?.data?.filter((topic) => topic.isActive) ?? [];
@@ -97,9 +92,14 @@ const FormAddNews = () => {
     try {
       await addNewNews(data).unwrap();
       toast.success("Thêm bài báo thành công", { id: toastID });
+      router.replace("/tin-tuc");
     } catch (err) {
       toast.error("Thêm bài báo thất bại", { id: toastID });
     }
+  };
+
+  const handleRouterBack = () => {
+    router.replace("/tin-tuc");
   };
 
   return (
@@ -218,7 +218,7 @@ const FormAddNews = () => {
             className="font-medium"
             type="button"
             variant="destructive"
-            onClick={() => router.back()}
+            onClick={handleRouterBack}
           >
             Hủy tác vụ
           </Button>

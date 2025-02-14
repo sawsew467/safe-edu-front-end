@@ -2,6 +2,7 @@
 import React from "react";
 import { Label } from "@radix-ui/react-label";
 import { Edit } from "lucide-react";
+import { useParams } from "next/navigation";
 
 import { useGetLibraryQuery } from "../api";
 
@@ -18,7 +19,9 @@ import CustomEditor from "@/components/ui/custom-editor";
 import TitlePage from "@/components/ui/title-page";
 import useBreadcrumb from "@/hooks/useBreadcrumb";
 
-const DescriptionModule = ({ id }: { id: string }) => {
+const DescriptionModule = () => {
+  const { id } = useParams<{ id: string }>();
+
   const { data, isFetching, isSuccess } = useGetLibraryQuery(
     { id },
     {
