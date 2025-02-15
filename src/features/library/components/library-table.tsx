@@ -8,6 +8,7 @@ import DataTable from "@/components/data-table/data-table";
 import { columns } from "@/app/(dashboard)/thu-vien/columns";
 import { useGetAllTopicQuery } from "@/features/topic/api";
 import { DataTopic } from "@/features/topic/topic.type";
+import useBreadcrumb from "@/hooks/useBreadcrumb";
 
 const LibraryTable = () => {
   const { data: topics, isSuccess } = useGetAllTopicQuery({});
@@ -32,6 +33,8 @@ const LibraryTable = () => {
       refetchOnMountOrArgChange: true,
     },
   );
+
+  useBreadcrumb([{ label: "Thư viện" }]);
 
   return <DataTable columns={columns} data={librarys} isLoading={isFetching} />;
 };

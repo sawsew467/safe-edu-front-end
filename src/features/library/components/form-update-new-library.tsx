@@ -37,6 +37,7 @@ import {
   useGetAllTopicQuery,
 } from "@/features/topic/api";
 import TitlePage from "@/components/ui/title-page";
+import useBreadcrumb from "@/hooks/useBreadcrumb";
 const initialLibrary = {
   category_name: "",
   image: "",
@@ -46,6 +47,7 @@ const initialLibrary = {
 const FormUpdateLibrary = () => {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
+
   const { data: library } = useGetLibraryQuery({ id });
   const [addTopic, { isLoading: isAddTopicLoading }] = useAddNewTopicMutation();
   const [updateLibrary, { isLoading: isUpdateLibraryLoading }] =
@@ -64,6 +66,11 @@ const FormUpdateLibrary = () => {
       };
     },
   });
+
+  useBreadcrumb([
+    { label: "Thư viện", href: "/thu-vien" },
+    { label: library?.category_name },
+  ]);
 
   const form = useForm<z.infer<typeof formLibrarySchema>>({
     resolver: zodResolver(formLibrarySchema),

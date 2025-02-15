@@ -29,7 +29,7 @@ export function HeaderBreadcrumb({ items }: BreadcrumbProps) {
           <ChevronRight className="h-4 w-4" />
         </BreadcrumbSeparator>
         {items.map((item, index) => (
-          <BreadcrumbItem key={item.href}>
+          <BreadcrumbItem key={item.href ?? index}>
             {index === items.length - 1 ? (
               <BreadcrumbPage className="max-w-80 truncate">
                 {item.label}

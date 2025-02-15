@@ -17,6 +17,8 @@ import { Button } from "@/components/ui/button";
 import { TypeNews } from "@/features/news/news.type";
 import { isImageLink } from "@/utils/checkimage";
 import { useDeleteNewsMutation } from "@/features/news/api";
+import { formatDate } from "@/utils/format-date";
+import { DataTopic } from "@/features/topic/topic.type";
 
 export const columns: ColumnDef<TypeNews>[] = [
   {
@@ -44,6 +46,20 @@ export const columns: ColumnDef<TypeNews>[] = [
     },
   },
   {
+    accessorKey: "topic_id",
+    header: "Chủ đề",
+    cell: ({ row }) => {
+      const topic: DataTopic = row.getValue("topic_id");
+
+      return <p>{topic?.topic_name}</p>;
+    },
+  },
+  {
+    accessorKey: "created_at",
+    header: "Ngày đăng tải",
+    cell: ({ row }) => formatDate(row.getValue("created_at")),
+  },
+  {
     accessorKey: "image",
     header: "Ảnh Bìa",
     cell: ({ row }) => {
@@ -57,10 +73,6 @@ export const columns: ColumnDef<TypeNews>[] = [
         <p className="text-red-500">*không tìm thấy ảnh</p>
       );
     },
-  },
-  {
-    accessorKey: "topic_name",
-    header: "Chủ đề",
   },
   {
     accessorKey: "otherInformation",

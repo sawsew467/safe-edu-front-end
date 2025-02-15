@@ -13,7 +13,7 @@ export const authAPI = baseApi.injectEndpoints({
         method: "GET",
         flashError: true,
       }),
-      providesTags: ["Library"],
+      providesTags: ["Librarys"],
     }),
     getLibrary: build.query({
       query: ({ id }) => ({
@@ -21,7 +21,7 @@ export const authAPI = baseApi.injectEndpoints({
         method: "GET",
         flashError: true,
       }),
-      providesTags: (result, error, { id }) => [{ type: "Library", id }],
+      providesTags: (result, error, { id }) => [{ type: "Librarys", id }],
     }),
     addNewLibrary: build.mutation({
       query: (data: TypeAddNewLibrary) => ({
@@ -30,7 +30,7 @@ export const authAPI = baseApi.injectEndpoints({
         body: data,
         flashError: true,
       }),
-      invalidatesTags: ["Library"],
+      invalidatesTags: ["Librarys"],
     }),
     updateLibrary: build.mutation({
       query: (data: TypeUpdateLibrary) => {
@@ -45,7 +45,7 @@ export const authAPI = baseApi.injectEndpoints({
         };
       },
       invalidatesTags: (result, error, { params: { id } }) => [
-        { type: "Library", id },
+        { type: "Librarys", id },
       ],
     }),
     deleteLibrary: build.mutation({
@@ -56,7 +56,7 @@ export const authAPI = baseApi.injectEndpoints({
           flashError: true,
         };
       },
-      invalidatesTags: ["Library"],
+      invalidatesTags: ["Librarys"],
     }),
   }),
 });
