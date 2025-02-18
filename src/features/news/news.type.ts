@@ -1,3 +1,5 @@
+import { DataTopic } from "../topic/topic.type";
+
 export type TypeNews = {
   _id: string;
   title: string;
@@ -5,7 +7,9 @@ export type TypeNews = {
   image: string;
   author: string;
   isActive: boolean;
-  topic_id: string;
+  topic_id: DataTopic;
+  created_at: string;
+  updated_at: string;
 };
 
 export type TypeAddNewNews = {

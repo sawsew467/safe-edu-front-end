@@ -61,6 +61,20 @@ export const authAPI = baseApi.injectEndpoints({
         return ["Organizations"];
       },
     }),
+    activeOrganizations: build.mutation({
+      query: ({ id }) => {
+        return {
+          url: `/organizations/${id}/isActive`,
+          method: "PATCH",
+          flashError: true,
+        };
+      },
+      invalidatesTags: (result, error) => {
+        if (error) return [];
+
+        return ["Organizations"];
+      },
+    }),
   }),
 });
 
@@ -70,4 +84,5 @@ export const {
   useAddNewOrganizationMutation,
   useUpdateOrganizationMutation,
   useDeleteOrganizationMutation,
+  useActiveOrganizationsMutation,
 } = authAPI;

@@ -10,7 +10,7 @@ import {
 } from "react";
 import { CircleAlert, CircleCheck } from "lucide-react";
 import { useFormContext } from "react-hook-form";
-import { TZDate } from "react-day-picker";
+import { TZDate } from "@date-fns/tz";
 
 import {
   Tooltip,

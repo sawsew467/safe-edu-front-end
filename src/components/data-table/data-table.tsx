@@ -33,7 +33,7 @@ interface DataTableProps<TData, TValue> {
   isLoading?: boolean;
 }
 
-const LoadingTable = ({ length }: { length: number }) => (
+export const LoadingTable = ({ length }: { length: number }) => (
   <TableRow>
     <TableCell className="h-24 text-center" colSpan={length}>
       <div className="flex items-center justify-center">

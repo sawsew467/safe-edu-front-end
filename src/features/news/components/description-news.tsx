@@ -2,6 +2,7 @@
 import React from "react";
 import { Label } from "@radix-ui/react-label";
 import { Edit } from "lucide-react";
+import { useParams } from "next/navigation";
 
 import { useGetNewsQuery } from "../api";
 
@@ -13,11 +14,13 @@ import {
   SelectValue,
 } from "@/components/ui/topic-select";
 import UploadImage from "@/components/ui/upload-image";
+import { useGetTopicQuery } from "@/features/topic/api";
 import CustomEditor from "@/components/ui/custom-editor";
 import TitlePage from "@/components/ui/title-page";
-import useBreadcrumb from "@/hooks/useBreadcrumb";
 
-const DescriptionNewsModule = ({ id }: { id: string }) => {
+const DescriptionNewsModule = () => {
+  const { id } = useParams<{ id: string }>();
+
   const { data, isFetching, isSuccess } = useGetNewsQuery(
     { id },
     {
@@ -29,10 +32,10 @@ const DescriptionNewsModule = ({ id }: { id: string }) => {
     },
   );
 
-  useBreadcrumb([
-    { label: "Tin tức", href: "/tin-tuc" },
-    { label: data?.title },
-  ]);
+  const { data: topic } = useGetTopicQuery(
+    { id: data?.topic_id },
+    { skip: !isSuccess },
+  );
 
   return (
     <>
@@ -75,7 +78,7 @@ const DescriptionNewsModule = ({ id }: { id: string }) => {
               </Label>
               <Select disabled defaultValue={data?.topic_id}>
                 <SelectTrigger className="max-w-sm">
-                  <SelectValue>{data?.topic_id?.topic_name}</SelectValue>
+                  <SelectValue>{topic?.topic_name}</SelectValue>
                 </SelectTrigger>
               </Select>
             </div>

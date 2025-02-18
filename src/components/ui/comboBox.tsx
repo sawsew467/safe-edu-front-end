@@ -28,6 +28,7 @@ interface PropsType
   }>;
   placeholder: string;
   onValueChange: (value: string) => void;
+  value: string;
 }
 
 export function Combobox({
@@ -36,10 +37,10 @@ export function Combobox({
   variant,
   onValueChange,
   className,
+  value,
   ...props
 }: PropsType) {
   const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState("");
 
   return (
     <Popover {...props} open={open} onOpenChange={setOpen}>
@@ -47,10 +48,11 @@ export function Combobox({
         <Button
           aria-expanded={open}
           className={cn(
-            "flex w-full p-1 rounded-md border min-h-10 h-auto items-center justify-between bg-inherit hover:bg-inherit [&_svg]:pointer-events-auto",
+            "flex w-full p-1 px-3 rounded-md border min-h-10 h-auto items-center justify-between bg-inherit hover:bg-inherit [&_svg]:pointer-events-auto",
             className,
           )}
           role="combobox"
+          value={value}
           variant={variant}
         >
           {value
@@ -71,7 +73,6 @@ export function Combobox({
                   onSelect={() => {
                     const newValue = option.value === value ? "" : option.value;
 
-                    setValue(newValue);
                     onValueChange(newValue);
                     setOpen(false);
                   }}
