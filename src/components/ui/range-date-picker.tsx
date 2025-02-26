@@ -1,4 +1,5 @@
 import { SVGProps, useEffect, useState } from "react";
+import { vi } from "date-fns/locale";
 
 import {
   Popover,
@@ -7,7 +8,6 @@ import {
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui//button";
 import { Calendar } from "@/components/ui/calendar";
-
 export default function RangeDatePicker({ column }: any) {
   const columnFilterValue = column?.getFilterValue();
 
@@ -22,8 +22,9 @@ export default function RangeDatePicker({ column }: any) {
   const handleStartDateChange = (date: Date | undefined) => {
     if (!date) return;
     setStartDate(date);
-    if (endDate && date > endDate) {
-      setEndDate(date);
+    if (endDate) {
+      setFinished(true);
+      if (date > endDate) setEndDate(date);
     }
   };
   const handleEndDateChange = (date: Date | undefined) => {
@@ -50,12 +51,13 @@ export default function RangeDatePicker({ column }: any) {
               className="flex-1 justify-start font-normal"
               variant="outline"
             >
-              {startDate ? startDate?.toLocaleDateString() : "Start date"}
+              {startDate ? startDate?.toLocaleDateString() : "Ngày bắt đầu"}
               <CalendarDaysIcon className="ml-auto h-4 w-4 opacity-50 hover:opacity-100" />
             </Button>
           </PopoverTrigger>
           <PopoverContent align="start" className="w-auto p-0">
             <Calendar
+              locale={vi}
               mode="single"
               required={false}
               selected={startDate as Date}
@@ -70,13 +72,14 @@ export default function RangeDatePicker({ column }: any) {
               disabled={!startDate}
               variant="outline"
             >
-              {endDate ? endDate?.toLocaleDateString() : "End date"}
+              {endDate ? endDate?.toLocaleDateString() : "Ngày kết thúc"}
               <CalendarDaysIcon className="ml-auto h-4 w-4 opacity-50 hover:opacity-100" />
             </Button>
           </PopoverTrigger>
           <PopoverContent align="start" className="w-auto p-0">
             <Calendar
               required
+              locale={vi}
               mode="single"
               selected={endDate as Date}
               onSelect={handleEndDateChange}

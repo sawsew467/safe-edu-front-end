@@ -12,8 +12,22 @@ export enum UserRole {
   citizen = "Cư dân",
   student = "Học sinh",
 }
+export enum StatusCompetition {
+  Ongoing = "Đang diễn ra",
+  Upcoming = "Sắp diễn ra",
+  Outgoing = "Đã kết thúc",
+}
+export enum StatusCompetitionVN {
+  "Đang diễn ra" = "Ongoing",
+  "Sắp diễn ra" = "Upcoming",
+  "Đã kết thúc" = "Outgoing",
+}
 export enum ManagerRole {
   admin = "Admin",
   supervision = "Supervision",
   manager = "Manager",
+}
+export enum Status {
+  Active = "Hoạt động",
+  unActive = "Tạm dừng",
 }

@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 
+import { useAppDispatch } from "./redux-toolkit";
+
 import { getClientCookie } from "@/lib/jsCookies";
 import constants from "@/settings/constants";
 import { ManagerRole } from "@/settings/enums";
+import { setUserInfo } from "@/features/auth/slice";
 interface CustomJwtPayload extends JwtPayload {
   userId: string;
   role: string;
@@ -18,6 +21,7 @@ const useRoles = (): {
   const isAdmin = role === ManagerRole.admin;
   const isSupervision = role === ManagerRole.supervision;
   const isManager = role === ManagerRole.manager;
+  const dispatch = useAppDispatch();
 
   console.log("first", role);
   useEffect(() => {
@@ -33,6 +37,7 @@ const useRoles = (): {
       setRole(decoded?.role as ManagerRole);
       if (decoded.exp && Date.now() >= decoded.exp * 1000) {
         setRole(null);
+        dispatch(setUserInfo(null));
       }
     } catch (error) {
       setRole(null);

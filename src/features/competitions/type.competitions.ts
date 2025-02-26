@@ -1,13 +1,17 @@
-import { Organization } from "../organizations/types";
-
 export interface Competitions {
   _id: string;
-  title: string;
-  organizations: Organization;
-  image: string;
-  number_join: number;
   isActive: boolean;
-  create_at: string;
-  update_at: string;
-  create_by: string;
+  deleted_at: string;
+  deleted_by: string | null;
+  created_by: string | null;
+  update_by: string | null;
+  title: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  image_url: string | null;
+  status: string;
+  created_at: string;
+  updated_at: string;
+  id: string;
 }

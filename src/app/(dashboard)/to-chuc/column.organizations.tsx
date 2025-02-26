@@ -1,10 +1,15 @@
 "use client";
 
 import { ColumnDef, Row } from "@tanstack/react-table";
-import { Pencil } from "lucide-react";
-import Link from "next/link";
+import { Eye, Pencil } from "lucide-react";
 import { toast } from "sonner";
-import { CheckCircledIcon, CrossCircledIcon } from "@radix-ui/react-icons";
+import {
+  CheckCircledIcon,
+  CrossCircledIcon,
+  DotsHorizontalIcon,
+} from "@radix-ui/react-icons";
+import React from "react";
+import Link from "next/link";
 
 import { formatDate } from "@/utils/format-date";
 import { Organization } from "@/features/organizations/types";
@@ -14,6 +19,21 @@ import {
   useDeleteOrganizationMutation,
 } from "@/features/organizations/organization.api";
 import { filterDateRange } from "@/utils/table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import FormEditOrganizations from "@/features/organizations/components/form-edit-new-organizations";
+import { Status } from "@/settings/enums";
 
 interface OrganizationColumn extends Organization {
   province_name: string;
@@ -54,6 +74,30 @@ export const columns: ColumnDef<OrganizationColumn>[] = [
     },
   },
   {
+    accessorKey: "status",
+    header: "Trạng thái",
+    cell: ({ row }) => {
+      return (
+        <div className="flex gap-2 items-center">
+          {row.getValue("status") === Status.unActive ? (
+            <>
+              <CrossCircledIcon className="h-4 w-4 text-red-500" />
+              <span className="text-red-500">{"Tạm dừng"}</span>
+            </>
+          ) : (
+            <>
+              <CheckCircledIcon className="h-4 w-4 text-green-500" />
+              <span className="text-green-500">{"Hoạt động"}</span>
+            </>
+          )}
+        </div>
+      );
+    },
+    meta: {
+      filterVariant: "select",
+    },
+  },
+  {
     accessorKey: "created_at",
     header: "Ngày tạo",
     cell: ({ row }) => formatDate(row.getValue("created_at")),
@@ -72,6 +116,7 @@ export const columns: ColumnDef<OrganizationColumn>[] = [
 ];
 
 const ActionRow = ({ row }: { row: Row<OrganizationColumn> }) => {
+  const [isopen, setOpenDialog] = React.useState(false);
   const [unActive] = useDeleteOrganizationMutation();
   const [active] = useActiveOrganizationsMutation();
   const handleDelete = async (id: string) => {
@@ -102,24 +147,79 @@ const ActionRow = ({ row }: { row: Row<OrganizationColumn> }) => {
   };
 
   return (
-    <div className="flex gap-4 mt-2">
-      <Link
-        className="flex gap-2 w-full"
-        href={`to-chuc/${row.original._id}/chinh-sua`}
-      >
-        <Pencil className="h-4 w-4 text-green-500" />
-      </Link>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
+          variant="ghost"
+        >
+          <DotsHorizontalIcon className="h-4 w-4" />
+          <span className="sr-only">{"mở"}</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem asChild>
+          <Dialog open={isopen}>
+            <DialogTrigger className="w-full">
+              <Link
+                className="flex gap-2 px-2 py-1 justify-start w-full"
+                href={`/to-chuc/${row.original._id}`}
+              >
+                <Eye className="h-4 w-4 text-green-500" />
+                {<span className="">{"Xem"}</span>}
+              </Link>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogTitle>Chỉnh sửa tổ chức</DialogTitle>
+              <FormEditOrganizations
+                id={row.original._id}
+                setOpenDialog={setOpenDialog}
+              />
+            </DialogContent>
+          </Dialog>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Dialog open={isopen}>
+            <DialogTrigger asChild className="w-full">
+              <Button
+                className="flex gap-2 px-2 py-1 justify-start w-full"
+                variant="ghost"
+                onClick={() => setOpenDialog(true)}
+              >
+                <Pencil className="h-4 w-4 text-green-500" />
+                {<span className="">{"Thay đổi"}</span>}
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogTitle>Chỉnh sửa tổ chức</DialogTitle>
+              <FormEditOrganizations
+                id={row.original._id}
+                setOpenDialog={setOpenDialog}
+              />
+            </DialogContent>
+          </Dialog>
+        </DropdownMenuItem>
 
-      <button
-        className="flex gap-2 w-full"
-        onClick={() => handleClick(row.original._id)}
-      >
-        {row.original?.isActive ? (
-          <CrossCircledIcon className="h-4 w-4 text-red-500" />
-        ) : (
-          <CheckCircledIcon className="h-4 w-4 text-green-500" />
-        )}
-      </button>
-    </div>
+        <DropdownMenuItem asChild>
+          <Button
+            className="flex gap-2 cursor-pointer w-full px-2 py-1 justify-start"
+            variant="ghost"
+            onClick={() => handleClick(row.original._id)}
+          >
+            {row.original?.isActive ? (
+              <>
+                <CrossCircledIcon className="h-4 w-4 text-red-500" />
+                <span className="">{"Tạm dừng"}</span>
+              </>
+            ) : (
+              <>
+                <CheckCircledIcon className="h-4 w-4 text-green-500" />
+                <span className="">{"Hoạt động"}</span>
+              </>
+            )}
+          </Button>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };

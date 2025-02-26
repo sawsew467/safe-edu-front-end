@@ -56,7 +56,7 @@ export const columns: ColumnDef<Student>[] = [
   },
   {
     accessorKey: "organizationId",
-    header: "Tỉnh / thành phố",
+    header: "Tổ chức",
     cell: ({ row }) => {
       const organization: Organization = (
         row.getValue("organizationId") as Organization[]

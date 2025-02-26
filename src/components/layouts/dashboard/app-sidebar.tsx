@@ -24,6 +24,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { cn } from "@/utils/cn";
+import useRoles from "@/hooks/use-roles";
 
 const sideBarItems = [
   {
@@ -66,6 +67,7 @@ export function AppSidebar({
 } & React.ComponentProps<typeof Sidebar>) {
   const { open } = useSidebar();
   const pathname = usePathname();
+  const { isManager, isAdmin } = useRoles();
 
   const rootPath = pathname?.split("/")?.[1];
 

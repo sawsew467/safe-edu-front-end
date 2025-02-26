@@ -8,6 +8,8 @@ import { useRouter } from "next-nprogress-bar";
 
 import { useAddNewOrganizationMutation } from "../organization.api";
 
+import InputEmail from "./input-email";
+
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -21,7 +23,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { useGetAllProvinceQuery } from "@/features/users/api/province.api";
 import { Combobox } from "@/components/ui/comboBox";
-type Props = {};
+type Props = {
+  setOpenDialog: (open: boolean) => void;
+};
 
 const formSchema = z.object({
   name: z
@@ -30,9 +34,18 @@ const formSchema = z.object({
   province_id: z
     .string({ message: "Đây là trường bắt buộc." })
     .min(1, { message: "Đây là trường bắt buộc." }),
+  slug: z
+    .string()
+    .min(3, "Slug phải có ít nhất 3 ký tự")
+    .max(50, "Slug không được vượt quá 50 ký tự")
+    .regex(
+      /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+      "Slug chỉ được chứa chữ thường, số và dấu gạch ngang (-)",
+    ),
+  email: z.string().email({ message: "định dạng email không đúng" }),
 });
 
-function FormAddNewOrganizations({}: Props) {
+function FormAddNewOrganizations({ setOpenDialog }: Props) {
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -75,7 +88,7 @@ function FormAddNewOrganizations({}: Props) {
   }
 
   const handleBack = () => {
-    router.replace("/to-chuc");
+    setOpenDialog(false);
   };
 
   return (
@@ -110,7 +123,7 @@ function FormAddNewOrganizations({}: Props) {
             name="province_id"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Tỉnh/Thành phố quan sát</FormLabel>
+                <FormLabel>Tỉnh/Thành phố của tổ chức</FormLabel>
                 <FormControl>
                   <Combobox
                     className="w-full"
@@ -122,16 +135,54 @@ function FormAddNewOrganizations({}: Props) {
                   />
                 </FormControl>
                 <FormDescription>
-                  Chọn tỉnh thành quan sát của quan sát viên này.
+                  Chọn tỉnh thành nơi tổ chức thuộc về.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <InputEmail {...field} />
+                </FormControl>
+                <FormDescription>
+                  Email của quản lí viên sẽ quản lí tổ chức này.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="slug"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Chuỗi định danh</FormLabel>
+                <FormControl>
+                  <Input
+                    className=""
+                    placeholder="Chuỗi định danh"
+                    type="text"
+                    {...field}
+                  />
+                </FormControl>
+                <FormDescription>
+                  Đây là đường dẫn dẫn đến tổ chức, chỉ được chứa chữ, số và dấu
+                  gạch ngang.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <div className="flex flex-1 items-end gap-4 justify-center">
             <Button
               className=""
-              isLoading={isAddOrganizations}
               type="button"
               variant="destructive"
               onClick={handleBack}

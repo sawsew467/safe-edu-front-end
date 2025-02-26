@@ -15,9 +15,8 @@ import {
 } from "@tanstack/react-table";
 import { ArrowDownUp, Filter } from "lucide-react";
 
-import { LoadingTable } from "../data-table/data-table";
-
 import { Card } from "./card";
+import { Spinner } from "./spinner";
 
 import FilterModal from "@/components/ui/filter-table";
 import SortModal from "@/components/ui/sort-table";
@@ -97,7 +96,7 @@ export default function CardList<TData, TValue>({
       </div>
       {isLoading ? (
         <div className="flex w-full items-center justify-center py-10">
-          <LoadingTable length={columns.length} />
+          <Spinner className="size-24" color="primary" />
         </div>
       ) : table?.getRowModel()?.rows?.length ? (
         <div className="grid mb-8 gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -120,16 +119,16 @@ export default function CardList<TData, TValue>({
                     return (
                       <div key={cell.id} className="flex justify-between ">
                         {typeof cell.column.columnDef.header === "string" && (
-                          <p className="flex-1 text-base font-bold">
+                          <div className="flex-1 text-base font-bold">
                             {cell.column.columnDef.header} :
-                          </p>
+                          </div>
                         )}
-                        <p className="flex flex-1 justify-end text-end text-base">
+                        <div className="flex flex-1 justify-end text-end text-base">
                           {flexRender(
                             cell?.column?.columnDef?.cell,
                             cell?.getContext(),
                           )}
-                        </p>
+                        </div>
                       </div>
                     );
                   })}

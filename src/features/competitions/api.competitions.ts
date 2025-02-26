@@ -1,31 +1,29 @@
 "use client";
 
-import { TypeAddNewOrganization, TypeUpdateOrganization } from "./types";
-
 import { baseApi } from "@/redux/baseApi";
 
-export const authAPI = baseApi.injectEndpoints({
+export const competitionsApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    getAllOrganization: build.query({
+    getAllCompetitions: build.query({
       query: (params) => ({
-        url: "/organizations",
+        url: "/competitions",
         params: params,
         method: "GET",
         flashError: true,
       }),
-      providesTags: ["Organizations"],
+      providesTags: ["Competitions"],
     }),
-    getOrganization: build.query({
+    getCompetitions: build.query({
       query: ({ id }) => ({
-        url: `/organizations/${id}`,
+        url: `/competitions/${id}`,
         method: "GET",
         flashError: true,
       }),
-      providesTags: (result, error, { id }) => [{ type: "Organizations", id }],
+      providesTags: (result, error, { id }) => [{ type: "Competitions", id }],
     }),
-    addNewOrganization: build.mutation({
-      query: (data: TypeAddNewOrganization) => ({
-        url: "/organizations",
+    addNewCompetitions: build.mutation({
+      query: (data) => ({
+        url: "/competitions",
         method: "POST",
         body: data,
         flashError: true,
@@ -33,16 +31,16 @@ export const authAPI = baseApi.injectEndpoints({
       invalidatesTags: (result, error) => {
         if (error) return [];
 
-        return ["Organizations"];
+        return ["Competitions"];
       },
     }),
-    updateOrganization: build.mutation({
-      query: (data: TypeUpdateOrganization) => {
+    updateCompetitions: build.mutation({
+      query: (data) => {
         const { params, body } = data;
         const { id } = params;
 
         return {
-          url: `/organizations/${id}`,
+          url: `/competitions/${id}`,
           method: "PATCH",
           body: body,
           flashError: true,
@@ -51,13 +49,13 @@ export const authAPI = baseApi.injectEndpoints({
       invalidatesTags: (result, error) => {
         if (error) return [];
 
-        return ["Organizations"];
+        return ["Competitions"];
       },
     }),
-    deleteOrganization: build.mutation({
+    deleteCompetitions: build.mutation({
       query: ({ id }) => {
         return {
-          url: `/organizations/${id}`,
+          url: `/competitions/${id}`,
           method: "DELETE",
           flashError: true,
         };
@@ -65,13 +63,13 @@ export const authAPI = baseApi.injectEndpoints({
       invalidatesTags: (result, error) => {
         if (error) return [];
 
-        return ["Organizations"];
+        return ["Competitions"];
       },
     }),
-    activeOrganizations: build.mutation({
+    activeCompetitions: build.mutation({
       query: ({ id }) => {
         return {
-          url: `/organizations/${id}/isActive`,
+          url: `/competitions/${id}/isActive`,
           method: "PATCH",
           flashError: true,
         };
@@ -79,17 +77,17 @@ export const authAPI = baseApi.injectEndpoints({
       invalidatesTags: (result, error) => {
         if (error) return [];
 
-        return ["Organizations"];
+        return ["Competitions"];
       },
     }),
   }),
 });
 
 export const {
-  useGetAllOrganizationQuery,
-  useGetOrganizationQuery,
-  useAddNewOrganizationMutation,
-  useUpdateOrganizationMutation,
-  useDeleteOrganizationMutation,
-  useActiveOrganizationsMutation,
-} = authAPI;
+  useGetAllCompetitionsQuery,
+  useGetCompetitionsQuery,
+  useAddNewCompetitionsMutation,
+  useUpdateCompetitionsMutation,
+  useDeleteCompetitionsMutation,
+  useActiveCompetitionsMutation,
+} = competitionsApi;

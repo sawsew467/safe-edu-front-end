@@ -1,30 +1,48 @@
 import { ColumnDef, Row } from "@tanstack/react-table";
 import Image from "next/image";
-import { CheckCircledIcon, CrossCircledIcon } from "@radix-ui/react-icons";
-import Link from "next/link";
-import { Pencil, Trash2 } from "lucide-react";
+import {
+  CheckCircledIcon,
+  CrossCircledIcon,
+  DotsHorizontalIcon,
+  TimerIcon,
+} from "@radix-ui/react-icons";
+import { Pencil } from "lucide-react";
 import { toast } from "sonner";
+import React from "react";
 
 import { Competitions } from "@/features/competitions/type.competitions";
 import { isImageLink } from "@/utils/checkimage";
-import { cn } from "@/lib/utils";
 import { formatDate } from "@/utils/format-date";
-import { useDeleteNewsMutation } from "@/features/news/api";
 import { filterDateRange } from "@/utils/table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import FormEditOrganizations from "@/features/organizations/components/form-edit-new-organizations";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { StatusCompetition, StatusCompetitionVN } from "@/settings/enums";
+import { useDeleteCompetitionsMutation } from "@/features/competitions/api.competitions";
 
 export interface ColumnCompetitions
-  extends Omit<Competitions, "isActive" | "organizations"> {
-  isActive: "Hoạt động" | "Tạm dừng";
+  extends Omit<Competitions, "organizations"> {
   organizations: string;
 }
 
 export const columns: ColumnDef<ColumnCompetitions>[] = [
   {
-    accessorKey: "image",
+    accessorKey: "image_url",
     cell: ({ row }) => {
-      const image: string | null = isImageLink(row.getValue("image"))
-        ? row.getValue("image")
-        : row.getValue("image");
+      const image: string | null = isImageLink(row.getValue("image_url"))
+        ? row.getValue("image_url")
+        : row.getValue("image_url");
 
       return image ? (
         <div className="w-full h-52">
@@ -37,7 +55,9 @@ export const columns: ColumnDef<ColumnCompetitions>[] = [
           />
         </div>
       ) : (
-        <p className="text-red-500">* không tìm thấy ảnh</p>
+        <p className="text-red-500 w-full flex justify-center items-center size-24">
+          * không tìm thấy ảnh
+        </p>
       );
     },
     enableSorting: false,
@@ -46,8 +66,23 @@ export const columns: ColumnDef<ColumnCompetitions>[] = [
   },
   {
     accessorKey: "title",
-    header: "Tiêu đề",
-    cell: ({ row }) => <p>{row.getValue("title")}</p>,
+    cell: ({ row }) => (
+      <p className="flex w-full justify-center text-lg">
+        {row.getValue("title")}
+      </p>
+    ),
+    meta: {
+      filterVariant: "search",
+    },
+  },
+  {
+    accessorKey: "description",
+
+    cell: ({ row }) => (
+      <p className="flex w-full justify-start mb-2 text-sm">
+        {row.getValue("description")}
+      </p>
+    ),
     meta: {
       filterVariant: "search",
     },
@@ -60,30 +95,9 @@ export const columns: ColumnDef<ColumnCompetitions>[] = [
     },
   },
   {
-    accessorKey: "isActive",
+    accessorKey: "status",
     header: "Trạng thái",
-    cell: ({ row }) => {
-      const status =
-        row.getValue("isActive") === "Hoạt động"
-          ? { value: "active", label: "Hoạt động" }
-          : { value: "inactive", label: "Tạm dừng" };
-
-      return (
-        <div
-          className={cn("flex w-[100px] items-center", {
-            "text-red-500": status?.value === "inactive",
-            "text-green-500": status?.value === "active",
-          })}
-        >
-          {status?.value === "active" ? (
-            <CheckCircledIcon className="mr-2 h-4 w-4 text-muted-foreground" />
-          ) : (
-            <CrossCircledIcon className="mr-2 h-4 w-4 text-muted-foreground" />
-          )}
-          <span>{status?.label}</span>
-        </div>
-      );
-    },
+    cell: ({ row }) => getStatus(row),
     enableSorting: false,
     enableGlobalFilter: false,
     meta: {
@@ -95,10 +109,29 @@ export const columns: ColumnDef<ColumnCompetitions>[] = [
     header: "Ngày tạo",
     cell: ({ row }) => {
       const createDate = formatDate(
-        row.original.update_at ?? row.getValue("create_at"),
+        row.original.updated_at ?? row.getValue("created_at"),
       );
 
       return <p>{createDate}</p>;
+    },
+    meta: {
+      filterVariant: "dateRange",
+    },
+    filterFn: filterDateRange,
+  },
+  {
+    header: "Các ngày diễn ra",
+    cell: ({ row }) => {
+      const startDate = formatDate(row.original.startDate, "DD/MM/yyyy");
+      const endDate = formatDate(row.original.endDate, "DD/MM/yyyy");
+
+      return (
+        <div className="space-y-2">
+          <p>
+            {startDate} - {endDate}
+          </p>
+        </div>
+      );
     },
     meta: {
       filterVariant: "dateRange",
@@ -125,9 +158,50 @@ export const columns: ColumnDef<ColumnCompetitions>[] = [
   },
 ];
 
+const getStatus = (row: Row<ColumnCompetitions>) => {
+  const status = {
+    value: row.original.status as keyof typeof StatusCompetitionVN,
+    label: row.original.status as keyof typeof StatusCompetitionVN,
+  };
+
+  console.log("status", status);
+
+  switch (status?.value) {
+    case StatusCompetition.Upcoming:
+      return (
+        <div className="flex items-center text-yellow-500">
+          <TimerIcon className="mr-2 h-4 w-4 text-yellow-500" />
+          <p className="text-sm">{status?.label}</p>
+        </div>
+      );
+    case StatusCompetition.Outgoing:
+      return (
+        <div className="flex items-center text-red-500">
+          <CrossCircledIcon className="mr-2 h-4 w-4 text-red-500" />
+          <p className="text-sm">{status?.label}</p>
+        </div>
+      );
+    case StatusCompetition.Ongoing:
+      return (
+        <div className="flex items-center text-green-500">
+          <CheckCircledIcon className="mr-2 h-4 w-4 text-green-500" />
+          <p className="text-sm">{status?.label}</p>
+        </div>
+      );
+    default:
+      return (
+        <div className="flex items-center text-red-500">
+          <CheckCircledIcon className="mr-2 h-4 w-4 text-red-500" />
+          <p className="text-sm">Đã kết thúc</p>
+        </div>
+      );
+  }
+};
+
 const Action = (row: Row<ColumnCompetitions>) => {
-  const [deleteNews] = useDeleteNewsMutation();
-  const handleDeleteNews = async (id: string) => {
+  const [isopen, setOpenDialog] = React.useState(false);
+  const [deleteNews] = useDeleteCompetitionsMutation();
+  const handleDeleteCompetitions = async (id: string) => {
     const toastID = toast.loading("đang xóa bài báo...");
 
     try {
@@ -140,20 +214,59 @@ const Action = (row: Row<ColumnCompetitions>) => {
   };
 
   return (
-    <div className="flex gap-4 mt-2">
-      <Link
-        className="flex gap-2 w-full"
-        href={`tin-tuc/${row.original._id}/chinh-sua`}
-      >
-        <Pencil className="h-4 w-4 text-green-500" />
-      </Link>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
+          variant="ghost"
+        >
+          <DotsHorizontalIcon className="h-4 w-4" />
+          <span className="sr-only">{"mở"}</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem asChild>
+          <Dialog open={isopen}>
+            <DialogTrigger asChild className="w-full">
+              <Button
+                className="flex gap-2 px-2 py-1 justify-start w-full"
+                variant="ghost"
+                onClick={() => setOpenDialog(true)}
+              >
+                <Pencil className="h-4 w-4 text-green-500" />
+                {<span className="">{"Thay đổi"}</span>}
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogTitle>Chỉnh sửa tổ chức</DialogTitle>
+              <FormEditOrganizations
+                id={row.original._id}
+                setOpenDialog={setOpenDialog}
+              />
+            </DialogContent>
+          </Dialog>
+        </DropdownMenuItem>
 
-      <button
-        className="flex gap-2 w-full"
-        onClick={() => handleDeleteNews(row.original._id)}
-      >
-        <Trash2 className="h-4 w-4 text-red-500" />
-      </button>
-    </div>
+        <DropdownMenuItem asChild>
+          <Button
+            className="flex gap-2 cursor-pointer w-full px-2 py-1 justify-start"
+            variant="ghost"
+            onClick={() => handleDeleteCompetitions(row.original._id)}
+          >
+            {row.original?.isActive ? (
+              <>
+                <CrossCircledIcon className="h-4 w-4 text-red-500" />
+                <span className="">{"Tạm dừng"}</span>
+              </>
+            ) : (
+              <>
+                <CheckCircledIcon className="h-4 w-4 text-green-500" />
+                <span className="">{"Hoạt động lại"}</span>
+              </>
+            )}
+          </Button>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };

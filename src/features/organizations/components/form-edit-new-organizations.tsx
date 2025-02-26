@@ -3,8 +3,6 @@ import React, { useEffect } from "react";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next-nprogress-bar";
-import { useParams } from "next/navigation";
 import { toast } from "sonner";
 
 import {
@@ -33,9 +31,13 @@ const formSchema = z.object({
   province_id: z.string().min(1, { message: "Đây là trường bắt buộc." }),
 });
 
-function FormEditNewOrganizations() {
-  const router = useRouter();
-  const { id } = useParams<{ id: string }>();
+function FormEditOrganizations({
+  setOpenDialog,
+  id,
+}: {
+  setOpenDialog: (open: boolean) => void;
+  id: string;
+}) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: { name: "", province_id: "" },
@@ -87,7 +89,7 @@ function FormEditNewOrganizations() {
   }
 
   const handleBack = () => {
-    router.replace("/to-chuc");
+    setOpenDialog(false);
   };
 
   if (isFetching)
@@ -166,4 +168,4 @@ function FormEditNewOrganizations() {
   );
 }
 
-export default FormEditNewOrganizations;
+export default FormEditOrganizations;

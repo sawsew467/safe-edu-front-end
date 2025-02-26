@@ -102,7 +102,9 @@ function FilterModal<TData, TValue>({
                             header.column.columnDef.header,
                             header.getContext(),
                           )}
-                          {header.column.getFilterValue() && <Badge>Set</Badge>}
+                          {header.column.getFilterValue() && (
+                            <Badge>Thiếp lập</Badge>
+                          )}
                         </Button>
                       )
                     );
@@ -172,7 +174,9 @@ const FilterItem = <TData, TValue>({
           <Label className="mb-2 block">{headerfn}</Label>
           <Select
             value={columnFilterValue?.toString()}
-            onValueChange={(e: string) => column.setFilterValue(e)}
+            onValueChange={(e: string) =>
+              column.setFilterValue(e === "none" ? undefined : e)
+            }
           >
             <SelectTrigger>
               <SelectValue placeholder={`Chọn một trường`} />
@@ -183,6 +187,9 @@ const FilterItem = <TData, TValue>({
                   {value || "Tất cả"}
                 </SelectItem>
               ))}
+              <SelectItem key={"Tất cả"} value={"none"}>
+                {"Tất cả"}
+              </SelectItem>
             </SelectContent>
           </Select>
         </>

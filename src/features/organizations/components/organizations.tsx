@@ -1,22 +1,30 @@
 "use client";
 import React from "react";
-import { useRouter } from "next-nprogress-bar";
 
 import { useGetAllOrganizationQuery } from "../organization.api";
 import { Organization } from "../types";
 
+import FormAddNewOrganizations from "./form-add-new-organizations";
+
 import { columns } from "@/app/(dashboard)/to-chuc/column.organizations";
 import CardList from "@/components/ui/data-card";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const OrganizationsManagement = () => {
-  const router = useRouter();
+  const [isopen, setOpenDialog] = React.useState(false);
   const { organizations, isFetching } = useGetAllOrganizationQuery(undefined, {
     selectFromResult: ({ data, isFetching }) => ({
       organizations:
         data?.items?.map((item: Organization) => ({
           ...item,
           province_name: item?.province_id?.at(0)?.name,
+          status: item?.isActive ? "Hoạt động" : "Tạm dừng",
         })) ?? [],
       isFetching,
     }),
@@ -26,13 +34,21 @@ const OrganizationsManagement = () => {
     <>
       <div className="flex w-full justify-between">
         <h3 className="text-2xl font-bold mb-4">Quản lý tổ chức</h3>
-        <Button
-          className="ml-auto "
-          variant="outline"
-          onClick={() => router.push("to-chuc/them-to-chuc")}
-        >
-          Thêm tổ chức
-        </Button>
+        <Dialog open={isopen}>
+          <DialogTrigger asChild className="w-fit h-fit">
+            <Button
+              className="ml-auto"
+              variant="outline"
+              onClick={() => setOpenDialog(true)}
+            >
+              Thêm tổ chức
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogTitle>Thêm tổ chức</DialogTitle>
+            <FormAddNewOrganizations setOpenDialog={setOpenDialog} />
+          </DialogContent>
+        </Dialog>
       </div>
       <CardList columns={columns} data={organizations} isLoading={isFetching} />
     </>
