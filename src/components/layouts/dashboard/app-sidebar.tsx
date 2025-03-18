@@ -28,7 +28,7 @@ import { cn } from "@/utils/cn";
 const sideBarItems = [
   {
     name: "Trang chủ",
-    url: "/trang-chu",
+    url: "/thong-ke",
     icon: Home,
   },
   {
@@ -79,7 +79,7 @@ export function AppSidebar({
         <div
           className={cn(
             "flex gap-2 items-center transition-all",
-            open ? "p-2" : "p-0",
+            open ? "p-2" : "p-0"
           )}
         >
           <Image
@@ -100,7 +100,7 @@ export function AppSidebar({
                 <SidebarMenuButton
                   asChild
                   className={cn(
-                    item.url === `/${rootPath}` && " bg-sidebar-accent",
+                    item.url === `/${rootPath}` && " bg-sidebar-accent"
                   )}
                 >
                   <Link href={item.url}>

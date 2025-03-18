@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import { User } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -11,11 +10,11 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAppSelector } from "@/hooks/redux-toolkit";
+import constants from "@/settings/constants";
+import { deleteClientCookie } from "@/lib/jsCookies";
 
 function UserDropdown() {
   const router = useRouter();
@@ -25,7 +24,8 @@ function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleSignOut = () => {
-    router.push("/dang-nhap");
+    deleteClientCookie(constants.USER_INFO);
+    window.location.reload();
   };
 
   return (
@@ -44,7 +44,7 @@ function UserDropdown() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent forceMount align="end" className="w-56">
-        <DropdownMenuLabel className="font-normal">
+        {/* <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">
               {`${userInfo?.displayName || ""}`}
@@ -70,7 +70,7 @@ function UserDropdown() {
             Settings
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuSeparator />
+        <DropdownMenuSeparator /> */}
         <DropdownMenuItem>
           <button className="w-full text-left" onClick={handleSignOut}>
             Sign out
