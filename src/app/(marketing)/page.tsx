@@ -7,7 +7,27 @@ import ContentPreview from "@/features/marketing/components/content-preview";
 import Contact from "@/features/marketing/components/contact";
 import Coverage from "@/features/marketing/components/coverage";
 
-function page() {
+export const metadata = {
+  title: "Giới thiệu",
+  description:
+    "Khám phá các giải pháp giáo dục toàn diện và nội dung giáo dục đa dạng của SafeEdu.",
+  openGraph: {
+    title: "Giới thiệu",
+    description:
+      "Khám phá các giải pháp giáo dục toàn diện và nội dung giáo dục đa dạng của SafeEdu.",
+    url: "https://www.safe-edu.site/",
+    images: [
+      {
+        url: "/images/logo/logo.png",
+        width: 800,
+        height: 600,
+        alt: "SafeEdu Marketing",
+      },
+    ],
+  },
+};
+
+function MarketingPage() {
   return (
     <>
       <HeroSection />
@@ -20,4 +40,4 @@ function page() {
   );
 }
 
-export default page;
+export default MarketingPage;

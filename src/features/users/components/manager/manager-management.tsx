@@ -4,7 +4,7 @@ import React from "react";
 import { Manager } from "../../user.types";
 import { useGetAllManagerQuery } from "../../api/manager.api";
 
-import { columns } from "@/app/(dashboard)/nguoi-dung/quan-li-vien/manager.columns";
+import { columns } from "@/app/quan-tri/nguoi-dung/quan-li-vien/manager.columns";
 import DataTable from "@/components/data-table/data-table";
 import TitlePage from "@/components/ui/title-page";
 
@@ -20,7 +20,7 @@ const ManagerManagement = () => {
           })) ?? [],
         isFetching,
       }),
-    },
+    }
   );
 
   return (

@@ -2,8 +2,6 @@ import { CheckCircle } from "lucide-react";
 import Image from "next/image";
 import React from "react";
 
-import { Button } from "@/components/ui/button";
-
 function ProductSection() {
   return (
     <section className="w-full py-12 md:py-24 lg:py-32 bg-muted" id="products">
@@ -45,23 +43,18 @@ function ProductSection() {
                   <span>Tư vấn tâm lý và hỗ trợ trực tuyến</span>
                 </li>
               </ul>
-              <Button className="w-fit bg-[#8BC34A] hover:bg-[#7CB342]">
+              {/* <Button className="w-fit bg-[#8BC34A] hover:bg-[#7CB342]">
                 Tải ứng dụng
-              </Button>
+              </Button> */}
             </div>
             <div className="flex items-center justify-center">
-              <div className="relative w-[250px] h-[500px] rounded-3xl overflow-hidden border-8 border-gray-800 shadow-xl">
-                <div className="absolute top-0 w-full h-6 bg-gray-800 rounded-t-lg" />
-                <div className="relative h-full w-full bg-white overflow-hidden">
-                  <Image
-                    fill
-                    alt="SafeEdu App Screenshot"
-                    className="object-cover"
-                    src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Simulator%20Screenshot%20-%20iPhone%2015%20Pro%20Max%20-%202025-03-17%20at%2020.49.42-Q3b6lJit9GqKQDfjh3AE6b2LcqFqXS.png"
-                  />
-                </div>
-                <div className="absolute bottom-0 w-full h-6 bg-gray-800 rounded-b-lg" />
-              </div>
+              <Image
+                alt="SafeEdu App Screenshot"
+                className="object-cover"
+                height={1000}
+                src="/images/marketing/mockup2.png"
+                width={1000}
+              />
             </div>
           </div>
         </div>

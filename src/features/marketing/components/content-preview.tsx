@@ -1,14 +1,7 @@
 import Image from "next/image";
 import React from "react";
 
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 function ContentPreview() {
   const cards = [
@@ -75,11 +68,6 @@ function ContentPreview() {
                     {card.content}
                   </p>
                 </CardContent>
-                <CardFooter>
-                  <Button className="w-full" variant="outline">
-                    Xem thêm
-                  </Button>
-                </CardFooter>
               </Card>
             ))}
           </div>

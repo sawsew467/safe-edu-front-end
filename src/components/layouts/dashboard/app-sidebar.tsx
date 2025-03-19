@@ -67,7 +67,9 @@ export function AppSidebar({
   const { open } = useSidebar();
   const pathname = usePathname();
 
-  const rootPath = pathname?.split("/")?.[1];
+  const rootPath = pathname?.split("/")?.[2];
+
+  console.log("🚀 ~ rootPath:", rootPath);
 
   React.useEffect(() => {
     setIsOpen(open);
@@ -100,10 +102,10 @@ export function AppSidebar({
                 <SidebarMenuButton
                   asChild
                   className={cn(
-                    item.url === `/${rootPath}` && " bg-sidebar-accent"
+                    item.url === `/${rootPath}` && "bg-sidebar-accent"
                   )}
                 >
-                  <Link href={item.url}>
+                  <Link href={`/quan-tri${item.url}`}>
                     <item.icon />
                     <span>{item.name}</span>
                   </Link>

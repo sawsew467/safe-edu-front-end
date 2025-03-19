@@ -83,7 +83,7 @@ function Coverage() {
                 />
                 <p
                   dangerouslySetInnerHTML={{ __html: card.content }}
-                  className="text-sm text-muted-foreground line-clamp-4"
+                  className="text-sm text-muted-foreground line-clamp-4 flex-1"
                 />
                 <div className="mt-auto pt-4">
                   <a

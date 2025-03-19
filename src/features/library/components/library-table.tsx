@@ -5,7 +5,7 @@ import { useGetAllLibraryQuery } from "../api";
 import { Library } from "../library.type";
 
 import DataTable from "@/components/data-table/data-table";
-import { columns } from "@/app/(dashboard)/thu-vien/columns";
+import { columns } from "@/app/quan-tri/thu-vien/columns";
 import { useGetAllTopicQuery } from "@/features/topic/api";
 import { DataTopic } from "@/features/topic/topic.type";
 import useBreadcrumb from "@/hooks/useBreadcrumb";
@@ -24,14 +24,14 @@ const LibraryTable = () => {
               ?.map((item: Library) => ({
                 ...item,
                 topic_name: topics?.data?.find(
-                  (topic: DataTopic) => topic._id === item.topic_id,
+                  (topic: DataTopic) => topic._id === item.topic_id
                 )?.topic_name,
               })) ?? [],
           isFetching,
         };
       },
       refetchOnMountOrArgChange: true,
-    },
+    }
   );
 
   useBreadcrumb([{ label: "Thư viện" }]);

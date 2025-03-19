@@ -4,7 +4,7 @@ import React from "react";
 import { useGetAllSupervisionQuery } from "../../api/supervison.api";
 import { Supervision } from "../../user.types";
 
-import { columns } from "@/app/(dashboard)/nguoi-dung/quan-sat-vien/suppervision.columns";
+import { columns } from "@/app/quan-tri/nguoi-dung/quan-sat-vien/suppervision.columns";
 import DataTable from "@/components/data-table/data-table";
 import TitlePage from "@/components/ui/title-page";
 
@@ -20,7 +20,7 @@ const SuperVisionManagement = () => {
           })) ?? [],
         isFetching,
       }),
-    },
+    }
   );
 
   return (

@@ -12,7 +12,7 @@ function AuthLayout({ children }: { children: React.ReactNode }) {
 
   useLayoutEffect(() => {
     if (userInfo) {
-      router.replace("/thong-ke");
+      router.replace("/quan-tri/thong-ke");
     }
   }, [userInfo]);
 

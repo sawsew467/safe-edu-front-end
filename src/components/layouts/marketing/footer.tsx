@@ -20,13 +20,22 @@ function MarketingFooter() {
           © 2025 SafeEdu.
         </p>
         <div className="flex gap-4">
-          <Link className="text-sm font-medium hover:text-[#8BC34A]" href="#">
+          <Link
+            className="text-sm font-medium hover:text-[#8BC34A]"
+            href="/dieu-khoan"
+          >
             Điều khoản
           </Link>
-          <Link className="text-sm font-medium hover:text-[#8BC34A]" href="#">
+          <Link
+            className="text-sm font-medium hover:text-[#8BC34A]"
+            href="/chinh-sach-bao-mat"
+          >
             Chính sách bảo mật
           </Link>
-          <Link className="text-sm font-medium hover:text-[#8BC34A]" href="#">
+          <Link
+            className="text-sm font-medium hover:text-[#8BC34A]"
+            href="/#contact"
+          >
             Liên hệ
           </Link>
         </div>
