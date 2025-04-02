@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^1.3.4",
+    "@ai-sdk/react": "^1.2.3",
     "@ckeditor/ckeditor5-build-classic": "^41.4.2",
     "@ckeditor/ckeditor5-react": "^6.3.0",
     "@hookform/resolvers": "^3.9.1",
@@ -35,6 +37,8 @@
     "@tiptap/extension-text-align": "^2.10.3",
     "@tiptap/react": "^2.10.3",
     "@tiptap/starter-kit": "^2.10.3",
+    "@uploadthing/react": "^7.3.0",
+    "ai": "^4.2.8",
     "babel-plugin-react-compiler": "^19.0.0-beta-df7b47d-20241124",
     "ckeditor": "^4.12.1",
     "class-variance-authority": "^0.7.1",
@@ -68,7 +72,9 @@
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
     "tiptap-extension-resize-image": "^1.2.1",
-    "zod": "^3.23.8"
+    "uploadthing": "^7.6.0",
+    "uuid": "^11.1.0",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@types/js-cookie": "^3.0.6",
