@@ -3,6 +3,7 @@ import React from "react";
 import { Library } from "@/features/library/library.type";
 import { DataTopic } from "@/features/topic/topic.type";
 import { ResourceCard } from "@/features/library/components/resource-card";
+import constants from "@/settings/constants";
 
 export const metadata = {
   title: "Thư viện giáo dục",
@@ -25,7 +26,7 @@ export const metadata = {
 };
 
 const fetchLatestLibrary = async () => {
-  const res = await fetch("https://api-dev.fuses.fun/categories");
+  const res = await fetch(`${constants.API_SERVER}/categories`);
 
   const data = await res.json();
 
@@ -36,7 +37,7 @@ const fetchLatestLibrary = async () => {
 };
 
 const fetchTopics = async () => {
-  const res = await fetch("https://api-dev.fuses.fun/topics");
+  const res = await fetch(`${constants.API_SERVER}/topics`);
 
   const data = await res.json();
 

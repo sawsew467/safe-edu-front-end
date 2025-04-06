@@ -3,6 +3,7 @@ import { format } from "date-fns";
 
 import { TypeNews } from "@/features/news/news.type";
 import { ArticleCard } from "@/features/news/components/artical-card";
+import constants from "@/settings/constants";
 
 export const metadata = {
   title: "Tin tức mới nhất",
@@ -25,7 +26,7 @@ export const metadata = {
 };
 
 const fetchLatestNews = async () => {
-  const res = await fetch("https://api-dev.fuses.fun/news");
+  const res = await fetch(`${constants.API_SERVER}/news`);
 
   const data = await res.json();
 

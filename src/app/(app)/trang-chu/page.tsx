@@ -8,6 +8,7 @@ import { TypeNews } from "@/features/news/news.type";
 import { Library } from "@/features/library/library.type";
 import { ArticleCard } from "@/features/news/components/artical-card";
 import { ResourceCard } from "@/features/library/components/resource-card";
+import constants from "@/settings/constants";
 
 export const metadata = {
   title: "Trang chủ",
@@ -30,7 +31,7 @@ export const metadata = {
 };
 
 const fetchLatestNews = async () => {
-  const res = await fetch("https://api-dev.fuses.fun/news");
+  const res = await fetch(`${constants.API_SERVER}/news`);
 
   const data = await res.json();
 
@@ -46,7 +47,7 @@ const fetchLatestNews = async () => {
 };
 
 const fetchLatestLibrary = async () => {
-  const res = await fetch("https://api-dev.fuses.fun/categories");
+  const res = await fetch(`${constants.API_SERVER}/categories`);
 
   const data = await res.json();
 

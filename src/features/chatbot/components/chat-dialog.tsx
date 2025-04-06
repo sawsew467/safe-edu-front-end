@@ -6,6 +6,8 @@ import { useState, useRef, useCallback } from "react";
 import { Send, ImageIcon, X } from "lucide-react";
 import { useChat } from "@ai-sdk/react";
 import Image from "next/image";
+import { Attachment } from "ai";
+import Markdown from "react-markdown";
 
 import {
   Dialog,
@@ -14,9 +16,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useUploadImageMutation } from "@/services/common/upload/api.upload";
+import { Input } from "@/components/ui/input";
+import { AutoExpandingTextarea } from "@/components/ui/auto-expanding-textarea";
 
 interface ChatDialogProps {
   open: boolean;
@@ -25,7 +28,8 @@ interface ChatDialogProps {
 
 export function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
   const [images, setImages] = useState<File[]>([]);
-  const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const [imageUrls, setImageUrls] = useState<Attachment[]>([]);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [uploadImage, { isLoading: isUploading }] = useUploadImageMutation();
@@ -33,14 +37,7 @@ export function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
   const { messages, input, handleInputChange, handleSubmit, isLoading } =
     useChat({
       api: "/api/chat",
-      onFinish: () => {
-        // Clear images after sending
-        setImages([]);
-        setImageUrls([]);
-      },
     });
-
-  console.log("🚀 ~ ChatDialog ~ messages:", messages);
 
   const getImageUrl = useCallback(async (file: any) => {
     const formData = new FormData();
@@ -65,10 +62,15 @@ export function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
         try {
           const imageUrl = await getImageUrl(file);
 
-          console.log("🚀 ~ handleImageUpload ~ imageUrl:", imageUrl);
-
           if (imageUrl) {
-            setImageUrls((prev) => [...prev, imageUrl]);
+            setImageUrls((prev) => [
+              ...prev,
+              {
+                url: imageUrl,
+                name: file.name,
+                contentType: file.type,
+              },
+            ]);
           }
         } catch (error) {
           console.error("Failed to upload image:", error);
@@ -86,15 +88,16 @@ export function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
     e.preventDefault();
 
     handleSubmit(e, {
-      data: {
-        images: imageUrls || [],
-      },
+      experimental_attachments: imageUrls,
     });
+
+    setImages([]);
+    setImageUrls([]);
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px] h-[600px] flex flex-col p-0">
+      <DialogContent className="sm:max-w-[500px] h-[600px] flex flex-col p-0 gap-0">
         <DialogHeader className="p-4 border-b">
           <DialogTitle className="text-center text-lg font-bold text-green-700">
             SafeEdu Chatbot
@@ -117,16 +120,33 @@ export function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
                 {messages.map((message) => (
                   <div
                     key={message.id}
-                    className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                    className={`flex flex-col gap-2 ${message.role === "user" ? "justify-end" : "justify-start"}`}
                   >
                     <div
-                      className={`rounded-lg px-3 py-2 max-w-[80%] ${
-                        message.role === "user"
-                          ? "bg-green-600 text-white"
-                          : "bg-gray-100 text-gray-800"
-                      }`}
+                      className={`flex flex-col gap-2 ${message.role === "user" ? "items-end" : "items-start"}`}
                     >
-                      {message.content}
+                      <div className="flex flex-wrap gap-2">
+                        {message.experimental_attachments?.map((attachment) => (
+                          <div key={attachment.url}>
+                            <Image
+                              alt={attachment.name || "Attachment"}
+                              className="rounded-lg aspect-square object-cover"
+                              height={128}
+                              src={attachment.url}
+                              width={128}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                      <div
+                        className={`rounded-lg px-3 py-2 max-w-[80%] ${
+                          message.role === "user"
+                            ? "bg-green-600 text-white"
+                            : "bg-gray-100 text-gray-800"
+                        }`}
+                      >
+                        <Markdown>{message.content}</Markdown>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -156,13 +176,13 @@ export function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
 
           {imageUrls.length > 0 && (
             <div className="p-2 border-t flex gap-2 overflow-x-auto">
-              {imageUrls.map((url, index) => (
+              {imageUrls.map((item, index) => (
                 <div key={index} className="relative h-16 w-16 flex-shrink-0">
                   <Image
                     fill
                     alt={`Uploaded image ${index + 1}`}
                     className="object-cover rounded"
-                    src={url || "/placeholder.svg"}
+                    src={item.url || "/placeholder.svg"}
                   />
                   <button
                     aria-label="Remove image"
@@ -176,8 +196,11 @@ export function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
             </div>
           )}
 
-          <form className="p-4 border-t flex gap-2" onSubmit={handleFormSubmit}>
-            <input
+          <form
+            className="p-4 border-t flex gap-2 items-end"
+            onSubmit={handleFormSubmit}
+          >
+            <Input
               ref={fileInputRef}
               multiple
               accept="image/*"
@@ -195,10 +218,9 @@ export function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
             >
               <ImageIcon className="h-5 w-5" />
             </Button>
-            <Textarea
-              className="flex-1 min-h-[40px] resize-none"
+            <AutoExpandingTextarea
+              className="w-full"
               placeholder="Nhập câu hỏi của bạn..."
-              rows={1}
               value={input}
               onChange={handleInputChange}
             />

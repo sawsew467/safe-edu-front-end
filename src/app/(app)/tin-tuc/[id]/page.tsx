@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TypeNews } from "@/features/news/news.type";
 import { ArticleCard } from "@/features/news/components/artical-card";
+import constants from "@/settings/constants";
 
 type Params = Promise<{ id: string }>;
 
@@ -21,7 +22,7 @@ export async function generateMetadata({ params }: { params: Params }) {
 }
 
 const fetchNewsById = async (id: string) => {
-  const res = await fetch(`https://api-dev.fuses.fun/news/${id}`);
+  const res = await fetch(`${constants.API_SERVER}/news/${id}`);
 
   const data = await res.json();
 
@@ -29,7 +30,7 @@ const fetchNewsById = async (id: string) => {
 };
 
 const fetchRelatedNews = async (topicId: string, newDetailId: string) => {
-  const res = await fetch("https://api-dev.fuses.fun/news");
+  const res = await fetch(`${constants.API_SERVER}/news`);
 
   const data = await res.json();
 
@@ -48,7 +49,7 @@ const fetchRelatedNews = async (topicId: string, newDetailId: string) => {
 };
 
 const fetchLatestNews = async (newDetailId: string) => {
-  const res = await fetch("https://api-dev.fuses.fun/news");
+  const res = await fetch(`${constants.API_SERVER}/news`);
 
   const data = await res.json();
 

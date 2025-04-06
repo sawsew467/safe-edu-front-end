@@ -23,6 +23,8 @@ export function FloatingChatButton() {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  console.log("🚀 ~ FloatingChatButton ~ imagePreview:", imagePreview);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const fileButtonRef = useRef<HTMLButtonElement>(null);
@@ -116,7 +118,9 @@ export function FloatingChatButton() {
 
       // Submit the form after a short delay to ensure the input is updated
       setTimeout(() => {
-        handleSubmit(e);
+        handleSubmit(e, {
+          // experimental_attachments: selectedImage,
+        });
       }, 100);
     } else {
       // Just submit the text input

@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Library } from "@/features/library/library.type";
 import { ResourceCard } from "@/features/library/components/resource-card";
+import constants from "@/settings/constants";
 
 type Params = Promise<{ id: string }>;
 
@@ -17,7 +18,7 @@ export async function generateMetadata({ params }: { params: Params }) {
 }
 
 const fetchLibraryById = async (id: string) => {
-  const res = await fetch(`https://api-dev.fuses.fun/categories/${id}`);
+  const res = await fetch(`${constants.API_SERVER}/categories/${id}`);
 
   const data = await res.json();
 
@@ -28,7 +29,7 @@ const fetchRelatedLibraries = async (
   topicId: string,
   libraryDetailId: string
 ) => {
-  const res = await fetch("https://api-dev.fuses.fun/categories");
+  const res = await fetch(`${constants.API_SERVER}/categories`);
 
   const data = await res.json();
 
