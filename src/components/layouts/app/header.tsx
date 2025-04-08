@@ -2,7 +2,9 @@ import Link from "next/link";
 import React from "react";
 import Image from "next/image";
 
-function MarketingHeader() {
+import { Button } from "@/components/ui/button";
+
+function AppHeader() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between m-auto px-4">
@@ -38,14 +40,17 @@ function MarketingHeader() {
             Thư viện
           </Link>
         </nav>
-        {/* <div className="flex items-center gap-4">
-          <Button className="bg-[#8BC34A] hover:bg-[#7CB342]">
-            Khám phá ngay
-          </Button>
-        </div> */}
+        <div className="flex items-center gap-4">
+          <Link href="/dang-nhap">
+            <Button variant="outline">Đăng nhập</Button>
+          </Link>
+          <Link href="/dang-ky">
+            <Button variant="default">Đăng ký</Button>
+          </Link>
+        </div>
       </div>
     </header>
   );
 }
 
-export default MarketingHeader;
+export default AppHeader;

@@ -51,7 +51,7 @@ export default function DashboardLayout({
 
   useLayoutEffect(() => {
     if (!userInfo) {
-      router.replace("/dang-nhap");
+      router.replace("/quan-tri/dang-nhap");
     }
   }, [userInfo]);
 

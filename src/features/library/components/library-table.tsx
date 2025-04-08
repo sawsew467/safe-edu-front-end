@@ -5,7 +5,7 @@ import { useGetAllLibraryQuery } from "../api";
 import { Library } from "../library.type";
 
 import DataTable from "@/components/data-table/data-table";
-import { columns } from "@/app/quan-tri/thu-vien/columns";
+import { columns } from "@/app/quan-tri/(dashboard)/thu-vien/columns";
 import { useGetAllTopicQuery } from "@/features/topic/api";
 import { DataTopic } from "@/features/topic/topic.type";
 import useBreadcrumb from "@/hooks/useBreadcrumb";

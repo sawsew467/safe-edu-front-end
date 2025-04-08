@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 
-import { LoginForm } from "@/features/auth/components/login-form";
+import { LoginForm } from "@/features/auth/components/admin-login-form";
 
 export const metadata: Metadata = {
   title: "Đăng nhập",
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 function Page() {
   return (
-    <div className="flex     h-screen w-full items-center justify-center px-4">
+    <div className="flex h-screen w-full items-center justify-center px-4">
       <LoginForm />
     </div>
   );

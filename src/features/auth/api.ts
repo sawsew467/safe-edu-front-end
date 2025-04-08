@@ -12,7 +12,39 @@ export const authAPI = baseApi.injectEndpoints({
         flashError: true,
       }),
     }),
+    sendOtp: build.mutation({
+      query: (data) => ({
+        url: "/auth/send-otp",
+        method: "POST",
+        body: data,
+      }),
+    }),
+    verifyOtp: build.mutation({
+      query: (data) => ({
+        url: "/auth/verify-otp",
+        method: "POST",
+        body: data,
+      }),
+    }),
+    getProvinces: build.query({
+      query: () => ({
+        url: "/provinces/provinces",
+        method: "GET",
+      }),
+    }),
+    getOrganizations: build.query({
+      query: () => ({
+        url: "/organizations",
+        method: "GET",
+      }),
+    }),
   }),
 });
 
-export const { useLoginWithGoogleMutation } = authAPI;
+export const {
+  useLoginWithGoogleMutation,
+  useSendOtpMutation,
+  useVerifyOtpMutation,
+  useGetProvincesQuery,
+  useGetOrganizationsQuery,
+} = authAPI;
