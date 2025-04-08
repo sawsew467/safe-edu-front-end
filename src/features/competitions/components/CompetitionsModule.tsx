@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { useRouter } from "next-nprogress-bar";
 
 import { Competitions } from "../type.competitions";
 import { useGetAllCompetitionsQuery } from "../api.competitions";
@@ -8,7 +9,7 @@ import CardList from "@/components/ui/data-card";
 import { columns } from "@/app/(dashboard)/cuoc-thi/columns.competitions";
 import { StatusCompetition } from "@/settings/enums";
 const CompetitionsModule = () => {
-  const [isopen, setOpenDialog] = React.useState(false);
+  const router = useRouter();
   const { competitions, isFetching } = useGetAllCompetitionsQuery(undefined, {
     selectFromResult: ({ data, isFetching }) => ({
       competitions:
@@ -20,9 +21,17 @@ const CompetitionsModule = () => {
       isFetching,
     }),
   });
+  const handleRowClick = ({ data }: { data: Competitions }) => {
+    router.push(`/cuoc-thi/${data._id}`);
+  };
 
   return (
-    <CardList columns={columns} data={competitions} isLoading={isFetching} />
+    <CardList
+      columns={columns}
+      data={competitions}
+      isLoading={isFetching}
+      onRowClick={handleRowClick}
+    />
   );
 };
 

@@ -1,3 +1,5 @@
+import { QuizzType } from "@/settings/enums";
+
 export interface Competitions {
   _id: string;
   isActive: boolean;
@@ -14,4 +16,24 @@ export interface Competitions {
   created_at: string;
   updated_at: string;
   id: string;
+}
+
+export interface Question {
+  _id: string;
+  question: string | null;
+  answer: (string | undefined)[];
+  correct_answer?: string | null;
+  image?: string;
+  options?: {
+    timeLimit: string | null;
+    point: string | null;
+  };
+}
+export interface Quizz {
+  _id: string;
+  title: string;
+  type: keyof typeof QuizzType;
+  slug: string;
+  isActive: boolean;
+  status: string;
 }

@@ -12,12 +12,16 @@ import { Separator } from "@/components/ui/separator";
 import TitlePage from "@/components/ui/title-page";
 import { formatDate } from "@/utils/format-date";
 import useBreadcrumb from "@/hooks/useBreadcrumb";
+import { useAppSelector } from "@/hooks/redux-toolkit";
 
 export default function StudentProfileModule() {
   const { id } = useParams();
   const { data: StudentProfile, isFetching } = useGetStudentByIdQuery({
     id,
   });
+  const { userId } = useAppSelector((state) => state.auth.user_role) ?? {
+    userId: null,
+  };
 
   useBreadcrumb([
     {
@@ -32,9 +36,11 @@ export default function StudentProfileModule() {
   return (
     <>
       <TitlePage
-        contentHref="Chỉnh sửa thông tin"
-        href={`/nguoi-dung/hoc-sinh/${id}/chinh-sua`}
-        startIcon={<Edit />}
+        contentHref={userId === id ? "Chỉnh sửa thông tin" : undefined}
+        href={
+          userId === id ? `/nguoi-dung/hoc-sinh/${id}/chinh-sua` : undefined
+        }
+        startIcon={userId === id ? <Edit /> : undefined}
         title="Trang cá nhân"
       />
       {isFetching ? (

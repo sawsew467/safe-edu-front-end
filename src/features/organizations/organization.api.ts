@@ -51,7 +51,7 @@ export const authAPI = baseApi.injectEndpoints({
       invalidatesTags: (result, error) => {
         if (error) return [];
 
-        return ["Organizations"];
+        return ["Organizations", "Manager"];
       },
     }),
     deleteOrganization: build.mutation({

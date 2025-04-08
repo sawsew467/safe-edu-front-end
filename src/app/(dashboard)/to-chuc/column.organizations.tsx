@@ -165,7 +165,7 @@ const ActionRow = ({ row }: { row: Row<OrganizationColumn> }) => {
                 className="flex gap-2 px-2 py-1 justify-start w-full"
                 href={`/to-chuc/${row.original._id}`}
               >
-                <Eye className="h-4 w-4 text-green-500" />
+                <Eye className="h-4 w-4 text-blue-500" />
                 {<span className="">{"Xem"}</span>}
               </Link>
             </DialogTrigger>

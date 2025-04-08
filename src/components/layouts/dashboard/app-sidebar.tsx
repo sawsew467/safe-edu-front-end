@@ -24,7 +24,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { cn } from "@/utils/cn";
-import useRoles from "@/hooks/use-roles";
+import { useAppSelector } from "@/hooks/redux-toolkit";
 
 const sideBarItems = [
   {
@@ -67,13 +67,23 @@ export function AppSidebar({
 } & React.ComponentProps<typeof Sidebar>) {
   const { open } = useSidebar();
   const pathname = usePathname();
-  const { isManager, isAdmin } = useRoles();
+  // const { isManager, isAdmin, isLoading, userId } = useRoles();
+  const { userInfo } = useAppSelector((state) => state.auth);
 
   const rootPath = pathname?.split("/")?.[1];
+
+  // const { manager } = useGetManagerQuery(userId, {
+  //   skip: isLoading || !isManager,
+  //   selectFromResult: ({ data }) => ({
+  //     manager: data?.isActive ? data : {},
+  //   }),
+  // });
 
   React.useEffect(() => {
     setIsOpen(open);
   }, [open, setIsOpen]);
+
+  // if (!isLoading && !isAdmin && !isManager) return <div />;
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -91,7 +101,14 @@ export function AppSidebar({
             src="/images/logo/logo.png"
             width={100}
           />
-          {open && <h3 className="text-xl font-bold">SafeEdu</h3>}
+          {open && (
+            // isManager ? (
+            //   <h3 className="text-xl font-bold">
+            //     {manager?.organizationId?.at(0)?.slug}
+            //   </h3>
+            // ) :
+            <h3 className="text-xl font-bold">SafeEdu</h3>
+          )}
         </div>
       </SidebarHeader>
       <SidebarContent>

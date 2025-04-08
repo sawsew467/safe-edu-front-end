@@ -23,6 +23,7 @@ import SortModal from "@/components/ui/sort-table";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { DataTablePagination } from "@/components/data-table/data-table-pagination";
+import { cn } from "@/lib/utils";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -106,7 +107,7 @@ export default function CardList<TData, TValue>({
             return (
               <Card
                 key={row.id}
-                className="p-4"
+                className={cn("p-4", onRowClick && "cursor-pointer")}
                 onClick={() => {
                   if (onRowClick)
                     onRowClick({

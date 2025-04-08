@@ -122,7 +122,8 @@ function DragZone({
   return (
     <React.Fragment>
       <button
-        className={`${value ? "" : "max-h-[300px] py-10"} w-full text-center overflow-y-auto ${value ? "border-solid" : "border-dashed"} border-2 rounded-md h-fit ${dragActive == 2 ? "cursor-not-allowed" : "cursor-pointer"} ${file ? (error ? "border-red-500" : "border-green-500") : dragActive === 2 ? "border-primary" : dragActive === 1 ? "border-orange-200" : "border-primary/40"}`}
+        className={`${value ? "" : "max-h-[300px] py-10"} w-full text-center overflow-y-auto ${value ? "border-solid" : "border-dashed"} border-2 rounded-md h-fit ${dragActive == 2 ? "cursor-not-allowed" : "cursor-pointer"} ${file ? (error ? "border-red-500" : value && "border-green-500") : dragActive === 2 ? "border-primary" : dragActive === 1 ? "border-orange-200" : "border-primary/40"}`}
+        type="button"
         onClick={handleClick}
         onDragEnter={handleDrag}
         onDragLeave={handleDrag}

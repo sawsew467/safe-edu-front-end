@@ -1,20 +1,15 @@
 import { ColumnDef, Row } from "@tanstack/react-table";
-import Image from "next/image";
 import {
   CheckCircledIcon,
   CrossCircledIcon,
   DotsHorizontalIcon,
-  TimerIcon,
 } from "@radix-ui/react-icons";
-import { Eye, Pencil } from "lucide-react";
+import { Eye, Pencil, TimerIcon } from "lucide-react";
 import { toast } from "sonner";
 import React from "react";
 import Link from "next/link";
 
-import { Competitions } from "@/features/competitions/type.competitions";
-import { isImageLink } from "@/utils/checkimage";
-import { formatDate } from "@/utils/format-date";
-import { filterDateRange } from "@/utils/table";
+import { Quizz } from "@/features/competitions/type.competitions";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,74 +24,45 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { StatusCompetition, StatusCompetitionVN } from "@/settings/enums";
 import { useDeleteCompetitionsMutation } from "@/features/competitions/api.competitions";
+import {
+  QuizzType,
+  StatusCompetition,
+  StatusCompetitionVN,
+} from "@/settings/enums";
+import { Badge } from "@/components/ui/badge";
 
-export interface ColumnCompetitions
-  extends Omit<Competitions, "organizations"> {
-  organizations: string;
-}
-
-export const columns: ColumnDef<ColumnCompetitions>[] = [
-  {
-    accessorKey: "image_url",
-    cell: ({ row }) => {
-      const image: string | null = isImageLink(row.getValue("image_url"))
-        ? row.getValue("image_url")
-        : row.getValue("image_url");
-
-      return image ? (
-        <div className="w-full h-52">
-          <Image
-            alt={`Ảnh có thể nói về ${row.original.title}`}
-            className="object-cover w-full h-full"
-            height={300}
-            src={image}
-            width={400}
-          />
-        </div>
-      ) : (
-        <p className="text-red-500 w-full flex justify-center items-center size-24">
-          * không tìm thấy ảnh
-        </p>
-      );
-    },
-    enableSorting: false,
-    enableColumnFilter: false,
-    enableGlobalFilter: false,
-  },
+export const columns: ColumnDef<Quizz>[] = [
   {
     accessorKey: "title",
+    header: "Tiêu đề",
     cell: ({ row }) => (
-      <p className="flex w-full justify-center text-lg">
-        {row.getValue("title")}
-      </p>
+      <p className="w-full text-lg">{row.getValue("title")}</p>
     ),
     meta: {
       filterVariant: "search",
     },
   },
   {
-    accessorKey: "description",
+    accessorKey: "type",
+    header: "Thể loại",
+    cell: ({ row }) => {
+      const type: keyof typeof QuizzType = row.getValue("type");
 
-    cell: ({ row }) => (
-      <p className="flex w-full justify-start mb-2 text-sm">
-        {row.getValue("description")}
-      </p>
-    ),
-    meta: {
-      filterVariant: "search",
+      return type ? (
+        <Badge className="flex justify-start mb-2 text-sm">
+          {QuizzType[type]}
+        </Badge>
+      ) : (
+        <p className="flex justify-start mb-2 text-sm">Không có</p>
+      );
     },
-  },
-  {
-    accessorKey: "organizations",
-    header: "Tổ chức",
     meta: {
       filterVariant: "select",
     },
   },
   {
-    accessorKey: "status",
+    accessorKey: "isActive",
     header: "Trạng thái",
     cell: ({ row }) => getStatus(row),
     enableSorting: false,
@@ -106,51 +72,10 @@ export const columns: ColumnDef<ColumnCompetitions>[] = [
     },
   },
   {
-    accessorKey: "create_at",
-    header: "Ngày tạo",
-    cell: ({ row }) => {
-      const createDate = formatDate(
-        row.original.updated_at ?? row.getValue("created_at"),
-      );
-
-      return <p>{createDate}</p>;
-    },
-    meta: {
-      filterVariant: "dateRange",
-    },
-    filterFn: filterDateRange,
-  },
-  {
-    header: "Các ngày diễn ra",
-    cell: ({ row }) => {
-      const startDate = formatDate(row.original.startDate, "DD/MM/yyyy");
-      const endDate = formatDate(row.original.endDate, "DD/MM/yyyy");
-
-      return (
-        <div className="space-y-2">
-          <p>
-            {startDate} - {endDate}
-          </p>
-        </div>
-      );
-    },
-    meta: {
-      filterVariant: "dateRange",
-    },
-    filterFn: filterDateRange,
-  },
-  {
-    accessorKey: "create_by",
-    header: "Người tạo",
+    accessorKey: "slug",
+    header: "Mã định danh",
     meta: {
       filterVariant: "search",
-    },
-  },
-  {
-    accessorKey: "number_join",
-    header: "Tổng người tham gia",
-    meta: {
-      filterVariant: "numberRange",
     },
   },
   {
@@ -159,15 +84,16 @@ export const columns: ColumnDef<ColumnCompetitions>[] = [
   },
 ];
 
-const getStatus = (row: Row<ColumnCompetitions>) => {
+const getStatus = (row: Row<Quizz>) => {
   const status = {
-    value: row.original.status as keyof typeof StatusCompetitionVN,
+    value:
+      StatusCompetitionVN[
+        row.original.status as keyof typeof StatusCompetitionVN
+      ],
     label: row.original.status as keyof typeof StatusCompetitionVN,
   };
 
-  console.log("status", status);
-
-  switch (status?.value) {
+  switch (status?.label) {
     case StatusCompetition.Upcoming:
       return (
         <div className="flex items-center text-yellow-500">
@@ -199,7 +125,7 @@ const getStatus = (row: Row<ColumnCompetitions>) => {
   }
 };
 
-const Action = (row: Row<ColumnCompetitions>) => {
+const Action = (row: Row<Quizz>) => {
   const [isopen, setOpenDialog] = React.useState(false);
   const [deleteNews] = useDeleteCompetitionsMutation();
   const handleDeleteCompetitions = async (id: string) => {

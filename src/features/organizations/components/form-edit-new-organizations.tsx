@@ -27,8 +27,21 @@ import { Spinner } from "@/components/ui/spinner";
 type Props = {};
 
 const formSchema = z.object({
-  name: z.string().min(1, { message: "Đây là trường bắt buộc." }),
-  province_id: z.string().min(1, { message: "Đây là trường bắt buộc." }),
+  name: z
+    .string({ message: "Đây là trường bắt buộc." })
+    .min(1, { message: "Đây là trường bắt buộc." }),
+  province_id: z
+    .string({ message: "Đây là trường bắt buộc." })
+    .min(1, { message: "Đây là trường bắt buộc." }),
+  slug: z
+    .string()
+    .min(3, "Slug phải có ít nhất 3 ký tự")
+    .max(50, "Slug không được vượt quá 50 ký tự")
+    .regex(
+      /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+      "Slug chỉ được chứa chữ thường, số và dấu gạch ngang (-)",
+    ),
+  email: z.string().email({ message: "định dạng email không đúng" }),
 });
 
 function FormEditOrganizations({
@@ -51,6 +64,7 @@ function FormEditOrganizations({
           ? {
               name: data?.name,
               province_id: data?.province_id?.[0]?._id,
+              slug: data?.slug,
             }
           : {},
         isFetching,
@@ -144,6 +158,44 @@ function FormEditOrganizations({
                 </FormControl>
                 <FormDescription>
                   Chọn tỉnh thành quan sát của quan sát viên này.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {/* <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <InputEmail {...field} />
+                </FormControl>
+                <FormDescription>
+                  Email của quản lí viên sẽ quản lí tổ chức này.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          /> */}
+          <FormField
+            control={form.control}
+            name="slug"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Chuỗi định danh</FormLabel>
+                <FormControl>
+                  <Input
+                    className=""
+                    placeholder="Chuỗi định danh"
+                    type="text"
+                    {...field}
+                  />
+                </FormControl>
+                <FormDescription>
+                  Đây là đường dẫn dẫn đến tổ chức, chỉ được chứa chữ, số và dấu
+                  gạch ngang.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
