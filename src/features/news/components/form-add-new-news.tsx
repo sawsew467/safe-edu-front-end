@@ -92,14 +92,14 @@ const FormAddNews = () => {
     try {
       await addNewNews(data).unwrap();
       toast.success("Thêm bài báo thành công", { id: toastID });
-      router.replace("/tin-tuc");
+      handleRouterBack();
     } catch (err) {
       toast.error("Thêm bài báo thất bại", { id: toastID });
     }
   };
 
   const handleRouterBack = () => {
-    router.replace("/tin-tuc");
+    router.back();
   };
 
   return (

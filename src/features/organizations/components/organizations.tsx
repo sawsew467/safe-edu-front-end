@@ -6,7 +6,6 @@ import { Organization } from "../types";
 
 import FormAddNewOrganizations from "./form-add-new-organizations";
 
-import { columns } from "@/app/(dashboard)/to-chuc/column.organizations";
 import CardList from "@/components/ui/data-card";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,6 +14,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { columns } from "@/app/quan-tri/to-chuc/column.organizations";
 
 const OrganizationsManagement = () => {
   const [isopen, setOpenDialog] = React.useState(false);
@@ -34,7 +34,7 @@ const OrganizationsManagement = () => {
     <>
       <div className="flex w-full justify-between">
         <h3 className="text-2xl font-bold mb-4">Quản lý tổ chức</h3>
-        <Dialog open={isopen}>
+        <Dialog open={isopen} onOpenChange={setOpenDialog}>
           <DialogTrigger asChild className="w-fit h-fit">
             <Button
               className="ml-auto"

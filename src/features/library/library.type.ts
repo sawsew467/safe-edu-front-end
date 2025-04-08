@@ -1,10 +1,11 @@
 export type Library = {
   _id: string;
   category_name: string;
-  image_url: any;
+  image: string;
   description: string;
   topic_id: string;
   isActive: boolean;
+  created_at: string;
 };
 
 export type TypeAddNewLibrary = {

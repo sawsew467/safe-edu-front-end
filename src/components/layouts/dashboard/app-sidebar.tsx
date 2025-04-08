@@ -29,7 +29,7 @@ import { useAppSelector } from "@/hooks/redux-toolkit";
 const sideBarItems = [
   {
     name: "Trang chủ",
-    url: "/trang-chu",
+    url: "/thong-ke",
     icon: Home,
   },
   {
@@ -70,7 +70,9 @@ export function AppSidebar({
   // const { isManager, isAdmin, isLoading, userId } = useRoles();
   const { userInfo } = useAppSelector((state) => state.auth);
 
-  const rootPath = pathname?.split("/")?.[1];
+  const rootPath = pathname?.split("/")?.[2];
+
+  console.log("🚀 ~ rootPath:", rootPath);
 
   // const { manager } = useGetManagerQuery(userId, {
   //   skip: isLoading || !isManager,
@@ -91,7 +93,7 @@ export function AppSidebar({
         <div
           className={cn(
             "flex gap-2 items-center transition-all",
-            open ? "p-2" : "p-0",
+            open ? "p-2" : "p-0"
           )}
         >
           <Image
@@ -119,10 +121,10 @@ export function AppSidebar({
                 <SidebarMenuButton
                   asChild
                   className={cn(
-                    item.url === `/${rootPath}` && " bg-sidebar-accent",
+                    item.url === `/${rootPath}` && "bg-sidebar-accent"
                   )}
                 >
-                  <Link href={item.url}>
+                  <Link href={`/quan-tri${item.url}`}>
                     <item.icon />
                     <span>{item.name}</span>
                   </Link>

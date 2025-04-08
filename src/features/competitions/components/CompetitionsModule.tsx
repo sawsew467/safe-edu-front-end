@@ -6,9 +6,12 @@ import { Competitions } from "../type.competitions";
 import { useGetAllCompetitionsQuery } from "../api.competitions";
 
 import CardList from "@/components/ui/data-card";
-import { columns } from "@/app/(dashboard)/cuoc-thi/columns.competitions";
+import { columns } from "@/app/quan-tri/cuoc-thi/columns.competitions";
 import { StatusCompetition } from "@/settings/enums";
+import TitlePage from "@/components/ui/title-page";
+
 const CompetitionsModule = () => {
+  const [isopen, setOpenDialog] = React.useState(false);
   const router = useRouter();
   const { competitions, isFetching } = useGetAllCompetitionsQuery(undefined, {
     selectFromResult: ({ data, isFetching }) => ({
@@ -22,16 +25,23 @@ const CompetitionsModule = () => {
     }),
   });
   const handleRowClick = ({ data }: { data: Competitions }) => {
-    router.push(`/cuoc-thi/${data._id}`);
+    router.push(`/quan-tri/cuoc-thi/${data._id}`);
   };
 
   return (
-    <CardList
-      columns={columns}
-      data={competitions}
-      isLoading={isFetching}
-      onRowClick={handleRowClick}
-    />
+    <>
+      <TitlePage
+        contentHref="Thêm cuộc thi mới"
+        href="/quan-tri/cuoc-thi/them-cuoc-thi"
+        title="Quản lí cuộc thi"
+      />
+      <CardList
+        columns={columns}
+        data={competitions}
+        isLoading={isFetching}
+        onRowClick={handleRowClick}
+      />
+    </>
   );
 };
 

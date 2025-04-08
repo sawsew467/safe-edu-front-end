@@ -2,7 +2,7 @@ import React from "react";
 
 import TitlePage from "@/components/ui/title-page";
 import DataTable from "@/components/data-table/data-table";
-import { columns } from "@/app/(dashboard)/cuoc-thi/[id]/columns.contestant";
+import { columns } from "@/app/quan-tri/cuoc-thi/[id]/columns.contestant";
 import { useGetAllStudentsQuery } from "@/features/users/api/student.api";
 import { Student } from "@/features/users/user.types";
 

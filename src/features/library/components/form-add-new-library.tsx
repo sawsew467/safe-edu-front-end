@@ -99,7 +99,7 @@ const FormAddNewLibrary = () => {
     try {
       await addNewLibrary(data).unwrap();
       toast.success("Thêm thư viện thành công", { id: toasID });
-      router.replace("/thu-vien");
+      handleRouterBack();
     } catch (err) {
       toast.error("Thêm thư viện thất bại", { id: toasID });
     }

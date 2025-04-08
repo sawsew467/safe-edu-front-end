@@ -4,7 +4,7 @@ import React from "react";
 import { Citizens } from "../../user.types";
 import { useGetAllCitizensQuery } from "../../api/citizen.api";
 
-import { columns } from "@/app/(dashboard)/nguoi-dung/cong-dan/citizen.columns";
+import { columns } from "@/app/quan-tri/nguoi-dung/cong-dan/citizen.columns";
 import DataTable from "@/components/data-table/data-table";
 import TitlePage from "@/components/ui/title-page";
 
@@ -20,7 +20,7 @@ const CitizenManagement = () => {
           })) ?? [],
         isFetching,
       }),
-    },
+    }
   );
 
   return (

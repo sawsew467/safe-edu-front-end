@@ -16,7 +16,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { columns } from "@/app/(dashboard)/cuoc-thi/columns.quizz";
+import { columns } from "@/app/quan-tri/cuoc-thi/columns.quizz";
 import { StatusCompetition } from "@/settings/enums";
 
 const QuizzManagement = () => {
@@ -35,11 +35,13 @@ const QuizzManagement = () => {
   }));
 
   const closeDialogQuestion = () => {
-    router.push(`/cuoc-thi/${idCompetitions}?tab=cac-cuoc-thi`);
+    router.push(`/quan-tri/cuoc-thi/${idCompetitions}?tab=cac-cuoc-thi`);
   };
 
   const handleRowClick = ({ data }: { data: Quizz }) => {
-    router.push(`/cuoc-thi/${idCompetitions}?tab=cac-cuoc-thi&id=${data._id}`);
+    router.push(
+      `/quan-tri/cuoc-thi/${idCompetitions}?tab=cac-cuoc-thi&id=${data._id}`,
+    );
   };
 
   return (

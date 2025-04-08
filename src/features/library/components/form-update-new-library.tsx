@@ -88,7 +88,7 @@ const FormUpdateLibrary = () => {
   }, [library]);
 
   const handleRouterBack = () => {
-    router.replace("/thu-vien");
+    router.back();
   };
 
   const handleDeleteTopic = async (id: string) => {
@@ -124,7 +124,7 @@ const FormUpdateLibrary = () => {
     try {
       await updateLibrary({ params: { id }, body: data }).unwrap();
       toast.success("Thay đổi nội dung thư viện thành công");
-      router.replace("/thu-vien");
+      handleRouterBack();
     } catch (err) {}
   };
 

@@ -108,11 +108,18 @@ export default function CardList<TData, TValue>({
               <Card
                 key={row.id}
                 className={cn("p-4", onRowClick && "cursor-pointer")}
-                onClick={() => {
-                  if (onRowClick)
-                    onRowClick({
-                      data: record,
-                    });
+                onClick={(event) => {
+                  if (onRowClick) {
+                    const isInteractiveElement = (
+                      event.target as HTMLElement
+                    ).closest("a, button");
+
+                    if (!isInteractiveElement) {
+                      onRowClick({
+                        data: record,
+                      });
+                    }
+                  }
                 }}
               >
                 <div className="space-y-2 h-full flex flex-col justify-between">
