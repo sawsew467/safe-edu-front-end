@@ -54,7 +54,7 @@ function FormAddNewOrganizations({ setOpenDialog }: Props) {
   const { pronvinces } = useGetAllProvinceQuery(undefined, {
     selectFromResult: ({ data }) => ({
       pronvinces:
-        data?.items.map((item: { name: string; _id: string }) => ({
+        data?.data?.items?.map((item: { name: string; _id: string }) => ({
           label: item?.name,
           value: item?._id,
         })) ?? [],

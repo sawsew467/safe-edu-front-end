@@ -65,8 +65,8 @@ export const fakeData: Quizz[] = [
 ];
 
 export const quizzType = [
-  { label: QuizzType.SingleChoice, value: "SingleChoice" },
-  { label: QuizzType.PaintingPropaganda, value: "PaintingPropaganda" },
-  { label: QuizzType.Practical, value: "Practical" },
-  { label: QuizzType.SocialThinking, value: "SocialThinking" },
+  { label: QuizzType.SingleChoice, value: QuizzType.SingleChoice },
+  { label: QuizzType.PaintingPropaganda, value: QuizzType.PaintingPropaganda },
+  { label: QuizzType.Practical, value: QuizzType.Practical },
+  { label: QuizzType.SocialThinking, value: QuizzType.SocialThinking },
 ];

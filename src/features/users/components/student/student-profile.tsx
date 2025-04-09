@@ -16,9 +16,17 @@ import { useAppSelector } from "@/hooks/redux-toolkit";
 
 export default function StudentProfileModule() {
   const { id } = useParams();
-  const { data: StudentProfile, isFetching } = useGetStudentByIdQuery({
-    id,
-  });
+  const { StudentProfile, isFetching } = useGetStudentByIdQuery(
+    {
+      id,
+    },
+    {
+      selectFromResult: ({ data, isFetching }) => ({
+        StudentProfile: data?.data,
+        isFetching,
+      }),
+    },
+  );
   const { userId } = useAppSelector((state) => state.auth.user_role) ?? {
     userId: null,
   };

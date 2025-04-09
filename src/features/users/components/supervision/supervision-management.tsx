@@ -14,13 +14,13 @@ const SuperVisionManagement = () => {
     {
       selectFromResult: ({ data, isFetching }) => ({
         adminData:
-          data?.items?.map((item: Supervision) => ({
+          data?.data?.items?.map((item: Supervision) => ({
             ...item,
             full_name: `${item.first_name} ${item.last_name}`,
           })) ?? [],
         isFetching,
       }),
-    }
+    },
   );
 
   return (

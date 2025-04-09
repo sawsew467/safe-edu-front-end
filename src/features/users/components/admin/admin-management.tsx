@@ -12,10 +12,10 @@ const AdminManagement = () => {
     {},
     {
       selectFromResult: ({ data, isFetching }) => ({
-        adminData: data?.items ?? [],
+        adminData: data?.data?.items ?? [],
         isFetching,
       }),
-    }
+    },
   );
 
   return (

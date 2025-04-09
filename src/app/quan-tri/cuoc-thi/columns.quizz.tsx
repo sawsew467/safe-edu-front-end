@@ -4,7 +4,7 @@ import {
   CrossCircledIcon,
   DotsHorizontalIcon,
 } from "@radix-ui/react-icons";
-import { Eye, Pencil, TimerIcon } from "lucide-react";
+import { Eye, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import React from "react";
 import Link from "next/link";
@@ -25,11 +25,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useDeleteCompetitionsMutation } from "@/features/competitions/api.competitions";
-import {
-  QuizzType,
-  StatusCompetition,
-  StatusCompetitionVN,
-} from "@/settings/enums";
 import { Badge } from "@/components/ui/badge";
 
 export const columns: ColumnDef<Quizz>[] = [
@@ -47,12 +42,10 @@ export const columns: ColumnDef<Quizz>[] = [
     accessorKey: "type",
     header: "Thể loại",
     cell: ({ row }) => {
-      const type: keyof typeof QuizzType = row.getValue("type");
+      const type = row.getValue("type");
 
       return type ? (
-        <Badge className="flex justify-start mb-2 text-sm">
-          {QuizzType[type]}
-        </Badge>
+        <Badge className="flex justify-start mb-2 text-sm">{`${type}`}</Badge>
       ) : (
         <p className="flex justify-start mb-2 text-sm">Không có</p>
       );
@@ -72,57 +65,25 @@ export const columns: ColumnDef<Quizz>[] = [
     },
   },
   {
-    accessorKey: "slug",
-    header: "Mã định danh",
-    meta: {
-      filterVariant: "search",
-    },
-  },
-  {
     id: "actions",
     cell: ({ row }) => Action(row),
   },
 ];
 
 const getStatus = (row: Row<Quizz>) => {
-  const status = {
-    value:
-      StatusCompetitionVN[
-        row.original.status as keyof typeof StatusCompetitionVN
-      ],
-    label: row.original.status as keyof typeof StatusCompetitionVN,
-  };
+  const status = row.original.status;
 
-  switch (status?.label) {
-    case StatusCompetition.Upcoming:
-      return (
-        <div className="flex items-center text-yellow-500">
-          <TimerIcon className="mr-2 h-4 w-4 text-yellow-500" />
-          <p className="text-sm">{status?.label}</p>
-        </div>
-      );
-    case StatusCompetition.Outgoing:
-      return (
-        <div className="flex items-center text-red-500">
-          <CrossCircledIcon className="mr-2 h-4 w-4 text-red-500" />
-          <p className="text-sm">{status?.label}</p>
-        </div>
-      );
-    case StatusCompetition.Ongoing:
-      return (
-        <div className="flex items-center text-green-500">
-          <CheckCircledIcon className="mr-2 h-4 w-4 text-green-500" />
-          <p className="text-sm">{status?.label}</p>
-        </div>
-      );
-    default:
-      return (
-        <div className="flex items-center text-red-500">
-          <CheckCircledIcon className="mr-2 h-4 w-4 text-red-500" />
-          <p className="text-sm">Đã kết thúc</p>
-        </div>
-      );
-  }
+  return status ? (
+    <div className="flex items-center text-green-500">
+      <CheckCircledIcon className="mr-2 h-4 w-4 text-green-500" />
+      <p className="text-sm">{status}</p>
+    </div>
+  ) : (
+    <div className="flex items-center text-red-500">
+      <CrossCircledIcon className="mr-2 h-4 w-4 text-red-500" />
+      <p className="text-sm">{status}</p>
+    </div>
+  );
 };
 
 const Action = (row: Row<Quizz>) => {

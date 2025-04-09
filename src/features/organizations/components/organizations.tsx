@@ -21,7 +21,7 @@ const OrganizationsManagement = () => {
   const { organizations, isFetching } = useGetAllOrganizationQuery(undefined, {
     selectFromResult: ({ data, isFetching }) => ({
       organizations:
-        data?.items?.map((item: Organization) => ({
+        data?.data?.items?.map((item: Organization) => ({
           ...item,
           province_name: item?.province_id?.name,
           status: item?.isActive ? "Hoạt động" : "Tạm dừng",

@@ -34,6 +34,7 @@ import {
   useDeleteTopicMutation,
   useGetAllTopicQuery,
 } from "@/features/topic/api";
+import { DataTopic } from "@/features/topic/topic.type";
 const initialNews = {
   title: undefined,
   thumbnail: undefined,
@@ -45,10 +46,11 @@ const FormAddNews = () => {
 
   const { dataTopic, isTopicLoading } = useGetAllTopicQuery(undefined, {
     selectFromResult: ({ data: topic, isFetching }) => {
-      const data = topic?.data?.filter((topic) => topic.isActive) ?? [];
+      const data =
+        topic?.data?.data?.filter((topic: DataTopic) => topic.isActive) ?? [];
 
       return {
-        dataTopic: data?.map((topic) => ({
+        dataTopic: data?.map((topic: DataTopic) => ({
           value: topic?._id,
           label: topic?.topic_name,
         })),
@@ -147,15 +149,17 @@ const FormAddNews = () => {
                   isAddItemLoading={isAddTopicLoading}
                   onAddItem={handleAddNewTopic}
                 >
-                  {dataTopic.map(({ label, value }) => (
-                    <SelectItem
-                      key={value}
-                      value={value}
-                      onDeleteItem={handleDeleteTopic}
-                    >
-                      {label}
-                    </SelectItem>
-                  ))}
+                  {dataTopic.map(
+                    ({ label, value }: { label: string; value: string }) => (
+                      <SelectItem
+                        key={value}
+                        value={value}
+                        onDeleteItem={handleDeleteTopic}
+                      >
+                        {label}
+                      </SelectItem>
+                    ),
+                  )}
                 </SelectContent>
               </Select>
               <FormDescription>

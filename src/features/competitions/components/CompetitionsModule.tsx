@@ -16,7 +16,7 @@ const CompetitionsModule = () => {
   const { competitions, isFetching } = useGetAllCompetitionsQuery(undefined, {
     selectFromResult: ({ data, isFetching }) => ({
       competitions:
-        data?.items?.map((item: Competitions) => ({
+        data?.data?.items?.map((item: Competitions) => ({
           ...item,
           status:
             StatusCompetition[item?.status as keyof typeof StatusCompetition],

@@ -15,9 +15,17 @@ import useBreadcrumb from "@/hooks/useBreadcrumb";
 
 export default function CitizenProfileModule() {
   const { id } = useParams();
-  const { data: citizenProfile, isFetching } = useGetCitizenByIdQuery({
-    id,
-  });
+  const { citizenProfile, isFetching } = useGetCitizenByIdQuery(
+    {
+      id,
+    },
+    {
+      selectFromResult: ({ data, isFetching }) => ({
+        citizenProfile: data?.data,
+        isFetching,
+      }),
+    },
+  );
 
   useBreadcrumb([
     {

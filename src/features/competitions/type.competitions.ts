@@ -24,11 +24,31 @@ export interface Question {
   answer: (string | undefined)[];
   correct_answer?: string | null;
   image?: string;
-  options?: {
-    timeLimit: string | null;
-    point: string | null;
-  };
+  time_limit: string | null;
+  point: string | null;
+  isSaveBefore?: boolean;
+  isSave?: boolean;
 }
+
+export interface QuestionQuizz {
+  quiz_id: Quizz[];
+  _id: string;
+  isActive: boolean;
+  deleted_at?: string | null;
+  deleted_by?: string | null;
+  created_by?: string | null;
+  update_by?: string | null;
+  question?: string | string;
+  answer: string[];
+  correct_answer: string;
+  time_limit: number;
+  point: number;
+  created_at: string;
+  updated_at: string;
+  __v: 0;
+  id: string;
+}
+
 export interface Quizz {
   _id: string;
   title: string;

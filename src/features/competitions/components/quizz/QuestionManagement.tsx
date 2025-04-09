@@ -5,6 +5,7 @@ import { useParams, useSearchParams } from "next/navigation";
 import { Quizz } from "../../type.competitions";
 import { fakeData } from "../../data.competitions";
 import QuestionManagement from "../question/question-management";
+import { useGetAllQuizzQuery } from "../../api.quizz";
 
 import FormAddNewQuizz from "./FormAddNewQuizz";
 
@@ -33,6 +34,17 @@ const QuizzManagement = () => {
       ? StatusCompetition[item.status as keyof typeof StatusCompetition]
       : "unkown",
   }));
+
+  const { quizzs, isFetching } = useGetAllQuizzQuery(undefined, {
+    selectFromResult: ({ data, isFetching }) => ({
+      quizzs:
+        data?.data?.items?.map((item: Quizz) => ({
+          ...item,
+          status: item?.isActive ? "Đang hoạt động" : "Ngừng hoạt động",
+        })) ?? [],
+      isFetching,
+    }),
+  });
 
   const closeDialogQuestion = () => {
     router.push(`/quan-tri/cuoc-thi/${idCompetitions}?tab=cac-cuoc-thi`);
@@ -73,7 +85,12 @@ const QuizzManagement = () => {
           </DialogContent>
         </Dialog>
       </div>
-      <CardList columns={columns} data={data} onRowClick={handleRowClick} />
+      <CardList
+        columns={columns}
+        data={quizzs}
+        isLoading={isFetching}
+        onRowClick={handleRowClick}
+      />
     </>
   );
 };

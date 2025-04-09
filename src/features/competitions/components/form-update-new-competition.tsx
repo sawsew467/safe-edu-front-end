@@ -43,7 +43,7 @@ const UpdateCompetitions = () => {
     {
       selectFromResult: ({ data, isFetching }) => {
         return {
-          competition: data,
+          competition: data?.data,
           isFetching,
         };
       },

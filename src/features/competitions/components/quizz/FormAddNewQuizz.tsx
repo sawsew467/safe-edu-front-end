@@ -1,5 +1,4 @@
 "use client";
-import { useRouter } from "next-nprogress-bar";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,22 +11,16 @@ const formSchema = z.object({
   type: z
     .string({ message: "Đây là trường bắt buộc." })
     .min(1, { message: "Đây là trường bắt buộc." }),
-  slug: z
-    .string()
-    .min(3, "Slug phải có ít nhất 3 ký tự")
-    .max(50, "Slug không được vượt quá 50 ký tự")
-    .regex(
-      /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
-      "Slug chỉ được chứa chữ thường, số và dấu gạch ngang (-)",
-    ),
 });
 
+import { toast } from "sonner";
+
 import { quizzType } from "../../data.competitions";
+import { useAddNewQuizzMutation } from "../../api.quizz";
 
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -42,14 +35,23 @@ const AddNewQuizz = ({
 }: {
   setOpenDialog: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const router = useRouter();
-
+  const [addQuizz, { isLoading }] = useAddNewQuizzMutation();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
-    console.log("data", data);
+    const idToast = toast.loading("Đang thêm mới phần thi");
+
+    addQuizz(data)
+      .unwrap()
+      .then(() => {
+        toast.success("Thêm mới phần thi thành công", { id: idToast });
+        setOpenDialog(false);
+      })
+      .catch((error) => {
+        toast.error(error.data.message, { id: idToast });
+      });
   };
   const handleBack = () => {
     setOpenDialog(false);
@@ -92,23 +94,6 @@ const AddNewQuizz = ({
                   onValueChange={field.onChange}
                 />
               </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="slug"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Mã định dang</FormLabel>
-              <FormControl>
-                <Input placeholder="nhập mã định danh" {...field} />
-              </FormControl>
-              <FormDescription>
-                Đây là đường dẫn dẫn đến cuộc thi, chỉ được chứa chữ, số và dấu
-                gạch ngang.
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}

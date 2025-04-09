@@ -43,8 +43,8 @@ export function LoginForm() {
 
       setClientCookie(constants.USER_INFO, JSON.stringify(resFirebase.user));
       dispatch(setUserInfo(resFirebase.user));
-      dispatch(setAccessToken(res?.accessToken));
-      dispatch(setUserRole(res?.accessToken));
+      dispatch(setAccessToken(res?.data?.accessToken));
+      dispatch(setUserRole(res?.data?.accessToken));
       router.push("/");
     } catch (error: any) {
       if (error?.status === 404) {

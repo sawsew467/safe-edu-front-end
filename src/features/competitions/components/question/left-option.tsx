@@ -9,10 +9,10 @@ const initialQuestion: Question = {
   question: "",
   correct_answer: "",
   answer: [],
-  options: {
-    timeLimit: "20",
-    point: "standard",
-  },
+  time_limit: "20",
+  point: "10",
+  isSaveBefore: false,
+  isSave: false,
 };
 const LeftOption = ({
   questions,
@@ -43,6 +43,7 @@ const LeftOption = ({
             "rounded flex items-center w-full p-2 mb-4 cursor-pointer",
             currentQuestion !== index && "bg-gray-700",
           )}
+          type="button"
           variant={currentQuestion === index ? "outline" : "secondary"}
           onClick={() => handleChangeCurrentQuestion(index)}
         >
@@ -51,6 +52,7 @@ const LeftOption = ({
       ))}
       <Button
         className="w-full mb-2 "
+        type="button"
         variant="default"
         onClick={handleAddQuestion}
       >

@@ -98,6 +98,13 @@ export const columns: ColumnDef<OrganizationColumn>[] = [
     },
   },
   {
+    accessorKey: "slug",
+    header: "Mã định danh",
+    meta: {
+      filterVariant: "search",
+    },
+  },
+  {
     accessorKey: "created_at",
     header: "Ngày tạo",
     cell: ({ row }) => formatDate(row.getValue("created_at")),

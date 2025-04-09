@@ -2,8 +2,8 @@ import React from "react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { Cross2Icon as Cancel, UploadIcon } from "@radix-ui/react-icons";
-import Image from "next/image";
 import { ControllerRenderProps, FieldPath, FieldValues } from "react-hook-form";
+import Image from "next/image";
 
 import { Spinner } from "./spinner";
 
@@ -156,6 +156,7 @@ function DragZone({
               <div className="flex w-full justify-center p-4">
                 <Image
                   alt="image upload"
+                  className="max-h-[200px] w-auto object-contain"
                   height={400}
                   src={value}
                   width={400}
@@ -188,7 +189,7 @@ function ImportExcelModal({
       try {
         const res = await upload(formData).unwrap();
 
-        onChange({ target: { value: res?.data } });
+        onChange({ target: { value: res?.data?.data } });
         setError(null);
       } catch (err) {
         setError(err);

@@ -11,7 +11,7 @@ const InputEmail = (
   const { managers } = useGetAllManagerQuery(undefined, {
     selectFromResult: ({ data }) => ({
       managers:
-        (data?.items as Manager[])
+        (data?.data?.items as Manager[])
           ?.filter((item) => item?.isActive)
           .map((item) => ({ label: item?.email, value: item?.email })) ?? [],
     }),

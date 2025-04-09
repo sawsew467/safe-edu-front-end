@@ -62,9 +62,9 @@ function FormEditOrganizations({
       selectFromResult: ({ data, isFetching }) => ({
         organization: data
           ? {
-              name: data?.name,
-              province_id: data?.province_id?.[0]?._id,
-              slug: data?.slug,
+              name: data?.data?.name,
+              province_id: data?.data?.province_id?._id,
+              slug: data?.data?.slug,
             }
           : {},
         isFetching,
@@ -75,7 +75,7 @@ function FormEditOrganizations({
   const { pronvinces } = useGetAllProvinceQuery(undefined, {
     selectFromResult: ({ data }) => ({
       pronvinces:
-        data?.items.map((item: { name: string; _id: string }) => ({
+        data?.data?.items?.map((item: { name: string; _id: string }) => ({
           label: item?.name,
           value: item?._id,
         })) ?? [],

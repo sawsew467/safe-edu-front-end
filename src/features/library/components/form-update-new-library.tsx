@@ -38,6 +38,7 @@ import {
 } from "@/features/topic/api";
 import TitlePage from "@/components/ui/title-page";
 import useBreadcrumb from "@/hooks/useBreadcrumb";
+import { DataTopic } from "@/features/topic/topic.type";
 const initialLibrary = {
   category_name: "",
   image: "",
@@ -48,17 +49,25 @@ const FormUpdateLibrary = () => {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
 
-  const { data: library } = useGetLibraryQuery({ id });
+  const { library } = useGetLibraryQuery(
+    { id },
+    {
+      selectFromResult: ({ data }) => ({
+        library: data?.data,
+      }),
+    },
+  );
   const [addTopic, { isLoading: isAddTopicLoading }] = useAddNewTopicMutation();
   const [updateLibrary, { isLoading: isUpdateLibraryLoading }] =
     useUpdateLibraryMutation();
   const [deleteTopic] = useDeleteTopicMutation();
   const { dataTopic, isTopicLoading } = useGetAllTopicQuery(undefined, {
     selectFromResult: ({ data: topic, isFetching }) => {
-      const data = topic?.data?.filter((topic) => topic.isActive) ?? [];
+      const data =
+        topic?.data?.data?.filter((topic: DataTopic) => topic.isActive) ?? [];
 
       return {
-        dataTopic: data?.map((topic) => ({
+        dataTopic: data?.map((topic: DataTopic) => ({
           value: topic._id,
           label: topic.topic_name,
         })),
@@ -185,15 +194,23 @@ const FormUpdateLibrary = () => {
                       isAddItemLoading={isAddTopicLoading}
                       onAddItem={handleAddNewTopic}
                     >
-                      {dataTopic.map(({ label, value }) => (
-                        <SelectItem
-                          key={value}
-                          value={value}
-                          onDeleteItem={handleDeleteTopic}
-                        >
-                          {label}
-                        </SelectItem>
-                      ))}
+                      {dataTopic.map(
+                        ({
+                          label,
+                          value,
+                        }: {
+                          label: string;
+                          value: string;
+                        }) => (
+                          <SelectItem
+                            key={value}
+                            value={value}
+                            onDeleteItem={handleDeleteTopic}
+                          >
+                            {label}
+                          </SelectItem>
+                        ),
+                      )}
                     </SelectContent>
                   </Select>
                   <FormDescription>

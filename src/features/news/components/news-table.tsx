@@ -14,11 +14,12 @@ const NewsTableModule = () => {
       refetchOnMountOrArgChange: true,
       selectFromResult: ({ data, isFetching }) => {
         return {
-          news: data?.items?.filter((item: TypeNews) => item.isActive) ?? [],
+          news:
+            data?.data?.items?.filter((item: TypeNews) => item.isActive) ?? [],
           isFetching,
         };
       },
-    }
+    },
   );
 
   return <DataTable columns={columns} data={news} isLoading={isFetching} />;
