@@ -6,7 +6,7 @@ import { Competitions } from "../type.competitions";
 import { useGetAllCompetitionsQuery } from "../api.competitions";
 
 import CardList from "@/components/ui/data-card";
-import { columns } from "@/app/quan-tri/cuoc-thi/columns.competitions";
+import { columns } from "@/app/quan-tri/(dashboard)/cuoc-thi/columns.competitions";
 import { StatusCompetition } from "@/settings/enums";
 import TitlePage from "@/components/ui/title-page";
 

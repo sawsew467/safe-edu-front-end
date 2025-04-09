@@ -7,9 +7,13 @@ import { CalendarDaysIcon } from "lucide-react";
 import { vi } from "date-fns/locale/vi";
 import { useRouter } from "next-nprogress-bar";
 import { useParams } from "next/navigation";
+import { toast } from "sonner";
 
 import { formSchema } from "../shema.competitions";
-import { useGetCompetitionsQuery } from "../api.competitions";
+import {
+  useGetCompetitionsQuery,
+  useUpdateCompetitionsMutation,
+} from "../api.competitions";
 
 import {
   Form,
@@ -34,6 +38,8 @@ import { Spinner } from "@/components/ui/spinner";
 const UpdateCompetitions = () => {
   const { id: idCompetition } = useParams<{ id: string }>();
   const router = useRouter();
+  const [updateCompetition, { isLoading }] = useUpdateCompetitionsMutation();
+
   const handleRouterBack = () => {
     router.back();
   };
@@ -61,11 +67,26 @@ const UpdateCompetitions = () => {
       form.setValue("startDate", new Date(competition?.startDate));
       form.setValue("endDate", new Date(competition?.endDate));
       form.setValue("image_url", competition?.image_url);
+      form.setValue("slug", competition?.slug);
     }
   }, [competition]);
 
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
-    console.log("first", data);
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const data = {
+      ...values,
+      startDate: values.startDate.toISOString(),
+      endDate: values.endDate.toISOString(),
+    };
+
+    const idToast = toast.loading("Đang thay đổi cuộc thi");
+
+    try {
+      await updateCompetition(data).unwrap();
+      toast.success("Thay đổi cuộc thi thành công", { id: idToast });
+      handleRouterBack();
+    } catch {
+      toast.error("Thay đổi cuộc thi thất bại", { id: idToast });
+    }
   };
 
   if (isFetching)
@@ -203,6 +224,24 @@ const UpdateCompetitions = () => {
         </div>
         <FormField
           control={form.control}
+          name="slug"
+          render={({ field }) => (
+            <>
+              <FormItem>
+                <FormLabel>Mã định danh</FormLabel>
+                <FormControl>
+                  <Input placeholder="nhập mã định danh" {...field} />
+                </FormControl>
+                <FormDescription>
+                  Đây là mã định danh dẫn đén cuộc thi
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            </>
+          )}
+        />
+        <FormField
+          control={form.control}
           name="image_url"
           render={({ field }) => (
             <FormItem>
@@ -220,13 +259,14 @@ const UpdateCompetitions = () => {
         <div className="flex gap-2 justify-center">
           <Button
             className="font-medium"
+            isLoading={isLoading}
             type="button"
             variant="destructive"
             onClick={handleRouterBack}
           >
             Hủy tác vụ
           </Button>
-          <Button className="font-medium" type="submit">
+          <Button className="font-medium" isLoading={isLoading} type="submit">
             Thêm
           </Button>
         </div>

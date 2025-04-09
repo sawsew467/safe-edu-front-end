@@ -17,7 +17,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { columns } from "@/app/quan-tri/cuoc-thi/columns.quizz";
+import { columns } from "@/app/quan-tri/(dashboard)/cuoc-thi/columns.quizz";
 import { StatusCompetition } from "@/settings/enums";
 
 const QuizzManagement = () => {

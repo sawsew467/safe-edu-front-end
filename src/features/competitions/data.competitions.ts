@@ -7,10 +7,8 @@ export const initialQuestion: Question = {
   question: "",
   correct_answer: "",
   answer: [],
-  options: {
-    timeLimit: "20",
-    point: "standard",
-  },
+  time_limit: "20",
+  point: "standard",
 };
 
 export const fakeData: Quizz[] = [

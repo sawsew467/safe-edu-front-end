@@ -28,7 +28,7 @@ export const metadata = {
 const fetchLatestLibrary = async () => {
   const res = await fetch(`${constants.API_SERVER}/categories`);
 
-  const data = await res.json();
+  const { data } = await res.json();
 
   const libraries =
     data?.items?.filter((item: Library) => item?.isActive) ?? [];
@@ -39,7 +39,7 @@ const fetchLatestLibrary = async () => {
 const fetchTopics = async () => {
   const res = await fetch(`${constants.API_SERVER}/topics`);
 
-  const data = await res.json();
+  const { data } = await res.json();
 
   const topics = data?.data?.filter((item: Library) => item?.isActive) ?? [];
 
@@ -53,7 +53,7 @@ async function LibraryPage() {
 
   return (
     <div className="min-h-screen ">
-      <section className="container mx-auto px-4 py-12 md:py-16 bg-white rounded-lg ">
+      <section className="container mx-auto px-4 py-12 md:py-16 bg-white dark:bg-black rounded-lg ">
         <h2 className="text-3xl font-bold text-center mb-10 text-primary">
           Thư viện giáo dục
         </h2>
@@ -64,7 +64,7 @@ async function LibraryPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {libraries
                 ?.filter(
-                  (item) => item.topic_id?.toString() === topic._id?.toString()
+                  (item) => item.topic_id?.toString() === topic._id?.toString(),
                 )
                 ?.map((item, index) => (
                   <ResourceCard

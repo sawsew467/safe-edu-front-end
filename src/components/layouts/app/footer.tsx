@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-function MarketingFooter() {
+function AppFooter() {
   return (
     <footer className="w-full border-t py-6 md:py-0">
       <div className="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row m-auto">
@@ -44,4 +44,4 @@ function MarketingFooter() {
   );
 }
 
-export default MarketingFooter;
+export default AppFooter;

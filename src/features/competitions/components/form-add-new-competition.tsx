@@ -6,8 +6,10 @@ import { z } from "zod";
 import { CalendarDaysIcon } from "lucide-react";
 import { vi } from "date-fns/locale/vi";
 import { useRouter } from "next-nprogress-bar";
+import { toast } from "sonner";
 
 import { formSchema } from "../shema.competitions";
+import { useAddNewCompetitionsMutation } from "../api.competitions";
 
 import {
   Form,
@@ -30,6 +32,8 @@ import { Calendar } from "@/components/ui/calendar";
 
 const AddNewCompetitions = () => {
   const router = useRouter();
+  const [addCompetition, { isLoading }] = useAddNewCompetitionsMutation();
+
   const handleRouterBack = () => {
     router.back();
   };
@@ -38,8 +42,22 @@ const AddNewCompetitions = () => {
     resolver: zodResolver(formSchema),
   });
 
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
-    console.log("first", data);
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const data = {
+      ...values,
+      startDate: values.startDate.toISOString(),
+      endDate: values.endDate.toISOString(),
+    };
+
+    const idToast = toast.loading("Đang thêm cuộc thi");
+
+    try {
+      await addCompetition(data).unwrap();
+      toast.success("Thêm cuộc thi thành công", { id: idToast });
+      handleRouterBack();
+    } catch {
+      toast.error("Thêm cuộc thi thất bại", { id: idToast });
+    }
   };
 
   return (
@@ -59,7 +77,7 @@ const AddNewCompetitions = () => {
                   <Input placeholder="nhập tiêu đề" {...field} />
                 </FormControl>
                 <FormDescription>
-                  Đây là tiêu đề được hiển thị ở bên ngoài tin tức
+                  Đây là tiêu đề được hiển thị ở bên ngoài cuộc thi
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -170,6 +188,24 @@ const AddNewCompetitions = () => {
         </div>
         <FormField
           control={form.control}
+          name="slug"
+          render={({ field }) => (
+            <>
+              <FormItem>
+                <FormLabel>Mã định danh</FormLabel>
+                <FormControl>
+                  <Input placeholder="nhập mã định danh" {...field} />
+                </FormControl>
+                <FormDescription>
+                  Đây là mã định danh dẫn đén cuộc thi
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            </>
+          )}
+        />
+        <FormField
+          control={form.control}
           name="image_url"
           render={({ field }) => (
             <FormItem>
@@ -187,13 +223,14 @@ const AddNewCompetitions = () => {
         <div className="flex gap-2 justify-center">
           <Button
             className="font-medium"
+            isLoading={isLoading}
             type="button"
             variant="destructive"
             onClick={handleRouterBack}
           >
             Hủy tác vụ
           </Button>
-          <Button className="font-medium" type="submit">
+          <Button className="font-medium" isLoading={isLoading} type="submit">
             Thêm
           </Button>
         </div>

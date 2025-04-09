@@ -4,7 +4,7 @@ import React from "react";
 import { useGetAllStudentsQuery } from "../../api/student.api";
 import { Student } from "../../user.types";
 
-import { columns } from "@/app/quan-tri/nguoi-dung/hoc-sinh/student.columns";
+import { columns } from "@/app/quan-tri/(dashboard)/nguoi-dung/hoc-sinh/student.columns";
 import DataTable from "@/components/data-table/data-table";
 import TitlePage from "@/components/ui/title-page";
 

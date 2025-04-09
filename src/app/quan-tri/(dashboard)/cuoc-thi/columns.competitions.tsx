@@ -158,8 +158,6 @@ const getStatus = (row: Row<ColumnCompetitions>) => {
     label: row.original.status as keyof typeof StatusCompetitionVN,
   };
 
-  console.log("status", status);
-
   switch (status?.value) {
     case StatusCompetition.Upcoming:
       return (

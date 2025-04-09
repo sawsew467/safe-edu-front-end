@@ -14,7 +14,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { columns } from "@/app/quan-tri/to-chuc/column.organizations";
+import { columns } from "@/app/quan-tri/(dashboard)/to-chuc/column.organizations";
 
 const OrganizationsManagement = () => {
   const [isopen, setOpenDialog] = React.useState(false);
