@@ -9,6 +9,9 @@ export const initialQuestion: Question = {
   answer: [],
   time_limit: "20",
   point: "standard",
+  isSaveBefore: false,
+  isSave: false,
+  current_question: 0,
 };
 
 export const fakeData: Quizz[] = [

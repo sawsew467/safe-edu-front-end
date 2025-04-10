@@ -3,12 +3,12 @@ import { useSearchParams } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { toast } from "sonner";
+import { skipToken } from "@reduxjs/toolkit/query";
 
 import { Question, QuestionQuizz } from "../../type.competitions";
 import {
   useAddNewQuestionMutation,
-  useGetAllQuestionQuery,
+  useGetQuestionByQuizzIdQuery,
   useUpdateQuestionMutation,
 } from "../../api.question";
 
@@ -18,16 +18,6 @@ import LeftOption from "./left-option";
 
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-const initialQuestion: Question = {
-  _id: "1",
-  question: "",
-  correct_answer: "",
-  answer: [],
-  time_limit: "20",
-  point: "10",
-  isSaveBefore: false,
-  isSave: false,
-};
 
 export const formSchema = z.object({
   question: z
@@ -60,54 +50,37 @@ export const formSchema = z.object({
         4,
       { message: "Câu trả lời không được quá 4 câu hợp lệ" },
     ),
-  time_limit: z.string().default("20"),
-  point: z.string().default("standard"),
+  time_limit: z.string(),
+  current_question: z.number(),
+  point: z.string(),
 });
 
-const QuestionManagement = ({
-  closeDialog,
-  id,
-}: {
-  closeDialog: () => void;
-  id: string | null;
-}) => {
+const QuestionManagement = ({ closeDialog }: { closeDialog: () => void }) => {
   const params = useSearchParams();
-  const idQuizz = params.get("id") as string;
+  const quizzId = params.get("id") as string;
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     shouldFocusError: false,
-    defaultValues: {
-      question: "",
-      image: "",
-      correct_answer: "",
-      answer: [],
-      time_limit: "20",
-      point: "10",
-    },
   });
 
   const {
     questionsQuizzs,
     isFetching,
   }: { questionsQuizzs: Question[]; isFetching: boolean } =
-    useGetAllQuestionQuery(undefined, {
+    useGetQuestionByQuizzIdQuery(quizzId ? { id: quizzId } : skipToken, {
       selectFromResult: ({ data, isFetching }) => ({
         questionsQuizzs:
-          data?.data?.items
-            ?.filter(
-              (question: QuestionQuizz) =>
-                question?.quiz_id?.at(0)?._id === idQuizz,
-            )
-            ?.map((question: QuestionQuizz) => ({
-              _id: question?._id ?? "",
-              question: question?.question ?? "",
-              answer: question?.answer ?? [],
-              correct_answer: `answer.${question?.answer?.findIndex((ans) => ans === question?.correct_answer)}`,
-              timeLimit: question?.time_limit?.toString() ?? "20",
-              point: question?.point?.toString() ?? "10",
-              isSaveBefore: true,
-              isSave: true,
-            })) ?? [],
+          data?.data?.data?.map((question: QuestionQuizz) => ({
+            _id: question?._id ?? "",
+            question: question?.question ?? "",
+            image: question?.image ?? "",
+            answer: question?.answer ?? [],
+            correct_answer: `answer.${question?.answer?.findIndex((ans) => ans === question?.correct_answer)}`,
+            time_limit: question?.time_limit?.toString() ?? "20",
+            point: question?.point?.toString() ?? "10",
+            isSaveBefore: true,
+            isSave: true,
+          })) ?? [],
         isFetching,
       }),
     });
@@ -116,28 +89,24 @@ const QuestionManagement = ({
   const [updateQuestion, { isLoading: isLoadingUpdateQuestion }] =
     useUpdateQuestionMutation();
 
-  const [questions, setQuestion] = React.useState<Question[]>([
-    initialQuestion,
-  ]);
-
   const [currentQuestion, setCurrentQuestion] = React.useState(0);
 
+  const { current_question, ...dirtyFields } = form.formState.dirtyFields;
+  const isDirty = Object.keys(dirtyFields).length > 0;
+
   React.useEffect(() => {
-    if (questionsQuizzs) {
-      setQuestion(
-        questionsQuizzs.length > 0 ? questionsQuizzs : [initialQuestion],
+    if (questionsQuizzs)
+      form.reset(
+        questionsQuizzs.at(currentQuestion) as z.infer<typeof formSchema>,
+        {
+          keepDirty: false,
+        },
       );
-    }
-  }, [questionsQuizzs.length]);
+  }, [currentQuestion, JSON.stringify(questionsQuizzs)]);
 
-  React.useEffect(() => {
-    form.reset(questions.at(currentQuestion) as z.infer<typeof formSchema>);
-  }, [questions?.at(currentQuestion)]);
-
-  console.log("questions", questions?.at(currentQuestion));
-
-  const handleSave = () => {
-    console.log("first", questions);
+  const handleSave = async () => {
+    onSubmit(form.getValues() as z.infer<typeof formSchema>);
+    closeDialog();
   };
 
   const getValueField = (field: string): string | undefined => {
@@ -153,70 +122,81 @@ const QuestionManagement = ({
   };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    const { current_question, ...rest } = values;
+
+    if (!isDirty) {
+      setCurrentQuestion(current_question);
+
+      return;
+    }
     const data = {
-      ...values,
+      ...rest,
       answer: values.answer.filter((item) => item),
       correct_answer: getValueField(values.correct_answer),
     };
 
-    const idToast = toast.loading("Đang lưu câu hỏi...");
+    // const idToast = toast.loading("Đang lưu câu hỏi...");
 
     try {
-      if (questions?.at(currentQuestion)?.isSaveBefore) {
+      if (questionsQuizzs?.at(currentQuestion)?.isSaveBefore) {
         await updateQuestion({
-          params: { id: questions?.at(currentQuestion)?._id },
-          body: { quiz_id: idQuizz, ...data },
+          params: { id: questionsQuizzs?.at(currentQuestion)?._id },
+          body: { quiz_id: quizzId, ...data },
         }).unwrap();
-
-        setCurrentQuestion((prev) =>
-          prev < questions.length - 1 ? prev + 1 : prev,
-        );
-        toast.success("Cập nhật câu hỏi thành công", { id: idToast });
+        // toast.success("Cập nhật câu hỏi thành công", { id: idToast });
       } else {
         await addQuestion({
-          quiz_id: idQuizz,
+          quiz_id: quizzId,
           ...data,
         }).unwrap();
       }
-      toast.success("Lưu câu hỏi thành công", { id: idToast });
+      // toast.success("Lưu câu hỏi thành công", { id: idToast });
     } catch (error) {
-      toast.error("Lưu câu hỏi thất bại", { id: idToast });
+      // toast.error("Lưu câu hỏi thất bại", { id: idToast });
+    } finally {
+      setCurrentQuestion(current_question);
     }
   }
 
+  const onInvalid = () => {
+    setCurrentQuestion(form.getValues("current_question"));
+  };
+
   return (
     <div className="space-y-4 pt-4">
-      <div className="w-full flex justify-between">
-        <Button variant="destructive" onClick={closeDialog}>
-          Thoát
-        </Button>
-        <Button variant="default" onClick={handleSave}>
-          Lưu
-        </Button>
-      </div>
       <Form {...form}>
         <form
-          className="grid gap-4 min-h-[500px]  grid-cols-6"
-          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-6"
+          onSubmit={form.handleSubmit(onSubmit, onInvalid)}
         >
-          <div className="col-span-1 max-h-[80vh]">
-            <LeftOption
-              currentQuestion={currentQuestion}
-              questions={questions}
-              setCurrentQuestion={setCurrentQuestion}
-              setQuestion={setQuestion}
-            />
+          <div className="w-full flex justify-between">
+            <Button type="button" variant="destructive" onClick={closeDialog}>
+              Thoát
+            </Button>
+            <Button variant="default" onClick={handleSave}>
+              Lưu
+            </Button>
           </div>
-          <div className="col-span-4">
-            <QuestionContent
-              currentQuestion={currentQuestion}
-              form={form}
-              questions={questions}
-              setQuestion={setQuestion}
-            />
-          </div>
-          <div className="col-span-1">
-            <RightOption form={form} />
+          <div className="grid gap-4 min-h-[500px]  grid-cols-6">
+            <div className="col-span-1 max-h-[80vh]">
+              <LeftOption
+                currentQuestion={currentQuestion}
+                form={form}
+                questions={questionsQuizzs}
+                quizzId={quizzId}
+              />
+            </div>
+            <div className="col-span-4">
+              <QuestionContent
+                currentQuestion={currentQuestion}
+                form={form}
+                questions={questionsQuizzs}
+                setCurrentQuestion={setCurrentQuestion}
+              />
+            </div>
+            <div className="col-span-1">
+              <RightOption form={form} />
+            </div>
           </div>
         </form>
       </Form>

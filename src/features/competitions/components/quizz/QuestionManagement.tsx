@@ -3,9 +3,8 @@ import { useRouter } from "next-nprogress-bar";
 import { useParams, useSearchParams } from "next/navigation";
 
 import { Quizz } from "../../type.competitions";
-import { fakeData } from "../../data.competitions";
 import QuestionManagement from "../question/question-management";
-import { useGetAllQuizzQuery } from "../../api.quizz";
+import { useGetQuizzByCompetitionIdQuery } from "../../api.quizz";
 
 import FormAddNewQuizz from "./FormAddNewQuizz";
 
@@ -18,41 +17,37 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { columns } from "@/app/quan-tri/(dashboard)/cuoc-thi/columns.quizz";
-import { StatusCompetition } from "@/settings/enums";
 
 const QuizzManagement = () => {
   const [isopen, setOpenDialog] = React.useState(false);
   const router = useRouter();
   const params = useSearchParams();
-  const { id: idCompetitions } = useParams<{ id: string }>();
+  const { id: competitionId } = useParams<{ id: string }>();
 
   const idDialogQuestion = params.get("id");
   const isOpenDialogQuestion = !!idDialogQuestion;
-  const data = fakeData.map((item) => ({
-    ...item,
-    status: item?.status
-      ? StatusCompetition[item.status as keyof typeof StatusCompetition]
-      : "unkown",
-  }));
 
-  const { quizzs, isFetching } = useGetAllQuizzQuery(undefined, {
-    selectFromResult: ({ data, isFetching }) => ({
-      quizzs:
-        data?.data?.items?.map((item: Quizz) => ({
-          ...item,
-          status: item?.isActive ? "Đang hoạt động" : "Ngừng hoạt động",
-        })) ?? [],
-      isFetching,
-    }),
-  });
+  const { quizzs, isFetching } = useGetQuizzByCompetitionIdQuery(
+    { id: competitionId },
+    {
+      selectFromResult: ({ data, isFetching }) => ({
+        quizzs:
+          data?.data?.data?.map((item: Quizz) => ({
+            ...item,
+            status: item?.isActive ? "Đang hoạt động" : "Ngừng hoạt động",
+          })) ?? [],
+        isFetching,
+      }),
+    },
+  );
 
   const closeDialogQuestion = () => {
-    router.push(`/quan-tri/cuoc-thi/${idCompetitions}?tab=cac-cuoc-thi`);
+    router.push(`/quan-tri/cuoc-thi/${competitionId}?tab=cac-cuoc-thi`);
   };
 
   const handleRowClick = ({ data }: { data: Quizz }) => {
     router.push(
-      `/quan-tri/cuoc-thi/${idCompetitions}?tab=cac-cuoc-thi&id=${data._id}`,
+      `/quan-tri/cuoc-thi/${competitionId}?tab=cac-cuoc-thi&id=${data._id}`,
     );
   };
 
@@ -78,10 +73,7 @@ const QuizzManagement = () => {
         <Dialog open={isOpenDialogQuestion} onOpenChange={closeDialogQuestion}>
           <DialogTitle hidden>Danh sách câu hỏi</DialogTitle>
           <DialogContent className="!w-[90vw] !max-w-none">
-            <QuestionManagement
-              closeDialog={closeDialogQuestion}
-              id={idDialogQuestion}
-            />
+            <QuestionManagement closeDialog={closeDialogQuestion} />
           </DialogContent>
         </Dialog>
       </div>

@@ -39,7 +39,12 @@ const RightOption = ({
                 <span className="font-medium">Giới hạn thời gian</span>
               </FormLabel>
               <FormControl>
-                <Select value={field.value} onValueChange={field.onChange}>
+                <Select
+                  value={field.value}
+                  onValueChange={(e) => {
+                    if (e) field.onChange(e);
+                  }}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Chọn giới hạn thời gian câu hỏi" />
                   </SelectTrigger>
@@ -67,7 +72,12 @@ const RightOption = ({
                 <span className="font-medium">Ngôi sao hy vọng</span>
               </FormLabel>
               <FormControl>
-                <Select value={field.value} onValueChange={field.onChange}>
+                <Select
+                  value={field.value}
+                  onValueChange={(e) => {
+                    if (e) field.onChange(e);
+                  }}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select points" />
                   </SelectTrigger>

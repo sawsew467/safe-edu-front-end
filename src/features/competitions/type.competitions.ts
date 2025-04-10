@@ -28,6 +28,7 @@ export interface Question {
   point: string | null;
   isSaveBefore?: boolean;
   isSave?: boolean;
+  current_question: number;
 }
 
 export interface QuestionQuizz {
@@ -38,7 +39,8 @@ export interface QuestionQuizz {
   deleted_by?: string | null;
   created_by?: string | null;
   update_by?: string | null;
-  question?: string | string;
+  question?: string;
+  image?: string;
   answer: string[];
   correct_answer: string;
   time_limit: number;

@@ -18,25 +18,30 @@ import { Textarea } from "@/components/ui/textarea";
 
 const QuestionContent = ({
   questions,
-  setQuestion,
   currentQuestion,
   form,
+  setCurrentQuestion,
 }: {
   questions: Question[];
   currentQuestion: number;
-  setQuestion: React.Dispatch<React.SetStateAction<Question[]>>;
   form: ReturnType<typeof useForm<z.infer<typeof formSchema>>>;
+  setCurrentQuestion: React.Dispatch<React.SetStateAction<number>>;
 }) => {
   const [deleteQuestion, { isLoading: isLoadingDeleteQuestion }] =
     useDeleteQuestionMutation();
 
   function handleResetForm() {
-    form.reset({
-      question: "",
-      image: "",
-      correct_answer: "",
-      answer: [],
-    });
+    form.reset(
+      {
+        question: "",
+        image: "",
+        correct_answer: "",
+        answer: [],
+        time_limit: "20",
+        point: "10",
+      },
+      { keepDirty: false },
+    );
   }
 
   const getValueField = (field: string): string | undefined => {
@@ -57,15 +62,16 @@ const QuestionContent = ({
 
       return;
     }
-    const idToast = toast.loading("Đang xóa câu hỏi...");
+    // const idToast = toast.loading("Đang xóa câu hỏi...");
 
     try {
       await deleteQuestion({
         id: questions?.at(currentQuestion)?._id,
       });
-      toast.success("Xóa câu hỏi thành công", { id: idToast });
+      setCurrentQuestion(currentQuestion > 0 ? currentQuestion - 1 : 0);
+      // toast.success("Xóa câu hỏi thành công", { id: idToast });
     } catch {
-      toast.error("Xóa câu hỏi thất bại", { id: idToast });
+      // toast.error("Xóa câu hỏi thất bại", { id: idToast });
     }
   };
 
@@ -94,7 +100,7 @@ const QuestionContent = ({
         render={({ field }) => (
           <FormItem>
             <FormControl>
-              <UploadImage {...field} />
+              <UploadImage {...field} maxHeight={110} />
             </FormControl>
           </FormItem>
         )}
@@ -250,9 +256,6 @@ const QuestionContent = ({
           onClick={handleDeleteQuestion}
         >
           Xóa câu hỏi
-        </Button>
-        <Button isLoading={isLoadingDeleteQuestion} type="submit">
-          Lưu câu hỏi
         </Button>
       </div>
     </div>

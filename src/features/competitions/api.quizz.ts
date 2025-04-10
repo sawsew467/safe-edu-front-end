@@ -34,6 +34,14 @@ export const QuizzApi = baseApi.injectEndpoints({
         return ["Quizz"];
       },
     }),
+    getQuizzByCompetitionId: build.query({
+      query: ({ id }) => ({
+        url: `/quiz/get-all-by-quizId/${id}`,
+        method: "GET",
+        flashError: true,
+      }),
+      providesTags: ["Quizz"],
+    }),
     updateQuizz: build.mutation({
       query: (data) => {
         const { params, body } = data;
@@ -90,4 +98,5 @@ export const {
   useUpdateQuizzMutation,
   useDeleteQuizzMutation,
   useActiveQuizzMutation,
+  useGetQuizzByCompetitionIdQuery,
 } = QuizzApi;

@@ -8,6 +8,7 @@ import Image from "next/image";
 import { Spinner } from "./spinner";
 
 import { useUploadImageMutation } from "@/services/common/upload/api.upload";
+import { cn } from "@/lib/utils";
 
 export interface ImportModalProps
   extends Omit<
@@ -19,6 +20,7 @@ export interface ImportModalProps
   value?: any;
   ref?: React.Ref<any>;
   name?: string;
+  maxHeight?: number | string;
 }
 
 interface DragZoneProps {
@@ -28,6 +30,7 @@ interface DragZoneProps {
   value: string;
   error: any;
   disabled: boolean;
+  maxHeight?: number | string;
 }
 
 interface ErrorLineProps {
@@ -49,6 +52,7 @@ function DragZone({
   value,
   error,
   disabled,
+  maxHeight,
 }: DragZoneProps) {
   const ref = useRef<any>();
   const [dragActive, setDragActive] = useState<number>(0);
@@ -156,9 +160,12 @@ function DragZone({
               <div className="flex w-full justify-center p-4">
                 <Image
                   alt="image upload"
-                  className="max-h-[200px] w-auto object-contain"
+                  className={cn("w-auto object-contain")}
                   height={400}
                   src={value}
+                  style={{
+                    maxHeight: maxHeight ? maxHeight + "px" : "none",
+                  }}
                   width={400}
                 />
               </div>
@@ -180,6 +187,7 @@ function ImportExcelModal({
   onChange = () => {},
   value = "",
   disabled = false,
+  maxHeight,
 }: ImportModalProps) {
   const [upload, { isLoading }] = useUploadImageMutation();
   const [error, setError] = useState<any>();
@@ -203,6 +211,7 @@ function ImportExcelModal({
         disabled={disabled}
         error={error}
         isLoading={isLoading}
+        maxHeight={maxHeight}
         setFormData={onUploadImage}
         value={value}
         onChange={onChange}

@@ -8,8 +8,6 @@ import { useRouter } from "next-nprogress-bar";
 
 import { useAddNewOrganizationMutation } from "../organization.api";
 
-import InputEmail from "./input-email";
-
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -42,7 +40,6 @@ const formSchema = z.object({
       /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
       "Slug chỉ được chứa chữ thường, số và dấu gạch ngang (-)",
     ),
-  email: z.string().email({ message: "định dạng email không đúng" }),
 });
 
 function FormAddNewOrganizations({ setOpenDialog }: Props) {
@@ -136,22 +133,6 @@ function FormAddNewOrganizations({ setOpenDialog }: Props) {
                 </FormControl>
                 <FormDescription>
                   Chọn tỉnh thành nơi tổ chức thuộc về.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <InputEmail {...field} />
-                </FormControl>
-                <FormDescription>
-                  Email của quản lí viên sẽ quản lí tổ chức này.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
