@@ -51,7 +51,7 @@ function MarketingHeader() {
           {/* <Button className="hidden md:flex" variant="outline">
             Đăng nhập
           </Button> */}
-          <Link href={"/trang-chu"}>
+          <Link href={"/"}>
             <Button className="bg-[#8BC34A] hover:bg-[#7CB342]">
               Khám phá ngay
             </Button>

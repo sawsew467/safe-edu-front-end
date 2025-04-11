@@ -21,7 +21,7 @@ function HeroSection() {
               </p>
             </div>
             <div className="flex flex-col gap-2 min-[400px]:flex-row">
-              <Link href={"/trang-chu"}>
+              <Link href={"/"}>
                 <Button
                   className="gap-1 bg-[#8BC34A] hover:bg-[#7CB342]"
                   size="lg"
