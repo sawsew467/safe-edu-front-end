@@ -36,12 +36,12 @@ const fetchLatestNews = async () => {
   const data = await res.json();
 
   const latestNews =
-    data?.items?.filter((item: TypeNews) => item?.isActive) ?? [];
+    data?.data?.items?.filter((item: TypeNews) => item?.isActive) ?? [];
 
   return latestNews
     ?.sort(
       (a: TypeNews, b: TypeNews) =>
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
     )
     .slice(0, 3);
 };
@@ -52,18 +52,19 @@ const fetchLatestLibrary = async () => {
   const data = await res.json();
 
   const latestLibraries =
-    data?.items?.filter((item: Library) => item?.isActive) ?? [];
+    data?.data?.items?.filter((item: Library) => item?.isActive) ?? [];
 
   return latestLibraries
     ?.sort(
       (a: Library, b: Library) =>
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
     )
     .slice(0, 6);
 };
 
 async function AppPage() {
   const latestNews: TypeNews[] = await fetchLatestNews();
+
   const latestLibraries: Library[] = await fetchLatestLibrary();
 
   return (
