@@ -20,28 +20,28 @@ export async function generateMetadata({ params }: { params: Params }) {
 const fetchLibraryById = async (id: string) => {
   const res = await fetch(`${constants.API_SERVER}/categories/${id}`);
 
-  const data = await res.json();
+  const { data } = await res.json();
 
   return data;
 };
 
 const fetchRelatedLibraries = async (
   topicId: string,
-  libraryDetailId: string
+  libraryDetailId: string,
 ) => {
   const res = await fetch(`${constants.API_SERVER}/categories`);
 
-  const data = await res.json();
+  const { data } = await res.json();
 
   const activeLibraries =
     data?.items?.filter(
-      (item: Library) => item?.isActive && item._id !== libraryDetailId
+      (item: Library) => item?.isActive && item._id !== libraryDetailId,
     ) ?? [];
 
   return activeLibraries
     ?.sort(
       (a: Library, b: Library) =>
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
     )
     ?.filter((item: Library) => item.topic_id === topicId)
     ?.slice(0, 3);
@@ -53,11 +53,11 @@ export default async function LibraryDetailPage(props: { params: Params }) {
 
   const relatedLibraries: Library[] = await fetchRelatedLibraries(
     libraryDetail?.topic_id,
-    libraryDetail?._id
+    libraryDetail?._id,
   );
 
   return (
-    <div className="min-h-screen bg-[#f8f9fa]">
+    <div className="min-h-screen bg-[#f8f9fa] dark:bg-[#343a40]">
       {/* Breadcrumb */}
       {/* <div className="bg-white border-b">
         <div className="container mx-auto px-4 py-3">
@@ -86,7 +86,7 @@ export default async function LibraryDetailPage(props: { params: Params }) {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-8">
-            <div className="bg-white rounded-lg shadow-sm p-6 md:p-8">
+            <div className="bg-white dark:bg-black/80 rounded-lg shadow-sm p-6 md:p-8">
               {/* Header */}
               {/* <div className="flex items-center gap-2 mb-4">
                 <Badge className="bg-[#8BC34A] hover:bg-[#7CB342]">
@@ -159,17 +159,17 @@ export default async function LibraryDetailPage(props: { params: Params }) {
           {/* Sidebar */}
           <div className="lg:col-span-4">
             {/* Table of Contents */}
-            <div className="bg-white rounded-lg shadow-sm p-6 sticky top-4">
+            <div className="bg-white dark:bg-black rounded-lg shadow-sm p-6 sticky top-4">
               {/* Help Box */}
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <h4 className="font-semibold text-blue-700 mb-2">
+              <div className="bg-blue-50 dark:bg-black p-4 rounded-lg">
+                <h4 className="font-semibold text-blue-700 dark:text-blue-50 mb-2">
                   Cần hỗ trợ?
                 </h4>
-                <p className="text-blue-600 text-sm mb-3">
+                <p className="text-blue-600 dark:text-blue-100 text-sm mb-3">
                   Nếu bạn hoặc người thân đang gặp vấn đề liên quan đến ma túy,
                   hãy liên hệ ngay với các đường dây hỗ trợ.
                 </p>
-                <Button className="w-full bg-blue-600 hover:bg-blue-700">
+                <Button className="w-full bg-blue-600 dark:text-blue-100 hover:bg-blue-700">
                   Xem thông tin hỗ trợ
                 </Button>
               </div>

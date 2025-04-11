@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: { params: Params }) {
 const fetchNewsById = async (id: string) => {
   const res = await fetch(`${constants.API_SERVER}/news/${id}`);
 
-  const data = await res.json();
+  const { data } = await res.json();
 
   return data;
 };
@@ -32,17 +32,17 @@ const fetchNewsById = async (id: string) => {
 const fetchRelatedNews = async (topicId: string, newDetailId: string) => {
   const res = await fetch(`${constants.API_SERVER}/news`);
 
-  const data = await res.json();
+  const { data } = await res.json();
 
   const latestNews =
     data?.items?.filter(
-      (item: TypeNews) => item?.isActive && item._id !== newDetailId
+      (item: TypeNews) => item?.isActive && item._id !== newDetailId,
     ) ?? [];
 
   return latestNews
     ?.sort(
       (a: TypeNews, b: TypeNews) =>
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
     )
     ?.filter((item: TypeNews) => item.topic_id._id === topicId)
     ?.slice(0, 3);
@@ -51,17 +51,17 @@ const fetchRelatedNews = async (topicId: string, newDetailId: string) => {
 const fetchLatestNews = async (newDetailId: string) => {
   const res = await fetch(`${constants.API_SERVER}/news`);
 
-  const data = await res.json();
+  const { data } = await res.json();
 
   const latestNews =
     data?.items?.filter(
-      (item: TypeNews) => item?.isActive && item._id !== newDetailId
+      (item: TypeNews) => item?.isActive && item._id !== newDetailId,
     ) ?? [];
 
   return latestNews
     ?.sort(
       (a: TypeNews, b: TypeNews) =>
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
     )
     .slice(0, 10);
 };
@@ -71,7 +71,7 @@ export default async function NewsDetailPage(props: { params: Params }) {
   const newsDetail: TypeNews = await fetchNewsById(id);
   const relatedNews: TypeNews[] = await fetchRelatedNews(
     newsDetail.topic_id._id,
-    newsDetail._id
+    newsDetail._id,
   );
 
   const latestNews: TypeNews[] = await fetchLatestNews(newsDetail._id);
@@ -82,14 +82,14 @@ export default async function NewsDetailPage(props: { params: Params }) {
     "dd MMMM yyyy",
     {
       locale: vi,
-    }
+    },
   );
 
   const summary =
     newsDetail.content.match(/<p><em>(.*?)<\/em><\/p>/)?.[1] || "";
 
   return (
-    <div className="min-h-screen bg-[#f8f9fa]">
+    <div className="min-h-screen bg-[#f8f9fa] dark:bg-[#343a40]">
       {/* Breadcrumb */}
       {/* <div className="bg-white border-b">
         <div className="container mx-auto px-4 py-3">
@@ -114,7 +114,7 @@ export default async function NewsDetailPage(props: { params: Params }) {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-8">
-            <article className="bg-white rounded-lg shadow-sm p-6 md:p-8">
+            <article className="bg-white dark:bg-black rounded-lg shadow-sm p-6 md:p-8">
               {/* Category Badge */}
               <div className="mb-4">
                 <Link href="/topics/drugs">
@@ -193,7 +193,7 @@ export default async function NewsDetailPage(props: { params: Params }) {
                             <p className="text-gray-500 text-sm">
                               {format(
                                 newsDetail.created_at,
-                                "dd/MM/yyyy HH:mm/ss"
+                                "dd/MM/yyyy HH:mm/ss",
                               )}
                             </p>
                           </div>
@@ -208,7 +208,7 @@ export default async function NewsDetailPage(props: { params: Params }) {
           {/* Sidebar */}
           <div className="lg:col-span-4">
             {/* Popular Articles */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
+            <div className="bg-white dark:bg-black rounded-lg shadow-sm p-6">
               <h3 className="text-lg font-semibold mb-4 pb-2 border-b">
                 Bài viết gần đây
               </h3>

@@ -19,19 +19,19 @@ const LibraryTable = () => {
       selectFromResult: ({ data, isFetching }) => {
         return {
           librarys:
-            data?.items
-              ?.filter((item: Library) => item.isActive)
+            data?.data?.items
+              ?.filter((item: Library) => item?.isActive)
               ?.map((item: Library) => ({
                 ...item,
-                topic_name: topics?.data?.find(
-                  (topic: DataTopic) => topic._id === item.topic_id
+                topic_name: topics?.data?.data?.find(
+                  (topic: DataTopic) => topic._id === item.topic_id,
                 )?.topic_name,
               })) ?? [],
           isFetching,
         };
       },
       refetchOnMountOrArgChange: true,
-    }
+    },
   );
 
   useBreadcrumb([{ label: "Thư viện" }]);

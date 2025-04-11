@@ -31,5 +31,8 @@ export const baseApi = createApi({
     "Organizations",
     "students",
     "citizens",
+    "Competitions",
+    "Quizz",
+    "Question",
   ],
 });

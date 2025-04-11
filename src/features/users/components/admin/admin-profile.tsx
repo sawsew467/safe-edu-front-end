@@ -15,7 +15,15 @@ import useBreadcrumb from "@/hooks/useBreadcrumb";
 
 export default function UserProfileModule() {
   const { id } = useParams();
-  const { data: adminProfile, isFetching } = useGetAdminQuery({ id });
+  const { adminProfile, isFetching } = useGetAdminQuery(
+    { id },
+    {
+      selectFromResult: ({ data, isFetching }) => ({
+        adminProfile: data?.data,
+        isFetching,
+      }),
+    },
+  );
 
   useBreadcrumb([
     {

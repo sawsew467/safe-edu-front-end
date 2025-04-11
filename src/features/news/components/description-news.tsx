@@ -25,7 +25,7 @@ const DescriptionNewsModule = () => {
     { id },
     {
       selectFromResult: ({ data, isFetching, isSuccess }) => ({
-        data: data,
+        data: data?.data,
         isFetching,
         isSuccess,
       }),
@@ -33,7 +33,7 @@ const DescriptionNewsModule = () => {
   );
 
   const { data: topic } = useGetTopicQuery(
-    { id: data?.topic_id },
+    { id: data?.data?.topic_id },
     { skip: !isSuccess },
   );
 

@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import { useLoginWithGoogleMutation } from "../api";
-import { setAccessToken, setUserInfo } from "../slice";
+import { setAccessToken, setUserInfo, setUserRole } from "../slice";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -34,7 +34,7 @@ export function LoginForm() {
     try {
       const resFirebase: any = await signInWithPopup(
         auth,
-        provider.providerGoogle
+        provider.providerGoogle,
       );
 
       const res = await signInWithGoogle({
@@ -43,7 +43,8 @@ export function LoginForm() {
 
       setClientCookie(constants.USER_INFO, JSON.stringify(resFirebase.user));
       dispatch(setUserInfo(resFirebase.user));
-      dispatch(setAccessToken(res?.accessToken));
+      dispatch(setAccessToken(res?.data?.accessToken));
+      dispatch(setUserRole(res?.data?.accessToken));
       router.push("/");
     } catch (error: any) {
       if (error?.status === 404) {

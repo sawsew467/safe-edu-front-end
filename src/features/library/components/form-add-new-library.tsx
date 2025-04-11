@@ -35,6 +35,7 @@ import {
   useGetAllTopicQuery,
 } from "@/features/topic/api";
 import useBreadcrumb from "@/hooks/useBreadcrumb";
+import { DataTopic } from "@/features/topic/topic.type";
 const initialLibrary = {
   category_name: "",
   image: "",
@@ -56,10 +57,11 @@ const FormAddNewLibrary = () => {
   });
   const { dataTopic, isTopicLoading } = useGetAllTopicQuery(undefined, {
     selectFromResult: ({ data: topic, isFetching }) => {
-      const data = topic?.data?.filter((topic) => topic.isActive) ?? [];
+      const data =
+        topic?.data?.filter((topic: DataTopic) => topic.isActive) ?? [];
 
       return {
-        dataTopic: data?.map((topic) => ({
+        dataTopic: data?.map((topic: DataTopic) => ({
           value: topic?._id,
           label: topic?.topic_name,
         })),
@@ -99,7 +101,7 @@ const FormAddNewLibrary = () => {
     try {
       await addNewLibrary(data).unwrap();
       toast.success("Thêm thư viện thành công", { id: toasID });
-      router.replace("/thu-vien");
+      handleRouterBack();
     } catch (err) {
       toast.error("Thêm thư viện thất bại", { id: toasID });
     }
@@ -148,15 +150,17 @@ const FormAddNewLibrary = () => {
                   isAddItemLoading={isAddTopicLoading}
                   onAddItem={handleAddNewTopic}
                 >
-                  {dataTopic.map(({ label, value }) => (
-                    <SelectItem
-                      key={value}
-                      value={value}
-                      onDeleteItem={handleDeleteTopic}
-                    >
-                      {label}
-                    </SelectItem>
-                  ))}
+                  {dataTopic.map(
+                    ({ label, value }: { label: string; value: string }) => (
+                      <SelectItem
+                        key={value}
+                        value={value}
+                        onDeleteItem={handleDeleteTopic}
+                      >
+                        {label}
+                      </SelectItem>
+                    ),
+                  )}
                 </SelectContent>
               </Select>
               <FormDescription>

@@ -26,17 +26,17 @@ const DescriptionModule = () => {
     { id },
     {
       selectFromResult: ({ data, isFetching, isSuccess }) => ({
-        data: data,
+        data: data?.data,
         isFetching,
         isSuccess,
       }),
       refetchOnMountOrArgChange: true,
-    }
+    },
   );
 
   const { data: topic } = useGetTopicQuery(
     { id: data?.topic_id },
-    { skip: !isSuccess }
+    { skip: !isSuccess },
   );
 
   useBreadcrumb([

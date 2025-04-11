@@ -37,7 +37,14 @@ export default function AddNewAdminModule() {
   const router = useRouter();
 
   const [updateAdminAccount] = useUpdateAdminMutation();
-  const { data: admin } = useGetAdminQuery({ id });
+  const { admin } = useGetAdminQuery(
+    { id },
+    {
+      selectFromResult: ({ data }) => ({
+        admin: data?.data,
+      }),
+    },
+  );
   const form = useForm<z.infer<typeof formAdminSchema>>({
     mode: "onSubmit",
     resolver: zodResolver(formAdminSchema),
