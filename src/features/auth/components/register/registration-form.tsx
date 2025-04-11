@@ -5,14 +5,15 @@ import { ChevronLeft, CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
 
-import { useGetProvincesQuery } from "../api";
+import {
+  useCreateCitizenAccountMutation,
+  useCreateStudentAccountMutation,
+  useGetProvincesQuery,
+} from "../../api";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Select,
@@ -35,40 +36,48 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
-import { Calendar } from "@/components/ui/calendar";
+import { DateTimeInput } from "@/components/ui/datetime-input";
+import { Province } from "@/features/users/user.types";
+import { useGetAllOrganizationQuery } from "@/features/organizations/organization.api";
+import { Organization } from "@/features/organizations/types";
 
 interface RegistrationFormProps {
   userType: "student" | "citizen";
   phoneNumber: string;
   onBack: () => void;
+  otp: string | null;
 }
 
 export default function RegistrationForm({
   userType,
   phoneNumber,
   onBack,
+  otp,
 }: RegistrationFormProps) {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [createCitizenAccount] = useCreateCitizenAccountMutation();
+  const [createStudentAccount] = useCreateStudentAccountMutation();
 
   const { provinces } = useGetProvincesQuery(
     {},
     {
       selectFromResult: ({ data }) => {
         return {
-          provinces: data?.data,
+          provinces: data?.data?.items,
         };
       },
-    }
+    },
   );
-
-  console.log("🚀 ~ provinces:", provinces);
+  const { organizations } = useGetAllOrganizationQuery(undefined, {
+    skip: !provinces,
+    selectFromResult: ({ data }) => {
+      return {
+        organizations: data?.data?.items,
+      };
+    },
+  });
 
   // Use the appropriate schema based on user type
   const schema =
@@ -82,25 +91,39 @@ export default function RegistrationForm({
   >({
     resolver: zodResolver(schema),
     defaultValues: {
-      lastName: "",
-      firstName: "",
-      birthDate: "",
-      city: "",
-      ...(userType === "student" ? { school: "", grade: "" } : {}),
+      last_name: "",
+      first_name: "",
+      date_of_birth: "",
+      ...(userType === "student" ? { organizationId: "" } : {}),
     },
   });
 
+  const organizationsByProvince = organizations?.filter(
+    (org: Organization) =>
+      org?.province_id?._id === form.getValues("provinceId"),
+  );
+
   const handleSubmit = async (
-    data: StudentRegistrationFormValues | CitizenRegistrationFormValues
+    data: StudentRegistrationFormValues | CitizenRegistrationFormValues,
   ) => {
     setIsSubmitting(true);
     try {
       // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      console.log("Form submitted:", data);
+      if (userType === "student") {
+        await createStudentAccount({
+          ...data,
+          phone_number: phoneNumber,
+          otp,
+        }).unwrap();
+      } else {
+        await createCitizenAccount({
+          ...data,
+          phone_number: phoneNumber,
+          otp,
+        }).unwrap();
+      }
       setIsSubmitted(true);
-    } catch (error) {
-      console.error("Error submitting form:", error);
+    } catch {
     } finally {
       setIsSubmitting(false);
     }
@@ -108,7 +131,7 @@ export default function RegistrationForm({
 
   if (isSubmitted) {
     return (
-      <Card className="w-full bg-white/95 backdrop-blur-md shadow-xl rounded-xl overflow-hidden border-0">
+      <Card className="w-full bg-white/95 dark:bg-black/30 backdrop-blur-md shadow-xl rounded-xl overflow-hidden border-0">
         <CardContent className="pt-10 pb-8">
           <motion.div
             animate={{ scale: 1, opacity: 1 }}
@@ -138,7 +161,7 @@ export default function RegistrationForm({
   }
 
   return (
-    <Card className="w-full bg-white/95 backdrop-blur-md shadow-xl rounded-xl overflow-hidden border-0">
+    <Card className="w-full bg-white/95 dark:bg-black/30 backdrop-blur-md shadow-xl rounded-xl overflow-hidden border-0">
       <CardHeader className="pb-4 pt-6">
         <div className="flex items-center">
           <Button size="icon" type="button" variant="ghost" onClick={onBack}>
@@ -157,10 +180,12 @@ export default function RegistrationForm({
           >
             <FormField
               control={form.control}
-              name="lastName"
+              name="last_name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-gray-700">Họ</FormLabel>
+                  <FormLabel className="text-gray-700 dark:text-gray-100">
+                    Họ
+                  </FormLabel>
                   <FormControl>
                     <Input {...field} placeholder="Nguyễn" />
                   </FormControl>
@@ -171,10 +196,12 @@ export default function RegistrationForm({
 
             <FormField
               control={form.control}
-              name="firstName"
+              name="first_name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-gray-700">Tên</FormLabel>
+                  <FormLabel className="text-gray-700 dark:text-gray-100">
+                    Tên
+                  </FormLabel>
                   <FormControl>
                     <Input {...field} placeholder="Văn A" />
                   </FormControl>
@@ -185,77 +212,22 @@ export default function RegistrationForm({
 
             <FormField
               control={form.control}
-              name="birthDate"
+              name="date_of_birth"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel className="text-gray-700">Ngày sinh</FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          className={cn(
-                            "w-full pl-3 text-left font-normal bg-transparent"
-                          )}
-                          variant={"outline"}
-                        >
-                          {field.value ? (
-                            format(field.value, "dd/MM/yyyy")
-                          ) : (
-                            <span>Chọn ngày sinh</span>
-                          )}
-                          <CalendarIcon className="ml-auto h-4 w-4 " />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent align="start" className="w-auto p-0">
-                      <Calendar
-                        initialFocus
-                        mode="single"
-                        selected={
-                          field.value ? new Date(field.value) : undefined
-                        }
-                        onSelect={(date) =>
-                          field.onChange(date?.toISOString() ?? "")
-                        }
-                      />
-                    </PopoverContent>
-                  </Popover>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div className="space-y-2">
-              <Label className="text-gray-700" htmlFor="phone">
-                Số điện thoại
-              </Label>
-              <Input readOnly id="phone" value={phoneNumber} />
-            </div>
-
-            <FormField
-              control={form.control}
-              name="city"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-gray-700">
-                    Tỉnh/Thành phố
+                  <FormLabel className="text-gray-700 dark:text-gray-100">
+                    Ngày sinh
                   </FormLabel>
-                  <Select
-                    defaultValue={field.value}
-                    onValueChange={field.onChange}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Chọn tỉnh/thành phố" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="hanoi">Hà Nội</SelectItem>
-                      <SelectItem value="hcm">TP. Hồ Chí Minh</SelectItem>
-                      <SelectItem value="danang">Đà Nẵng</SelectItem>
-                      <SelectItem value="other">Khác</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage className="text-red-500 text-sm" />
+                  <FormControl>
+                    <DateTimeInput
+                      format="dd/MM/yyyy"
+                      value={field.value ? new Date(field.value) : undefined}
+                      onChange={(e) => {
+                        field.onChange(e?.toISOString());
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -264,45 +236,62 @@ export default function RegistrationForm({
               <>
                 <FormField
                   control={form.control}
-                  name="school"
+                  name="provinceId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-gray-700">Trường</FormLabel>
-                      <Select
-                        defaultValue={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <FormControl>
+                      <FormLabel className="text-gray-700 dark:text-gray-100">
+                        Tô chức
+                      </FormLabel>
+                      <FormControl>
+                        <Select
+                          defaultValue={field.value}
+                          onValueChange={field.onChange}
+                        >
                           <SelectTrigger>
                             <SelectValue placeholder="Chọn trường" />
                           </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="school1">
-                            THPT Ngô Hành Sơn
-                          </SelectItem>
-                          <SelectItem value="school2">
-                            THPT Phan Châu Trinh
-                          </SelectItem>
-                          <SelectItem value="school3">
-                            THPT Hoàng Hoa Thám
-                          </SelectItem>
-                          <SelectItem value="other">Khác</SelectItem>
-                        </SelectContent>
-                      </Select>
+                          <SelectContent>
+                            {provinces?.map((province: Province) => (
+                              <SelectItem
+                                key={province._id}
+                                value={province._id}
+                              >
+                                {province.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
                       <FormMessage className="text-red-500 text-sm" />
                     </FormItem>
                   )}
                 />
-
                 <FormField
                   control={form.control}
-                  name="grade"
+                  name="organizationId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-gray-700">Lớp</FormLabel>
+                      <FormLabel className="text-gray-700 dark:text-gray-100">
+                        Tô chức
+                      </FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="12A1" />
+                        <Select
+                          defaultValue={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Chọn trường" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {organizationsByProvince?.map(
+                              (org: Organization) => (
+                                <SelectItem key={org._id} value={org._id}>
+                                  {org.name}
+                                </SelectItem>
+                              ),
+                            )}
+                          </SelectContent>
+                        </Select>
                       </FormControl>
                       <FormMessage className="text-red-500 text-sm" />
                     </FormItem>

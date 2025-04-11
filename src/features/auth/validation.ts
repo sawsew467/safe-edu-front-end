@@ -32,22 +32,21 @@ export type UserTypeFormValues = z.infer<typeof userTypeSchema>;
 
 // Base registration schema (common fields)
 const baseRegistrationSchema = z.object({
-  lastName: z
+  last_name: z
     .string()
     .min(1, { message: "Vui lòng nhập họ" })
     .max(50, { message: "Họ không được quá 50 ký tự" }),
-  firstName: z
+  first_name: z
     .string()
     .min(1, { message: "Vui lòng nhập tên" })
     .max(50, { message: "Tên không được quá 50 ký tự" }),
-  birthDate: z.string().min(1, { message: "Vui lòng chọn ngày sinh" }),
-  city: z.string().min(1, { message: "Vui lòng chọn tỉnh/thành phố" }),
+  date_of_birth: z.string().min(1, { message: "Vui lòng chọn ngày sinh" }),
 });
 
 // Student registration schema (extends base schema)
 export const studentRegistrationSchema = baseRegistrationSchema.extend({
-  school: z.string().min(1, { message: "Vui lòng chọn trường" }),
-  grade: z.string().min(1, { message: "Vui lòng nhập lớp" }),
+  organizationId: z.string().min(1, { message: "Vui lòng chọn trường" }),
+  provinceId: z.string().min(1, { message: "Vui lòng chọn trường" }),
 });
 
 // Citizen registration schema (same as base schema for now)

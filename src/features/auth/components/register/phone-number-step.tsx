@@ -47,7 +47,7 @@ export default function PhoneNumberStep({ onSubmit }: PhoneNumberStepProps) {
   };
 
   return (
-    <Card className="w-full bg-white/95 backdrop-blur-md shadow-xl rounded-xl overflow-hidden border-0">
+    <Card className="w-full bg-white/95 dark:bg-black/30 backdrop-blur-md shadow-xl rounded-xl overflow-hidden border-0">
       <CardHeader className="pb-4 pt-6">
         <div className="flex justify-center mb-4">
           <img
@@ -59,7 +59,7 @@ export default function PhoneNumberStep({ onSubmit }: PhoneNumberStepProps) {
         <CardTitle className="text-2xl font-bold text-center text-primary">
           Bắt đầu
         </CardTitle>
-        <p className="text-center text-gray-600">
+        <p className="text-center text-gray-600 dark:text-gray-100">
           Hãy nhập số điện thoại để đăng ký tài khoản
         </p>
       </CardHeader>

@@ -49,7 +49,7 @@ export default function UserTypeStep({ onSelect, onBack }: UserTypeStepProps) {
   };
 
   return (
-    <Card className="w-full bg-white/95 backdrop-blur-md shadow-xl rounded-xl overflow-hidden border-0">
+    <Card className="w-full bg-white/95 dark:bg-black/30 backdrop-blur-md shadow-xl rounded-xl overflow-hidden border-0">
       <CardHeader className="pb-4 pt-6">
         <div className="flex items-center">
           <Button size="icon" type="button" variant="ghost" onClick={onBack}>
@@ -79,7 +79,7 @@ export default function UserTypeStep({ onSelect, onBack }: UserTypeStepProps) {
                       <motion.button
                         className={`flex flex-col items-center justify-center p-6 border-2 rounded-xl transition-all duration-200 ${
                           field.value === "student"
-                            ? "border-primary bg-primary/10"
+                            ? "border-primary bg-primary/10 dark:bg-[#3a5a0e]"
                             : "border-gray-200 hover:border-primary/50 hover:bg-primary/5"
                         }`}
                         type="button"
@@ -95,7 +95,7 @@ export default function UserTypeStep({ onSelect, onBack }: UserTypeStepProps) {
                             src="/images/auth/student.png"
                           />
                         </div>
-                        <span className="font-medium text-gray-800">
+                        <span className="font-medium text-gray-800 dark:text-gray-200">
                           Học sinh
                         </span>
                       </motion.button>
@@ -103,7 +103,7 @@ export default function UserTypeStep({ onSelect, onBack }: UserTypeStepProps) {
                       <motion.button
                         className={`flex flex-col items-center justify-center p-6 border-2 rounded-xl transition-all duration-200 ${
                           field.value === "citizen"
-                            ? "border-primary bg-primary/10"
+                            ? "border-primary bg-primary/10 dark:bg-[#3a5a0e]"
                             : "border-gray-200 hover:border-primary/50 hover:bg-primary/5"
                         }`}
                         type="button"
@@ -119,7 +119,7 @@ export default function UserTypeStep({ onSelect, onBack }: UserTypeStepProps) {
                             src="/images/auth/citizen.png"
                           />
                         </div>
-                        <span className="font-medium text-gray-800">
+                        <span className="font-medium text-gray-800 dark:text-gray-200">
                           Người dân
                         </span>
                       </motion.button>

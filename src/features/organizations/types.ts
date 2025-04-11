@@ -1,6 +1,8 @@
+import { Province } from "../users/user.types";
+
 export interface Organization {
-  province_id?: [];
-  _id?: string;
+  province_id?: Province;
+  _id: string;
   isActive?: boolean;
   name: string;
   province?: string;

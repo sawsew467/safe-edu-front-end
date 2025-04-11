@@ -2,6 +2,8 @@ import Link from "next/link";
 import React from "react";
 import Image from "next/image";
 
+import ThemeSwitcher from "../dashboard/theme-switcher";
+
 import { Button } from "@/components/ui/button";
 
 function AppHeader() {
@@ -41,6 +43,7 @@ function AppHeader() {
           </Link>
         </nav>
         <div className="flex items-center gap-4">
+          <ThemeSwitcher />
           <Link href="/dang-nhap">
             <Button variant="outline">Đăng nhập</Button>
           </Link>

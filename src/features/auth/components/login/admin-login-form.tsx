@@ -5,9 +5,8 @@ import { signInWithPopup } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-import { useLoginWithGoogleMutation } from "../api";
-import { setAccessToken, setUserInfo } from "../slice";
-
+import { useLoginWithGoogleMutation } from "@/features/auth/api";
+import { setAccessToken, setUserInfo } from "@/features/auth/slice";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -34,7 +33,7 @@ export function LoginForm() {
     try {
       const resFirebase: any = await signInWithPopup(
         auth,
-        provider.providerGoogle
+        provider.providerGoogle,
       );
 
       const res = await signInWithGoogle({
