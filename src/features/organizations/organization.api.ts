@@ -30,6 +30,11 @@ export const authAPI = baseApi.injectEndpoints({
         body: data,
         flashError: true,
       }),
+      invalidatesTags: (result, error) => {
+        if (error) return [];
+
+        return ["Organizations"];
+      },
     }),
     updateOrganization: build.mutation({
       query: (data: TypeUpdateOrganization) => {
@@ -43,9 +48,11 @@ export const authAPI = baseApi.injectEndpoints({
           flashError: true,
         };
       },
-      invalidatesTags: (result, error, { params: { id } }) => [
-        { type: "Organizations", id },
-      ],
+      invalidatesTags: (result, error) => {
+        if (error) return [];
+
+        return ["Organizations", "Manager"];
+      },
     }),
     deleteOrganization: build.mutation({
       query: ({ id }) => {
@@ -55,7 +62,21 @@ export const authAPI = baseApi.injectEndpoints({
           flashError: true,
         };
       },
-      invalidatesTags: (result, error, { params: { id } }) => {
+      invalidatesTags: (result, error) => {
+        if (error) return [];
+
+        return ["Organizations"];
+      },
+    }),
+    activeOrganizations: build.mutation({
+      query: ({ id }) => {
+        return {
+          url: `/organizations/${id}/isActive`,
+          method: "PATCH",
+          flashError: true,
+        };
+      },
+      invalidatesTags: (result, error) => {
         if (error) return [];
 
         return ["Organizations"];
@@ -70,4 +91,5 @@ export const {
   useAddNewOrganizationMutation,
   useUpdateOrganizationMutation,
   useDeleteOrganizationMutation,
+  useActiveOrganizationsMutation,
 } = authAPI;

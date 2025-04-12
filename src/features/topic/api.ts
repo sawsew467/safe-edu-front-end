@@ -1,12 +1,12 @@
 "use client";
 
-import { Topic, TypeAddNewTopic, TypeUpdateTopic } from "./topic.type";
+import { TypeAddNewTopic, TypeUpdateTopic } from "./topic.type";
 
 import { baseApi } from "@/redux/baseApi";
 
 export const authAPI = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    getAllTopic: build.query<Topic, any>({
+    getAllTopic: build.query({
       query: (params) => ({
         url: "/topics",
         params: params,

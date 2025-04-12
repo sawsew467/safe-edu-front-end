@@ -37,6 +37,7 @@ import {
   useGetAllTopicQuery,
 } from "@/features/topic/api";
 import TitlePage from "@/components/ui/title-page";
+import { DataTopic } from "@/features/topic/topic.type";
 
 const initialNews = {
   title: "",
@@ -48,17 +49,25 @@ const initialNews = {
 const FormUpdateNews = () => {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
-  const { data: news } = useGetNewsQuery({ id });
+  const { news } = useGetNewsQuery(
+    { id },
+    {
+      selectFromResult: ({ data }) => ({
+        news: data?.data,
+      }),
+    },
+  );
   const [addTopic, { isLoading: isAddTopicLoading }] = useAddNewTopicMutation();
   const [updateNews, { isLoading: isUpdateNewsLoading }] =
     useUpdateNewsMutation();
   const [deleteTopic] = useDeleteTopicMutation();
   const { dataTopic, isTopicLoading } = useGetAllTopicQuery(undefined, {
     selectFromResult: ({ data: topic, isFetching }) => {
-      const data = topic?.data?.filter((topic) => topic.isActive) ?? [];
+      const data =
+        topic?.data?.data?.filter((topic: DataTopic) => topic.isActive) ?? [];
 
       return {
-        dataTopic: data?.map((topic) => ({
+        dataTopic: data?.map((topic: DataTopic) => ({
           value: topic._id,
           label: topic.topic_name,
         })),
@@ -79,7 +88,7 @@ const FormUpdateNews = () => {
       image: news?.image,
       content: news?.content,
       author: news?.author,
-      topic_id: news?.topic_id,
+      topic_id: news?.topic_id?._id,
     });
   }, [news]);
 
@@ -118,14 +127,14 @@ const FormUpdateNews = () => {
     try {
       await updateNews({ params: { id: id }, body: data }).unwrap();
       toast.success("Thay đổi bài báo thành công", { id: toastID });
-      router.replace("/tin-tuc");
+      handleRouterBack();
     } catch (err) {
       toast.error("Thay đổi bài báo thất bại", { id: toastID });
     }
   };
 
   const handleRouterBack = () => {
-    router.replace("/tin-tuc");
+    router.back();
   };
 
   return (
@@ -184,15 +193,23 @@ const FormUpdateNews = () => {
                       isAddItemLoading={isAddTopicLoading}
                       onAddItem={handleAddNewTopic}
                     >
-                      {dataTopic.map(({ label, value }) => (
-                        <SelectItem
-                          key={value}
-                          value={value}
-                          onDeleteItem={handleDeleteTopic}
-                        >
-                          {label}
-                        </SelectItem>
-                      ))}
+                      {dataTopic.map(
+                        ({
+                          label,
+                          value,
+                        }: {
+                          label: string;
+                          value: string;
+                        }) => (
+                          <SelectItem
+                            key={value}
+                            value={value}
+                            onDeleteItem={handleDeleteTopic}
+                          >
+                            {label}
+                          </SelectItem>
+                        ),
+                      )}
                     </SelectContent>
                   </Select>
                   <FormDescription>

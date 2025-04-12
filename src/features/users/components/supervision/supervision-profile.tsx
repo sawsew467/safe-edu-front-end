@@ -15,9 +15,17 @@ import useBreadcrumb from "@/hooks/useBreadcrumb";
 
 export default function SupervisionProfileModule() {
   const { id } = useParams();
-  const { data: supervisionProfile, isFetching } = useGetSupervisionQuery({
-    id,
-  });
+  const { supervisionProfile, isFetching } = useGetSupervisionQuery(
+    {
+      id,
+    },
+    {
+      selectFromResult: ({ data, isFetching }) => ({
+        supervisionProfile: data?.data,
+        isFetching,
+      }),
+    },
+  );
 
   useBreadcrumb([
     {

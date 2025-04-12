@@ -14,13 +14,13 @@ const StudentManagement = () => {
     {
       selectFromResult: ({ data, isFetching }) => ({
         students:
-          data?.items?.map((item: Student) => ({
+          data?.data?.items?.map((item: Student) => ({
             ...item,
             full_name: `${item?.first_name} ${item?.last_name}`,
           })) ?? [],
         isFetching,
       }),
-    }
+    },
   );
 
   return (

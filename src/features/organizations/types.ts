@@ -11,6 +11,8 @@ export interface Organization {
   email: string;
   image: string;
   description: string;
+  created_at: string;
+  updated_at: string;
 }
 export interface TypeAddNewOrganization {
   name: string;

@@ -56,7 +56,7 @@ export const columns: ColumnDef<Student>[] = [
   },
   {
     accessorKey: "organizationId",
-    header: "Tỉnh / thành phố",
+    header: "Tổ chức",
     cell: ({ row }) => {
       const organization: Organization = (
         row.getValue("organizationId") as Organization[]
@@ -176,7 +176,7 @@ const Action = ({ row }: { row: Row<Student> }) => {
         <DropdownMenuItem>
           <Link
             className="flex gap-2 w-full"
-            href={`nguoi-dung/hoc-sinh/${row.original?.id}`}
+            href={`/quan-tri/nguoi-dung/hoc-sinh/${row.original?.id}`}
           >
             <Eye className="w-4 h-4 text-blue-500" />
             {<span className="">{"Xem"}</span>}

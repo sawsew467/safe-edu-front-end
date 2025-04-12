@@ -2,12 +2,13 @@ import React from "react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { Cross2Icon as Cancel, UploadIcon } from "@radix-ui/react-icons";
-import Image from "next/image";
 import { ControllerRenderProps, FieldPath, FieldValues } from "react-hook-form";
+import Image from "next/image";
 
 import { Spinner } from "./spinner";
 
 import { useUploadImageMutation } from "@/services/common/upload/api.upload";
+import { cn } from "@/lib/utils";
 
 export interface ImportModalProps
   extends Omit<
@@ -19,6 +20,7 @@ export interface ImportModalProps
   value?: any;
   ref?: React.Ref<any>;
   name?: string;
+  maxHeight?: number | string;
 }
 
 interface DragZoneProps {
@@ -28,6 +30,7 @@ interface DragZoneProps {
   value: string;
   error: any;
   disabled: boolean;
+  maxHeight?: number | string;
 }
 
 interface ErrorLineProps {
@@ -49,6 +52,7 @@ function DragZone({
   value,
   error,
   disabled,
+  maxHeight,
 }: DragZoneProps) {
   const ref = useRef<any>();
   const [dragActive, setDragActive] = useState<number>(0);
@@ -122,7 +126,8 @@ function DragZone({
   return (
     <React.Fragment>
       <button
-        className={`${value ? "" : "max-h-[300px] py-10"} w-full text-center overflow-y-auto ${value ? "border-solid" : "border-dashed"} border-2 rounded-md h-fit ${dragActive == 2 ? "cursor-not-allowed" : "cursor-pointer"} ${file ? (error ? "border-red-500" : "border-green-500") : dragActive === 2 ? "border-primary" : dragActive === 1 ? "border-orange-200" : "border-primary/40"}`}
+        className={`${value ? "" : "max-h-[300px] py-10"} w-full text-center overflow-y-auto ${value ? "border-solid" : "border-dashed"} border-2 rounded-md h-fit ${dragActive == 2 ? "cursor-not-allowed" : "cursor-pointer"} ${file ? (error ? "border-red-500" : value && "border-green-500") : dragActive === 2 ? "border-primary" : dragActive === 1 ? "border-orange-200" : "border-primary/40"}`}
+        type="button"
         onClick={handleClick}
         onDragEnter={handleDrag}
         onDragLeave={handleDrag}
@@ -155,8 +160,12 @@ function DragZone({
               <div className="flex w-full justify-center p-4">
                 <Image
                   alt="image upload"
+                  className={cn("w-auto object-contain")}
                   height={400}
                   src={value}
+                  style={{
+                    maxHeight: maxHeight ? maxHeight + "px" : "none",
+                  }}
                   width={400}
                 />
               </div>
@@ -178,6 +187,7 @@ function ImportExcelModal({
   onChange = () => {},
   value = "",
   disabled = false,
+  maxHeight,
 }: ImportModalProps) {
   const [upload, { isLoading }] = useUploadImageMutation();
   const [error, setError] = useState<any>();
@@ -187,7 +197,7 @@ function ImportExcelModal({
       try {
         const res = await upload(formData).unwrap();
 
-        onChange({ target: { value: res?.data } });
+        onChange({ target: { value: res?.data?.data } });
         setError(null);
       } catch (err) {
         setError(err);
@@ -201,6 +211,7 @@ function ImportExcelModal({
         disabled={disabled}
         error={error}
         isLoading={isLoading}
+        maxHeight={maxHeight}
         setFormData={onUploadImage}
         value={value}
         onChange={onChange}

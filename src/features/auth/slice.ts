@@ -2,6 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 
 import { getClientCookie, setClientCookie } from "@/lib/jsCookies";
 import constants from "@/settings/constants";
+import { ManagerRole } from "@/settings/enums";
+import { decodeToken } from "@/utils/decode-token";
 
 interface AuthSliceInterface {
   userInfo: {
@@ -10,6 +12,10 @@ interface AuthSliceInterface {
     email: string;
   } | null;
   access_token: string | null;
+  user_role: {
+    userId: string;
+    role: ManagerRole;
+  } | null;
 }
 
 const initialState: AuthSliceInterface = {
@@ -23,6 +29,19 @@ const initialState: AuthSliceInterface = {
     }
   })(),
   access_token: getClientCookie(constants.ACCESS_TOKEN) || null,
+  user_role: (() => {
+    const access_token = getClientCookie(constants.ACCESS_TOKEN) || null;
+
+    if (!access_token) return null;
+    const decode_token = decodeToken(access_token);
+
+    if (!decode_token) return null;
+
+    return {
+      role: decode_token?.role as ManagerRole,
+      userId: decode_token?.userId,
+    };
+  })(),
 };
 
 export const authSlice = createSlice({
@@ -36,10 +55,23 @@ export const authSlice = createSlice({
       state.access_token = action.payload;
       setClientCookie(constants.ACCESS_TOKEN, action.payload);
     },
+    setUserRole: (state, action) => {
+      state.user_role = (() => {
+        if (!action.payload) return null;
+        const decode_token = decodeToken(action.payload);
+
+        if (!decode_token) return null;
+
+        return {
+          role: decode_token?.role as ManagerRole,
+          userId: decode_token?.userId,
+        };
+      })();
+    },
   },
   extraReducers: (builder) => {},
 });
 
-export const { setUserInfo, setAccessToken } = authSlice.actions;
+export const { setUserInfo, setAccessToken, setUserRole } = authSlice.actions;
 
 export default authSlice.reducer;

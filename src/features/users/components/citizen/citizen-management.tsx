@@ -14,13 +14,13 @@ const CitizenManagement = () => {
     {
       selectFromResult: ({ data, isFetching }) => ({
         citizens:
-          data?.items?.map((item: Citizens) => ({
+          data?.data?.items?.map((item: Citizens) => ({
             ...item,
             full_name: `${item?.first_name} ${item?.last_name}`,
           })) ?? [],
         isFetching,
       }),
-    }
+    },
   );
 
   return (

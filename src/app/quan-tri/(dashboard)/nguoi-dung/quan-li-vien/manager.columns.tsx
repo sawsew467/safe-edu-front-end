@@ -66,9 +66,7 @@ export const columns: ColumnDef<Manager>[] = [
           <div className="font-medium">{organization?.name}</div>
         </div>
       ) : (
-        <p className="text-red-500">
-          *Quan sát viên này không quan sát tỉnh / thành phố nào
-        </p>
+        <p className="text-red-500">*Quản lí viên này quản lí tổ chức nào</p>
       );
     },
   },

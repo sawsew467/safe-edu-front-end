@@ -1,17 +1,22 @@
 "use client";
 import React from "react";
 import { Moon, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
 
 import { Button } from "@/components/ui/button";
 
 function ThemeSwitcher() {
+  const { setTheme } = useTheme();
+
   function toggleTheme() {
     if (document.documentElement.classList.contains("dark")) {
       document.documentElement.classList.remove("dark");
       localStorage.setItem("color-theme", "light");
+      setTheme("light");
     } else {
       document.documentElement.classList.add("dark");
       localStorage.setItem("color-theme", "dark");
+      setTheme("dark");
     }
   }
 

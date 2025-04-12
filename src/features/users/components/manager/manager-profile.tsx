@@ -15,9 +15,17 @@ import useBreadcrumb from "@/hooks/useBreadcrumb";
 
 export default function ManagerProfileModule() {
   const { id } = useParams();
-  const { data: ManagerProfile, isFetching } = useGetManagerQuery({
-    id,
-  });
+  const { ManagerProfile, isFetching } = useGetManagerQuery(
+    {
+      id,
+    },
+    {
+      selectFromResult: ({ data, isFetching }) => ({
+        ManagerProfile: data?.data,
+        isFetching,
+      }),
+    },
+  );
 
   useBreadcrumb([
     {

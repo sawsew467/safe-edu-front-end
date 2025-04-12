@@ -75,6 +75,10 @@ export const columns: ColumnDef<TypeNews>[] = [
     },
   },
   {
+    accessorKey: "topic_name",
+    header: "Chủ đề",
+  },
+  {
     accessorKey: "otherInformation",
     header: "Thông tin khác",
   },

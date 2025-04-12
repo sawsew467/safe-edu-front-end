@@ -27,15 +27,14 @@ export const metadata = {
 
 const fetchLatestNews = async () => {
   const res = await fetch(`${constants.API_SERVER}/news`);
-
   const data = await res.json();
 
   const latestNews =
-    data?.items?.filter((item: TypeNews) => item?.isActive) ?? [];
+    data?.data?.items?.filter((item: TypeNews) => item?.isActive) ?? [];
 
   return latestNews?.sort(
     (a: TypeNews, b: TypeNews) =>
-      new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
   );
 };
 
@@ -44,7 +43,7 @@ async function NewsPage() {
 
   return (
     <div className="min-h-screen ">
-      <section className="container mx-auto px-4 py-12 md:py-16 bg-white rounded-lg ">
+      <section className="container mx-auto px-4 py-12 md:py-16 bg-white dark:bg-black rounded-lg ">
         <h2 className="text-3xl font-bold text-center mb-10 text-primary">
           Tin tức mới nhất
         </h2>

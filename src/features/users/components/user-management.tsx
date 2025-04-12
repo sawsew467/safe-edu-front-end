@@ -15,22 +15,19 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/custom-tabs";
-import { UserRole } from "@/settings/enums";
+import { ManagerRole, UserRole } from "@/settings/enums";
 import useBreadcrumb from "@/hooks/useBreadcrumb";
-import useRoles from "@/hooks/use-roles";
+import { useAppSelector } from "@/hooks/redux-toolkit";
 
 const UserManagementModule = () => {
   const router = useRouter();
   const params = useSearchParams();
   const tab = params.get("tab") ?? "";
-  const { isAdmin, isManager, isSupervision } = useRoles();
-  const currentRole = isAdmin
-    ? "admin"
-    : isSupervision
-      ? "supervision"
-      : isManager
-        ? "manager"
-        : undefined;
+  const { role } = useAppSelector((state) => state.auth.user_role) ?? {
+    role: "unkown",
+  };
+
+  console.log("role", role, ManagerRole.admin, role !== ManagerRole.admin);
 
   useBreadcrumb([
     {
@@ -48,32 +45,31 @@ const UserManagementModule = () => {
 
   return (
     <>
-      <Tabs value={tab in UserRole ? tab : currentRole}>
+      <Tabs value={tab in UserRole ? tab : "admin"}>
         <TabsList className="flex justify-start rounded-none overflow-hidden">
-          <TabsTrigger
-            disabled={!isAdmin}
-            id="admin"
-            value="admin"
-            onClick={handleChangeTabs}
-          >
-            Quản trị viên
-          </TabsTrigger>
-          <TabsTrigger
-            disabled={!isSupervision && !isAdmin}
-            id="supervision"
-            value="supervision"
-            onClick={handleChangeTabs}
-          >
-            Quan sát viên
-          </TabsTrigger>
-          <TabsTrigger
-            disabled={!isManager && !isAdmin}
-            id="manager"
-            value="manager"
-            onClick={handleChangeTabs}
-          >
-            Quản lí viên
-          </TabsTrigger>
+          {role === ManagerRole.admin && (
+            <TabsTrigger id="admin" value="admin" onClick={handleChangeTabs}>
+              Quản trị viên
+            </TabsTrigger>
+          )}
+          {(role === ManagerRole.admin || role === ManagerRole.supervision) && (
+            <TabsTrigger
+              id="supervision"
+              value="supervision"
+              onClick={handleChangeTabs}
+            >
+              Quan sát viên
+            </TabsTrigger>
+          )}
+          {(role === ManagerRole.admin || role === ManagerRole.manager) && (
+            <TabsTrigger
+              id="manager"
+              value="manager"
+              onClick={handleChangeTabs}
+            >
+              Quản lí viên
+            </TabsTrigger>
+          )}
           <TabsTrigger id="student" value="student" onClick={handleChangeTabs}>
             Học sinh
           </TabsTrigger>

@@ -5,6 +5,7 @@ import { ChevronLeft, CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next-nprogress-bar";
 
 import {
   useCreateCitizenAccountMutation,
@@ -15,13 +16,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   type StudentRegistrationFormValues,
   type CitizenRegistrationFormValues,
@@ -40,6 +34,7 @@ import { DateTimeInput } from "@/components/ui/datetime-input";
 import { Province } from "@/features/users/user.types";
 import { useGetAllOrganizationQuery } from "@/features/organizations/organization.api";
 import { Organization } from "@/features/organizations/types";
+import { Combobox } from "@/components/ui/comboBox";
 
 interface RegistrationFormProps {
   userType: "student" | "citizen";
@@ -48,33 +43,52 @@ interface RegistrationFormProps {
   otp: string | null;
 }
 
+type OrganizationOptions = {
+  label: string;
+  value: string;
+  province_id?: string;
+};
+
 export default function RegistrationForm({
   userType,
   phoneNumber,
   onBack,
   otp,
 }: RegistrationFormProps) {
+  const router = useRouter();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [createCitizenAccount] = useCreateCitizenAccountMutation();
   const [createStudentAccount] = useCreateStudentAccountMutation();
 
-  const { provinces } = useGetProvincesQuery(
-    {},
-    {
-      selectFromResult: ({ data }) => {
-        return {
-          provinces: data?.data?.items,
-        };
+  const { provinces }: { provinces: Array<{ label: string; value: string }> } =
+    useGetProvincesQuery(
+      {},
+      {
+        selectFromResult: ({ data }) => {
+          return {
+            provinces: data?.data
+              ? data?.data?.items?.map((province: Province) => ({
+                  label: province.name,
+                  value: province._id,
+                }))
+              : [],
+          };
+        },
       },
-    },
-  );
+    );
   const { organizations } = useGetAllOrganizationQuery(undefined, {
     skip: !provinces,
     selectFromResult: ({ data }) => {
       return {
-        organizations: data?.data?.items,
+        organizations: data?.data
+          ? data?.data?.items?.map((org: Organization) => ({
+              label: org.name,
+              value: org._id,
+              province_id: org?.province_id?._id,
+            }))
+          : [],
       };
     },
   });
@@ -99,9 +113,13 @@ export default function RegistrationForm({
   });
 
   const organizationsByProvince = organizations?.filter(
-    (org: Organization) =>
-      org?.province_id?._id === form.getValues("provinceId"),
+    (org: OrganizationOptions) =>
+      org?.province_id === form.getValues("provinceId"),
   );
+
+  console.log("org", organizations);
+  console.log("orgByProvince", organizationsByProvince);
+  console.log("provinceId", form.getValues("provinceId"));
 
   const handleSubmit = async (
     data: StudentRegistrationFormValues | CitizenRegistrationFormValues,
@@ -110,8 +128,10 @@ export default function RegistrationForm({
     try {
       // Simulate API call
       if (userType === "student") {
+        const { provinceId, ...rest } = data as StudentRegistrationFormValues;
+
         await createStudentAccount({
-          ...data,
+          ...rest,
           phone_number: phoneNumber,
           otp,
         }).unwrap();
@@ -150,7 +170,7 @@ export default function RegistrationForm({
             </p>
             <Button
               className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-medium py-5 px-8 rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
-              onClick={() => window.location.reload()}
+              onClick={() => router.push("/")}
             >
               Hoàn tất
             </Button>
@@ -240,27 +260,15 @@ export default function RegistrationForm({
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-gray-700 dark:text-gray-100">
-                        Tô chức
+                        Tỉnh / Thành phố
                       </FormLabel>
                       <FormControl>
-                        <Select
-                          defaultValue={field.value}
+                        <Combobox
+                          options={provinces}
+                          placeholder="Chọn tỉnh / thành phố"
+                          value={field.value}
                           onValueChange={field.onChange}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Chọn trường" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {provinces?.map((province: Province) => (
-                              <SelectItem
-                                key={province._id}
-                                value={province._id}
-                              >
-                                {province.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        />
                       </FormControl>
                       <FormMessage className="text-red-500 text-sm" />
                     </FormItem>
@@ -275,23 +283,12 @@ export default function RegistrationForm({
                         Tô chức
                       </FormLabel>
                       <FormControl>
-                        <Select
-                          defaultValue={field.value}
+                        <Combobox
+                          options={organizationsByProvince}
+                          placeholder="Chọn tổ chức"
+                          value={field.value}
                           onValueChange={field.onChange}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Chọn trường" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {organizationsByProvince?.map(
-                              (org: Organization) => (
-                                <SelectItem key={org._id} value={org._id}>
-                                  {org.name}
-                                </SelectItem>
-                              ),
-                            )}
-                          </SelectContent>
-                        </Select>
+                        />
                       </FormControl>
                       <FormMessage className="text-red-500 text-sm" />
                     </FormItem>
