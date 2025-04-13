@@ -67,7 +67,10 @@ const QuizzManagement = () => {
           </DialogTrigger>
           <DialogContent>
             <DialogTitle>Thêm cuộc thi</DialogTitle>
-            <FormAddNewQuizz setOpenDialog={setOpenDialog} />
+            <FormAddNewQuizz
+              competitionId={competitionId}
+              setOpenDialog={setOpenDialog}
+            />
           </DialogContent>
         </Dialog>
         <Dialog open={isOpenDialogQuestion} onOpenChange={closeDialogQuestion}>

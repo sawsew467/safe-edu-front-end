@@ -1,0 +1,45 @@
+import { CheckCircledIcon, CrossCircledIcon } from "@radix-ui/react-icons";
+
+import ActionQuizz from "./action-quizz";
+
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+const getStatus = (status: string) => {
+  return status ? (
+    <div className="flex items-center text-green-500">
+      <CheckCircledIcon className="mr-2 h-4 w-4 text-green-500" />
+      <p className="text-sm">{status}</p>
+    </div>
+  ) : (
+    <div className="flex items-center text-red-500">
+      <CrossCircledIcon className="mr-2 h-4 w-4 text-red-500" />
+      <p className="text-sm">{status}</p>
+    </div>
+  );
+};
+
+export default function QuizzArticleCard({
+  title,
+  slug,
+  type,
+}: {
+  title: string;
+  slug: string;
+  type: string;
+}) {
+  return (
+    <Card className="overflow-hidden hover:shadow-md transition-shadow h-full">
+      <CardContent className="p-0">
+        <div className="p-4">
+          <h3 className="font-semibold text-lg mb-2 line-clamp-2">{title}</h3>
+          <Badge className="flex w-fit justify-start mb-2 text-sm">
+            {type}
+          </Badge>
+          <div className="flex w-full justify-between mt-4">
+            <ActionQuizz slug={slug} />
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
