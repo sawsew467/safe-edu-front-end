@@ -2,8 +2,7 @@ import Link from "next/link";
 import React from "react";
 import Image from "next/image";
 
-import ThemeSwitcher from "../dashboard/theme-switcher";
-
+import ThemeSwitcher from "@/components/layouts/dashboard/theme-switcher";
 import { Button } from "@/components/ui/button";
 
 function AppHeader() {

@@ -19,6 +19,13 @@ export const authAPI = baseApi.injectEndpoints({
         body: data,
       }),
     }),
+    signIn: build.mutation({
+      query: (data) => ({
+        url: "/auth/sign-in",
+        method: "POST",
+        body: data,
+      }),
+    }),
     verifyOtp: build.mutation({
       query: (data) => ({
         url: "/auth/verify-otp",
@@ -63,4 +70,5 @@ export const {
   useGetOrganizationsQuery,
   useCreateCitizenAccountMutation,
   useCreateStudentAccountMutation,
+  useSignInMutation,
 } = authAPI;

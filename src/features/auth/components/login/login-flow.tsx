@@ -2,7 +2,7 @@
 import React from "react";
 import { toast } from "sonner";
 
-import { useSendOtpMutation } from "../../api";
+import { useSignInMutation } from "../../api";
 
 import OtpStep from "./otp-step";
 import PhoneNumberStep from "./phone-number-step";
@@ -13,7 +13,7 @@ const LoginFlow = () => {
   const [phoneNumber, setPhoneNumber] = React.useState("");
   const [otp, setOtp] = React.useState<string | null>(null);
 
-  const [sendOtp, { isLoading }] = useSendOtpMutation();
+  const [sendOtp, { isLoading }] = useSignInMutation();
   const handleNextStep = () => {
     setStep(step + 1);
   };
