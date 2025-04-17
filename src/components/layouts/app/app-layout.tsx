@@ -1,22 +1,18 @@
-"use client";
-import { useRouter } from "next-nprogress-bar";
-import { useLayoutEffect } from "react";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 import AppFooter from "./footer";
 import AppHeader from "./header";
 
-import { useAppSelector } from "@/hooks/redux-toolkit";
+export default async function AppLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const cookiesStore = await cookies();
+  const access_token = cookiesStore.get("_access_token")?.value;
 
-export default function AppLayout({ children }: { children: React.ReactNode }) {
-  const { userInfo } = useAppSelector((state) => state.auth);
-
-  const router = useRouter();
-
-  useLayoutEffect(() => {
-    if (!userInfo) {
-      router.replace("/dang-nhap");
-    }
-  }, [userInfo]);
+  if (!access_token) redirect("/dang-nhap");
 
   return (
     <div className="flex min-h-screen flex-col">

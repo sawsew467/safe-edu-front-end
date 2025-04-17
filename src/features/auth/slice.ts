@@ -12,6 +12,7 @@ interface AuthSliceInterface {
     email: string;
   } | null;
   access_token: string | null;
+  refresh_token: string | null;
   user_role: {
     userId: string;
     role: ManagerRole;
@@ -29,6 +30,7 @@ const initialState: AuthSliceInterface = {
     }
   })(),
   access_token: getClientCookie(constants.ACCESS_TOKEN) || null,
+  refresh_token: getClientCookie(constants.REFRESH_TOKEN) || null,
   user_role: (() => {
     const access_token = getClientCookie(constants.ACCESS_TOKEN) || null;
 
@@ -55,6 +57,10 @@ export const authSlice = createSlice({
       state.access_token = action.payload;
       setClientCookie(constants.ACCESS_TOKEN, action.payload);
     },
+    setRefreshToken: (state, action) => {
+      state.refresh_token = action.payload;
+      setClientCookie(constants.REFRESH_TOKEN, action.payload);
+    },
     setUserRole: (state, action) => {
       state.user_role = (() => {
         if (!action.payload) return null;
@@ -72,6 +78,7 @@ export const authSlice = createSlice({
   extraReducers: (builder) => {},
 });
 
-export const { setUserInfo, setAccessToken, setUserRole } = authSlice.actions;
+export const { setUserInfo, setAccessToken, setRefreshToken, setUserRole } =
+  authSlice.actions;
 
 export default authSlice.reducer;

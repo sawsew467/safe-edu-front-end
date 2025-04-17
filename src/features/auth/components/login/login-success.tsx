@@ -37,13 +37,6 @@ export default function LoginSuccess() {
           Tiếp tục vào ứng dụng
         </Button>
       </div>
-
-      <div className="flex justify-center mt-6 space-x-2">
-        <div className="w-2 h-2 bg-white bg-opacity-50 rounded-full" />
-        <div className="w-2 h-2 bg-white bg-opacity-50 rounded-full" />
-        <div className="w-2 h-2 bg-white bg-opacity-50 rounded-full" />
-        <div className="w-6 h-2 bg-white rounded-full" />
-      </div>
     </div>
   );
 }

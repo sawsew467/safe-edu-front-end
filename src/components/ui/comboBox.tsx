@@ -48,7 +48,7 @@ export function Combobox({
         <Button
           aria-expanded={open}
           className={cn(
-            "flex w-full p-1 px-3 text-primary rounded-md border min-h-10 h-auto items-center justify-between bg-inherit hover:bg-inherit [&_svg]:pointer-events-auto",
+            "flex w-full p-1 px-3 text-black dark:text-white rounded-md border min-h-10 h-auto items-center justify-between bg-inherit hover:bg-inherit [&_svg]:pointer-events-auto",
             className,
           )}
           role="combobox"
