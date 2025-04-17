@@ -53,6 +53,26 @@ export interface QuestionQuizz {
   id: string;
 }
 
+export interface QuizResultQuestion {
+  _id: string;
+  isActive: boolean;
+  user_id: string;
+  quiz_id: Quizz;
+  questions: QuestionResult[];
+  answer: string;
+  isCorrect: boolean;
+  score: number;
+  created_at: string;
+  updated_at: string;
+  id: string;
+  completedAt: string;
+}
+
+export interface QuestionResult extends Question {
+  isCorrect: boolean;
+  question_id: Question;
+}
+
 export interface Quizz {
   _id: string;
   title: string;

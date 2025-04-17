@@ -84,7 +84,7 @@ export default function TimerProgressCircle({
 
         {/* Animated progress circle */}
         <circle
-          className="transition-all duration-300 ease-in-out"
+          className="transition-all duration-1000 ease-linear"
           cx={center}
           cy={center}
           fill="transparent"

@@ -32,7 +32,7 @@ export default function QuizzArticleCard({
       <CardContent className="p-0">
         <div className="p-4">
           <h3 className="font-semibold text-lg mb-2 line-clamp-2">{title}</h3>
-          <Badge className="flex w-fit justify-start mb-2 text-sm">
+          <Badge className="mb-4 bg-green-100 border-green-200 text-green-700 hover:bg-green-200 hover:text-green-800">
             {type}
           </Badge>
           <div className="flex w-full justify-between mt-4">

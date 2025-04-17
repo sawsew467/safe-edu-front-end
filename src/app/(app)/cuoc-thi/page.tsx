@@ -12,6 +12,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { customFetch } from "@/utils/custom-fetch";
 
 export const metadata = {
   title: "Cuộc thi mới nhất",
@@ -39,7 +40,7 @@ const fetchLatestCompetitions = async (
   totalPage: number;
   latestCompetitions: Competitions[];
 }> => {
-  const res = await fetch(
+  const res = await customFetch(
     `${constants.API_SERVER}/competitions?pageNumber=${page}&pageSize=10`,
   );
   const { data } = await res.json();
@@ -83,7 +84,7 @@ const CompetitionsPage = async ({ searchParams }: { searchParams: Props }) => {
               description={item.description}
               endDate={formatDate(item.endDate, "HH [giờ] dddd, DD/MM")}
               image={item.image_url}
-              slug={item._id}
+              slug={item.slug}
               startDate={formatDate(item.startDate, "HH [giờ] dddd, DD/MM")}
               status={item.status}
               title={item.title}

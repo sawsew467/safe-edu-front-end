@@ -1,13 +1,15 @@
 import React from "react";
+import { redirect } from "next/navigation";
 
 import constants from "@/settings/constants";
 import { Question, Quizz } from "@/features/competitions/type.competitions";
 import PartCompetitionQuizz from "@/features/competitions/components/quizz/PartCompetitionQuizz";
 import { Button } from "@/components/ui/button";
+import { customFetch } from "@/utils/custom-fetch";
 
 type Params = Promise<{ id: string }>;
 const fetchQuestionByQuizzId = async (id: string) => {
-  const res = await fetch(
+  const res = await customFetch(
     `${constants.API_SERVER}/questions/get-all-by-quizId/${id}`,
   );
 
@@ -24,6 +26,15 @@ const fetchQuestionByQuizzId = async (id: string) => {
     quizz,
     question,
   };
+};
+
+const isSubmitted = async (id: string) => {
+  const res = await customFetch(
+    `${constants.API_SERVER}/quiz-result/is-submit/${id}`,
+  );
+  const { data } = await res.json();
+
+  return data;
 };
 
 export async function generateMetadata({ params }: { params: Params }) {
@@ -46,6 +57,9 @@ export interface PartQuestion
 
 const PartCompetitions = async ({ params }: { params: Params }) => {
   const { id } = await params;
+  const data = await isSubmitted(id as string);
+
+  if (data?.isSubmit) redirect(`/phan-thi/${id}/ket-qua`);
   const { question, quizz }: { question?: PartQuestion[]; quizz?: Quizz } =
     await fetchQuestionByQuizzId((id ?? "") as string);
 
@@ -62,7 +76,7 @@ const PartCompetitions = async ({ params }: { params: Params }) => {
     );
 
   return (
-    <div className="h-screen md:px-4 px-2">
+    <div className="h-screen ">
       <PartCompetitionQuizz question={question} title={quizz?.title} />
     </div>
   );

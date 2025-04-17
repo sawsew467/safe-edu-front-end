@@ -18,7 +18,7 @@ const TimerProgress = React.forwardRef<
     {...props}
   >
     <ProgressPrimitive.Indicator
-      className="h-full w-full flex-1 bg-primary flex justify-end transition-all rounded-full"
+      className="h-full w-full flex-1 bg-primary flex justify-end transition-all rounded-full duration-1000 ease-linear"
       style={{
         transform: `translateX(-${100 - ((value || 0) / max) * 100 > 97.5 ? 97.5 : 100 - ((value || 0) / max) * 100}%)`,
       }}

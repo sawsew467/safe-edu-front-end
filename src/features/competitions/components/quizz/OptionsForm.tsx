@@ -11,15 +11,15 @@ import { cn } from "@/lib/utils";
 const pickColor = (index: number) => {
   switch (index) {
     case 0:
-      return "bg-[#00b4fc] hover:bg-[#007eb0]";
+      return "from-green-400 to-green-600";
     case 1:
-      return "bg-[#028f76] hover:bg-[#016453]";
+      return "from-red-400 to-red-600";
     case 2:
-      return "bg-[#f38630] hover:bg-[#aa5e22]";
+      return "from-blue-400 to-blue-600";
     case 3:
-      return "bg-[#97483d] hover:bg-[#7d1a0c]";
+      return "from-orange-400 to-orange-600";
     default:
-      return "bg-[#d14334] hover:bg-[#922f24]";
+      return "from-[#d14334] to-[#922f24]";
   }
 };
 const OptionsForm = ({
@@ -55,7 +55,7 @@ const OptionsForm = ({
                 >
                   <Button
                     className={cn(
-                      "w-full md:py-8 py-6 font-bold",
+                      "w-full md:py-8 py-6 font-bold transition-all  bg-gradient-to-br",
                       pickColor(index),
                     )}
                     value={answer}
