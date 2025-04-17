@@ -32,8 +32,10 @@ import { Combobox } from "@/components/ui/comboBox";
 
 const AddNewQuizz = ({
   setOpenDialog,
+  competitionId,
 }: {
   setOpenDialog: React.Dispatch<React.SetStateAction<boolean>>;
+  competitionId: string;
 }) => {
   const [addQuizz, { isLoading }] = useAddNewQuizzMutation();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -43,7 +45,7 @@ const AddNewQuizz = ({
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     const idToast = toast.loading("Đang thêm mới phần thi");
 
-    addQuizz(data)
+    addQuizz({ ...data, competitionId })
       .unwrap()
       .then(() => {
         toast.success("Thêm mới phần thi thành công", { id: idToast });

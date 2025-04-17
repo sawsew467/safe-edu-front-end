@@ -44,9 +44,9 @@ export function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
 
     formData.append("image", file);
     try {
-      const res = await uploadImage(formData).unwrap();
+      const { data } = await uploadImage(formData).unwrap();
 
-      return res?.data;
+      return data?.data;
     } catch (err) {
       console.log("🚀 ~ handleUploadImage ~ err:", err);
     }

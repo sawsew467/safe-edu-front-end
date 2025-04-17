@@ -60,6 +60,7 @@ export const QuizzApi = baseApi.injectEndpoints({
         return ["Quizz"];
       },
     }),
+
     deleteQuizz: build.mutation({
       query: ({ id }) => {
         return {

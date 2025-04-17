@@ -29,6 +29,16 @@ export const QuestionApi = baseApi.injectEndpoints({
       }),
       providesTags: ["Question"],
     }),
+    submissionQuestion: build.mutation({
+      query: (data) => {
+        return {
+          url: `/submission`,
+          method: "POST",
+          body: data,
+          flashError: true,
+        };
+      },
+    }),
     addNewQuestion: build.mutation({
       query: (data) => ({
         url: "/questions/create-question",
@@ -99,4 +109,5 @@ export const {
   useDeleteQuestionMutation,
   useActiveQuestionMutation,
   useGetQuestionByQuizzIdQuery,
+  useSubmissionQuestionMutation,
 } = QuestionApi;

@@ -15,6 +15,7 @@ export interface Competitions {
   status: string;
   created_at: string;
   updated_at: string;
+  slug: string;
   id: string;
 }
 
@@ -29,6 +30,7 @@ export interface Question {
   isSaveBefore?: boolean;
   isSave?: boolean;
   current_question: number;
+  quiz_id?: Quizz[];
 }
 
 export interface QuestionQuizz {
@@ -49,6 +51,26 @@ export interface QuestionQuizz {
   updated_at: string;
   __v: 0;
   id: string;
+}
+
+export interface QuizResultQuestion {
+  _id: string;
+  isActive: boolean;
+  user_id: string;
+  quiz_id: Quizz;
+  questions: QuestionResult[];
+  answer: string;
+  isCorrect: boolean;
+  score: number;
+  created_at: string;
+  updated_at: string;
+  id: string;
+  completedAt: string;
+}
+
+export interface QuestionResult extends Question {
+  isCorrect: boolean;
+  question_id: Question;
 }
 
 export interface Quizz {
