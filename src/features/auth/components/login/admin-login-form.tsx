@@ -5,9 +5,12 @@ import { signInWithPopup } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-import { useLoginWithGoogleMutation } from "../api";
-import { setAccessToken, setUserInfo, setUserRole } from "../slice";
-
+import { useLoginWithGoogleMutation } from "@/features/auth/api";
+import {
+  setAccessToken,
+  setUserInfo,
+  setUserRole,
+} from "@/features/auth/slice";
 import { Button } from "@/components/ui/button";
 import {
   Card,

@@ -27,8 +27,6 @@ const UserManagementModule = () => {
     role: "unkown",
   };
 
-  console.log("role", role, ManagerRole.admin, role !== ManagerRole.admin);
-
   useBreadcrumb([
     {
       label: `${tab in UserRole ? UserRole[tab as keyof typeof UserRole] : UserRole["admin"]}`,

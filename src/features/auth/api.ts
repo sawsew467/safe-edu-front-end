@@ -19,6 +19,13 @@ export const authAPI = baseApi.injectEndpoints({
         body: data,
       }),
     }),
+    signIn: build.mutation({
+      query: (data) => ({
+        url: "/auth/sign-in",
+        method: "POST",
+        body: data,
+      }),
+    }),
     verifyOtp: build.mutation({
       query: (data) => ({
         url: "/auth/verify-otp",
@@ -38,6 +45,20 @@ export const authAPI = baseApi.injectEndpoints({
         method: "GET",
       }),
     }),
+    createCitizenAccount: build.mutation({
+      query: (data) => ({
+        url: "/auth/sign-up-with-citizen",
+        method: "POST",
+        body: data,
+      }),
+    }),
+    createStudentAccount: build.mutation({
+      query: (data) => ({
+        url: "/auth/sign-up-with-student",
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -47,4 +68,7 @@ export const {
   useVerifyOtpMutation,
   useGetProvincesQuery,
   useGetOrganizationsQuery,
+  useCreateCitizenAccountMutation,
+  useCreateStudentAccountMutation,
+  useSignInMutation,
 } = authAPI;

@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 
-import { LoginForm } from "@/features/auth/components/admin-login-form";
+import { LoginForm } from "@/features/auth/components/login/admin-login-form";
 
 export const metadata: Metadata = {
   title: "Đăng nhập",

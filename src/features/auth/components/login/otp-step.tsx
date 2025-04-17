@@ -9,7 +9,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 
-import { useVerifyOtpMutation } from "../api";
+import { useVerifyOtpMutation } from "../../api";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -24,7 +24,7 @@ import {
 
 interface OtpStepProps {
   phoneNumber: string;
-  onSubmit: () => void;
+  onSubmit: (otp: string) => void;
   onBack: () => void;
   onResend: () => void;
 }
@@ -86,7 +86,7 @@ export default function OtpStep({
 
   const handleKeyDown = (
     index: number,
-    e: React.KeyboardEvent<HTMLInputElement>
+    e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
     // Move to previous input on backspace if current input is empty
     if (e.key === "Backspace" && !otp[index] && index > 0) {
@@ -99,7 +99,7 @@ export default function OtpStep({
     try {
       await verifyOtp({ phone_number: phoneNumber, otp: data.otp }).unwrap();
       toast.success("Xác nhận mã OTP thành công!");
-      onSubmit();
+      onSubmit(data.otp);
     } catch (error) {
       toast.error("Mã OTP không hợp lệ, vui lòng thử lại!");
     } finally {
@@ -114,7 +114,7 @@ export default function OtpStep({
   };
 
   return (
-    <Card className="w-full bg-white/95 backdrop-blur-md shadow-xl rounded-xl overflow-hidden border-0">
+    <Card className="w-full bg-white/95 dark:bg-black/30 backdrop-blur-md shadow-xl rounded-xl overflow-hidden border-0">
       <CardHeader className="pb-4 pt-6">
         <div className="flex items-center">
           <Button size="icon" type="button" variant="ghost" onClick={onBack}>
@@ -133,7 +133,7 @@ export default function OtpStep({
           />
         </div>
 
-        <p className="text-center text-gray-600">
+        <p className="text-center text-gray-600 dark:text-gray-100">
           Mã gồm 6 chữ số đã được gửi tới số{" "}
           <span className="font-medium text-primary">{phoneNumber}</span>
         </p>

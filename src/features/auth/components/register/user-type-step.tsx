@@ -1,10 +1,10 @@
 "use client";
 
-import { ChevronLeft } from "lucide-react";
 import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
+import { useRouter } from "next-nprogress-bar";
 
 import {
   type UserTypeFormValues,
@@ -27,7 +27,7 @@ interface UserTypeStepProps {
 
 export default function UserTypeStep({ onSelect, onBack }: UserTypeStepProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const router = useRouter();
   const form = useForm<UserTypeFormValues>({
     resolver: zodResolver(userTypeSchema),
     defaultValues: {
@@ -49,12 +49,9 @@ export default function UserTypeStep({ onSelect, onBack }: UserTypeStepProps) {
   };
 
   return (
-    <Card className="w-full bg-white/95 backdrop-blur-md shadow-xl rounded-xl overflow-hidden border-0">
+    <Card className="w-full bg-white/95 dark:bg-black/30 backdrop-blur-md shadow-xl rounded-xl overflow-hidden border-0">
       <CardHeader className="pb-4 pt-6">
         <div className="flex items-center">
-          <Button size="icon" type="button" variant="ghost" onClick={onBack}>
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
           <CardTitle className="text-2xl font-bold text-center text-primary flex-1 mr-8">
             Bạn là ai?
           </CardTitle>
@@ -79,7 +76,7 @@ export default function UserTypeStep({ onSelect, onBack }: UserTypeStepProps) {
                       <motion.button
                         className={`flex flex-col items-center justify-center p-6 border-2 rounded-xl transition-all duration-200 ${
                           field.value === "student"
-                            ? "border-primary bg-primary/10"
+                            ? "border-primary bg-primary/10 dark:bg-[#3a5a0e]"
                             : "border-gray-200 hover:border-primary/50 hover:bg-primary/5"
                         }`}
                         type="button"
@@ -95,7 +92,7 @@ export default function UserTypeStep({ onSelect, onBack }: UserTypeStepProps) {
                             src="/images/auth/student.png"
                           />
                         </div>
-                        <span className="font-medium text-gray-800">
+                        <span className="font-medium text-gray-800 dark:text-gray-200">
                           Học sinh
                         </span>
                       </motion.button>
@@ -103,7 +100,7 @@ export default function UserTypeStep({ onSelect, onBack }: UserTypeStepProps) {
                       <motion.button
                         className={`flex flex-col items-center justify-center p-6 border-2 rounded-xl transition-all duration-200 ${
                           field.value === "citizen"
-                            ? "border-primary bg-primary/10"
+                            ? "border-primary bg-primary/10 dark:bg-[#3a5a0e]"
                             : "border-gray-200 hover:border-primary/50 hover:bg-primary/5"
                         }`}
                         type="button"
@@ -119,7 +116,7 @@ export default function UserTypeStep({ onSelect, onBack }: UserTypeStepProps) {
                             src="/images/auth/citizen.png"
                           />
                         </div>
-                        <span className="font-medium text-gray-800">
+                        <span className="font-medium text-gray-800 dark:text-gray-200">
                           Người dân
                         </span>
                       </motion.button>
@@ -129,14 +126,24 @@ export default function UserTypeStep({ onSelect, onBack }: UserTypeStepProps) {
                 </FormItem>
               )}
             />
-
-            <Button
-              className="w-full"
-              disabled={isSubmitting || !form.watch("userType")}
-              type="submit"
-            >
-              {isSubmitting ? "Đang xử lý..." : "Tiếp tục"}
-            </Button>
+            <div className="space-y-3">
+              <Button
+                className="w-full"
+                disabled={isSubmitting || !form.watch("userType")}
+                type="submit"
+              >
+                {isSubmitting ? "Đang xử lý..." : "Tiếp tục"}
+              </Button>
+              <Button
+                className="w-full"
+                disabled={isSubmitting}
+                type="button"
+                variant="outline"
+                onClick={() => router.replace("/dang-nhap")}
+              >
+                Quay lại đăng nhập
+              </Button>
+            </div>
           </form>
         </Form>
       </CardContent>
