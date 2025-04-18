@@ -1,4 +1,7 @@
+"use client";
 import { CheckCircledIcon, CrossCircledIcon } from "@radix-ui/react-icons";
+
+import { useIsDoQuizzQuery } from "../../api.quizz";
 
 import ActionQuizz from "./action-quizz";
 
@@ -22,21 +25,27 @@ export default function QuizzArticleCard({
   title,
   slug,
   type,
+  id,
 }: {
   title: string;
   slug: string;
   type: string;
+  id: string;
 }) {
+  const { data } = useIsDoQuizzQuery({ id });
+
   return (
     <Card className="overflow-hidden hover:shadow-md transition-shadow h-full">
       <CardContent className="p-0">
-        <div className="p-4">
-          <h3 className="font-semibold text-lg mb-2 line-clamp-2">{title}</h3>
-          <Badge className="mb-4 bg-green-100 border-green-200 text-green-700 hover:bg-green-200 hover:text-green-800">
-            {type}
-          </Badge>
-          <div className="flex w-full justify-between mt-4">
-            <ActionQuizz slug={slug} />
+        <div className="p-4 flex justify-between w-full">
+          <div className=" space-y-4">
+            <h3 className="font-semibold text-lg mb-2 line-clamp-2">{title}</h3>
+            <Badge className="mb-4 bg-green-100 border-green-200 text-green-700 hover:bg-green-200 hover:text-green-800">
+              {type}
+            </Badge>
+          </div>
+          <div className="flex justify-between items-end">
+            <ActionQuizz data={data?.data} slug={slug} />
           </div>
         </div>
       </CardContent>

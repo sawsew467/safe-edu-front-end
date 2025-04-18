@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import Image from "next/image";
 import { useRouter } from "next-nprogress-bar";
@@ -22,19 +21,20 @@ import { PasswordInput } from "@/components/ui/password-input";
 interface PhoneNumberStepProps {
   onSubmit: (data: { username: string; password: string }) => void;
   form: ReturnType<typeof useForm<PhoneNumberFormValues>>;
+  isLoading: boolean;
 }
 
-export default function LoginForm({ onSubmit, form }: PhoneNumberStepProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+export default function LoginForm({
+  onSubmit,
+  form,
+  isLoading,
+}: PhoneNumberStepProps) {
   const router = useRouter();
   const handleSubmit = async (data: PhoneNumberFormValues) => {
-    setIsSubmitting(true);
     try {
       onSubmit(data);
-    } catch (error) {
-      console.error("Error submitting phone number:", error);
+    } catch {
     } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -101,12 +101,17 @@ export default function LoginForm({ onSubmit, form }: PhoneNumberStepProps) {
             />
 
             <div className="space-y-3">
-              <Button className="w-full" disabled={isSubmitting} type="submit">
-                {isSubmitting ? "Đang xử lý..." : "Đăng nhập"}
+              <Button
+                className="w-full"
+                disabled={isLoading}
+                isLoading={isLoading}
+                type="submit"
+              >
+                Đăng nhập
               </Button>
               <Button
                 className="w-full"
-                disabled={isSubmitting}
+                disabled={isLoading}
                 type="button"
                 variant="outline"
                 onClick={() => router.replace("/dang-ky")}

@@ -40,24 +40,30 @@ const fetchLatestCompetitions = async (
   totalPage: number;
   latestCompetitions: Competitions[];
 }> => {
-  const res = await customFetch(
-    `${constants.API_SERVER}/competitions?pageNumber=${page}&pageSize=10`,
-  );
-  const { data } = await res.json();
+  try {
+    const { data } = await customFetch(
+      `${constants.API_SERVER}/competitions?pageNumber=${page}&pageSize=10`,
+    );
 
-  const latestCompetitions =
-    data?.items?.filter(
-      (item: Competitions) =>
-        item?.isActive && new Date(item.endDate).getTime() > Date.now(),
-    ) ?? [];
+    const latestCompetitions =
+      data?.items?.filter(
+        (item: Competitions) =>
+          item?.isActive && new Date(item.endDate).getTime() > Date.now(),
+      ) ?? [];
 
-  return {
-    totalPage: data?.totalPages ?? 0,
-    latestCompetitions: latestCompetitions?.sort(
-      (a: Competitions, b: Competitions) =>
-        new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime(),
-    ),
-  };
+    return {
+      totalPage: data?.totalPages ?? 0,
+      latestCompetitions: latestCompetitions?.sort(
+        (a: Competitions, b: Competitions) =>
+          new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime(),
+      ),
+    };
+  } catch (error) {
+    return {
+      totalPage: 0,
+      latestCompetitions: [],
+    };
+  }
 };
 
 type Props = Promise<{
@@ -82,10 +88,10 @@ const CompetitionsPage = async ({ searchParams }: { searchParams: Props }) => {
             <CompetitionArticleCard
               key={item._id}
               description={item.description}
-              endDate={formatDate(item.endDate, "HH [giờ] dddd, DD/MM")}
+              endDate={formatDate(item.endDate, "dddd, DD/MM HH:mm")}
               image={item.image_url}
               slug={item.slug}
-              startDate={formatDate(item.startDate, "HH [giờ] dddd, DD/MM")}
+              startDate={formatDate(item.startDate, "dddd, DD/MM HH:mm")}
               status={item.status}
               title={item.title}
             />

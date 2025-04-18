@@ -43,7 +43,7 @@ async function NewsPage() {
 
   return (
     <div className="min-h-screen ">
-      <section className="container mx-auto px-4 py-12 md:py-16 bg-white dark:bg-black rounded-lg ">
+      <section className="container mx-auto px-4 py-12 md:py-16 bg-white dark:bg-card rounded-lg ">
         <h2 className="text-3xl font-bold text-center mb-10 text-primary">
           Tin tức mới nhất
         </h2>

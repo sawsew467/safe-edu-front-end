@@ -29,9 +29,7 @@ export const userTypeSchema = z.object({
 export type UserTypeFormValues = z.infer<typeof userTypeSchema>;
 
 // Base registration schema (common fields)
-const phoneRegex = new RegExp(
-  /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/,
-);
+const phoneRegex = new RegExp(/^0\d{8,12}$/);
 
 // Student registration schema (extends base schema)
 export const studentRegistrationSchema = z

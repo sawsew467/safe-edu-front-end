@@ -1,19 +1,25 @@
 "use client";
 import { useRouter } from "next-nprogress-bar";
+import { ArrowRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-
-const ActionQuizz = ({ slug }: { slug: string }) => {
+type SubmitType = {
+  isSubmit: boolean;
+};
+const ActionQuizz = ({ slug, data }: { slug: string; data: SubmitType }) => {
   "use client";
   const router = useRouter();
 
   return (
     <Button
+      className="flex justify-center items-center gap-2 bg-[#8bba34] hover:bg-[#7aa52c] text-white font-medium py-2 px-4 rounded-md"
       onClick={() => {
-        router.push(`/phan-thi/${slug}`);
+        if (data?.isSubmit) router.push(`/phan-thi/${slug}/ket-qua`);
+        else router.push(`/phan-thi/${slug}`);
       }}
     >
-      Bắt đầu
+      {data?.isSubmit ? "Xem kết quả" : "Bắt đầu"}
+      <ArrowRight className="size-24" />
     </Button>
   );
 };

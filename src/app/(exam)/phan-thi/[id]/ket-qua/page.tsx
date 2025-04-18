@@ -4,21 +4,30 @@ import constants from "@/settings/constants";
 import { customFetch } from "@/utils/custom-fetch";
 type Params = Promise<{ id: string }>;
 const getQuizResults = async (id: string) => {
-  const res = await customFetch(`${constants.API_SERVER}/quiz-result/${id}`);
-  const { data } = await res.json();
+  const { data } = await customFetch(
+    `${constants.API_SERVER}/quiz-result/${id}`,
+  );
 
   return data;
+};
+
+const getUserProfile = async (user_id: string) => {
+  const { data } = await customFetch(
+    `${constants.API_SERVER}/Students/${user_id}`,
+  );
+  const { avatar, first_name, last_name, username } = data;
+
+  return { avatar, first_name, last_name, username };
 };
 
 export default async function Home({ params }: { params: Params }) {
   const { id } = await params;
   const data: QuizResultQuestion = await getQuizResults(id);
-
-  console.log("data", data);
+  const user = await getUserProfile(data?.user_id);
 
   return (
     <main className="container mx-auto py-8 px-4">
-      <QuizResults quizData={data} />
+      <QuizResults quizData={data} user={user} />
     </main>
   );
 }

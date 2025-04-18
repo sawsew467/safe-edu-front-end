@@ -42,10 +42,10 @@ const LeftOption = ({
     funcFieldChange(questions.length, { shouldDirty: false });
     await addQuestion({
       quiz_id: quizzId,
-      question: "test",
+      question: "",
       image: "",
-      correct_answer: "test1",
-      answer: ["test1", "test2"],
+      correct_answer: "",
+      answer: [],
       time_limit: 20,
       point: 10,
     }).unwrap();

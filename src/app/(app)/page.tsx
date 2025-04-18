@@ -9,6 +9,10 @@ import { Library } from "@/features/library/library.type";
 import { ArticleCard } from "@/features/news/components/artical-card";
 import { ResourceCard } from "@/features/library/components/resource-card";
 import constants from "@/settings/constants";
+import { Competitions } from "@/features/competitions/type.competitions";
+import { customFetch } from "@/utils/custom-fetch";
+import { CompetitionArticleCard } from "@/features/competitions/components/competition-artile-card";
+import { formatDate } from "@/utils/format-date";
 
 export const metadata = {
   title: "Trang chủ",
@@ -45,6 +49,35 @@ const fetchLatestNews = async () => {
     )
     .slice(0, 3);
 };
+const fetchLatestCompetitions = async (): Promise<{
+  totalPage: number;
+  latestCompetitions: Competitions[];
+}> => {
+  try {
+    const { data } = await customFetch(
+      `${constants.API_SERVER}/competitions?pageNumber=${1}&pageSize=10`,
+    );
+
+    const latestCompetitions =
+      data?.items?.filter(
+        (item: Competitions) =>
+          item?.isActive && new Date(item.endDate).getTime() > Date.now(),
+      ) ?? [];
+
+    return {
+      totalPage: data?.totalPages ?? 0,
+      latestCompetitions: latestCompetitions?.sort(
+        (a: Competitions, b: Competitions) =>
+          new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime(),
+      ),
+    };
+  } catch (error) {
+    return {
+      totalPage: 0,
+      latestCompetitions: [],
+    };
+  }
+};
 
 const fetchLatestLibrary = async () => {
   const res = await fetch(`${constants.API_SERVER}/categories`);
@@ -67,6 +100,9 @@ async function AppPage() {
 
   const latestLibraries: Library[] = await fetchLatestLibrary();
 
+  const { latestCompetitions }: { latestCompetitions: Competitions[] } =
+    await fetchLatestCompetitions();
+
   return (
     <div className="min-h-screen ">
       <section className="relative  text-white">
@@ -76,7 +112,7 @@ async function AppPage() {
               <h1 className="text-4xl md:text-6xl font-bold mb-4 text-primary uppercase">
                 Nâng cao nhận thức xã hội
               </h1>
-              <p className="text-xl mb-8 text-black">
+              <p className="text-xl mb-8 text-black dark:text-white">
                 Tài nguyên giáo dục về bình đẳng giới, phòng chống ma túy và bạo
                 lực học đường
               </p>
@@ -93,7 +129,33 @@ async function AppPage() {
           </div>
         </div>
       </section>
-      <section className="container mx-auto px-4 py-12 md:py-16 bg-white rounded-lg ">
+      <section className="container mx-auto px-4 py-12 md:py-16 bg-white dark:bg-card rounded-lg ">
+        <div className="flex justify-between items-center mb-8">
+          <h2 className="text-3xl font-bold">Cuộc thi mới nhất</h2>
+          <Link
+            className="text-[#8BC34A] hover:underline flex items-center"
+            href="/cuoc-thi"
+          >
+            Xem tất cả <ChevronRight className="h-4 w-4 ml-1" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {latestCompetitions?.map((competition: Competitions) => (
+            <CompetitionArticleCard
+              key={competition._id}
+              description={competition.description}
+              endDate={formatDate(competition.endDate, "dddd, DD/MM HH:mm")}
+              image={competition.image_url}
+              slug={competition.slug}
+              startDate={formatDate(competition.startDate, "dddd, DD/MM HH:mm")}
+              status={competition.status}
+              title={competition.title}
+            />
+          ))}
+        </div>
+      </section>
+      <section className="container mx-auto px-4 py-12 md:py-16 bg-white dark:bg-card rounded-lg ">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-3xl font-bold">Tin tức mới nhất</h2>
           <Link
