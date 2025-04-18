@@ -89,7 +89,7 @@ export default async function NewsDetailPage(props: { params: Params }) {
     newsDetail.content.match(/<p><em>(.*?)<\/em><\/p>/)?.[1] || "";
 
   return (
-    <div className="min-h-screen bg-[#f8f9fa] dark:bg-[#343a40]">
+    <div className="min-h-screen bg-[#f8f9fa] dark:bg-card">
       {/* Breadcrumb */}
       {/* <div className="bg-white border-b">
         <div className="container mx-auto px-4 py-3">
@@ -118,7 +118,7 @@ export default async function NewsDetailPage(props: { params: Params }) {
               {/* Category Badge */}
               <div className="mb-4">
                 <Link href="/topics/drugs">
-                  <Badge className="bg-[#8BC34A] hover:bg-[#7CB342]">
+                  <Badge className="bg-[#8BC34A] hover:bg-[#7CB342] text-white">
                     {newsDetail.topic_id.topic_name}
                   </Badge>
                 </Link>
@@ -208,7 +208,7 @@ export default async function NewsDetailPage(props: { params: Params }) {
           {/* Sidebar */}
           <div className="lg:col-span-4">
             {/* Popular Articles */}
-            <div className="bg-white dark:bg-black rounded-lg shadow-sm p-6">
+            <div className="bg-white dark:bg-card rounded-lg shadow-sm p-6">
               <h3 className="text-lg font-semibold mb-4 pb-2 border-b">
                 Bài viết gần đây
               </h3>

@@ -1,20 +1,28 @@
 "use client";
 import { useRouter } from "next-nprogress-bar";
+import Image from "next/image";
 
-import { QuestionResult, QuizResultQuestion } from "../../type.competitions";
+import { QuizResultQuestion } from "../../type.competitions";
 
 import { CircularProgress } from "./circural-result";
-import QuestionResultModule from "./question-result";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDate } from "@/utils/format-date";
 
+type User = {
+  first_name: string;
+  last_name: string;
+  username: string;
+  avatar: string | null;
+};
+
 interface QuizResultsProps {
   quizData: QuizResultQuestion;
+  user: User;
 }
 
-export default function QuizResults({ quizData }: QuizResultsProps) {
+export default function QuizResults({ quizData, user }: QuizResultsProps) {
   const { quiz_id: quizz, questions: questions, score, completedAt } = quizData;
   const totalQuestions = questions?.length || 0;
   const correctAnswers = questions?.reduce(
@@ -29,8 +37,32 @@ export default function QuizResults({ quizData }: QuizResultsProps) {
       <h1 className="text-3xl text-primary font-bold text-center mb-8">
         {quizz?.title} - Kết quả
       </h1>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+      <Card>
+        <CardHeader>
+          <CardTitle>Thông tin người làm</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center gap-4">
+            <div className="relative h-16 w-16 overflow-hidden rounded-full border-2 border-gray-200">
+              <Image
+                fill
+                alt={`${user?.first_name || ""} ${user?.last_name || ""}`}
+                className="object-cover"
+                src={user?.avatar || "/placeholder.svg"}
+              />
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-lg font-semibold">
+                {user?.first_name || ""} {user?.last_name || ""}
+              </h3>
+              <p className="text-sm text-gray-600">
+                Tên đăng nhập: {user?.username}
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
         <Card className="md:col-span-1">
           <CardHeader className="text-center">
             <CardTitle>Điểm của bạn</CardTitle>
@@ -95,23 +127,6 @@ export default function QuizResults({ quizData }: QuizResultsProps) {
           </CardContent>
         </Card>
       </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Chi tiết câu hỏi</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {questions?.map((question: QuestionResult, index: number) => (
-              <QuestionResultModule
-                key={question._id}
-                answer={question}
-                index={index}
-              />
-            ))}
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 }

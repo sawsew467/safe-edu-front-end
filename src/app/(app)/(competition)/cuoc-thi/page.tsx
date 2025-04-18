@@ -40,24 +40,32 @@ const fetchLatestCompetitions = async (
   totalPage: number;
   latestCompetitions: Competitions[];
 }> => {
-  const res = await customFetch(
-    `${constants.API_SERVER}/competitions?pageNumber=${page}&pageSize=10`,
-  );
-  const { data } = await res.json();
+  try {
+    const res = await customFetch(
+      `${constants.API_SERVER}/competitions?pageNumber=${page}&pageSize=10`,
+    );
 
-  const latestCompetitions =
-    data?.items?.filter(
-      (item: Competitions) =>
-        item?.isActive && new Date(item.endDate).getTime() > Date.now(),
-    ) ?? [];
+    const { data } = await res.json();
 
-  return {
-    totalPage: data?.totalPages ?? 0,
-    latestCompetitions: latestCompetitions?.sort(
-      (a: Competitions, b: Competitions) =>
-        new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime(),
-    ),
-  };
+    const latestCompetitions =
+      data?.items?.filter(
+        (item: Competitions) =>
+          item?.isActive && new Date(item.endDate).getTime() > Date.now(),
+      ) ?? [];
+
+    return {
+      totalPage: data?.totalPages ?? 0,
+      latestCompetitions: latestCompetitions?.sort(
+        (a: Competitions, b: Competitions) =>
+          new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime(),
+      ),
+    };
+  } catch (error) {
+    return {
+      totalPage: 0,
+      latestCompetitions: [],
+    };
+  }
 };
 
 type Props = Promise<{

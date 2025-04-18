@@ -264,8 +264,8 @@ export default function RegistrationForm({
                 name="last_name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-gray-700 dark:text-gray-100">
-                      Họ
+                    <FormLabel className="text-gray-700 dark:text-gray-100 flex gap-2">
+                      Họ <p className="text-red-500">* bắt buộc</p>
                     </FormLabel>
                     <FormControl>
                       <Input {...field} placeholder="Nguyễn" />
@@ -280,8 +280,8 @@ export default function RegistrationForm({
                 name="first_name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-gray-700 dark:text-gray-100">
-                      Tên
+                    <FormLabel className="text-gray-700 dark:text-gray-100 flex gap-2">
+                      Tên<p className="text-red-500">* bắt buộc</p>
                     </FormLabel>
                     <FormControl>
                       <Input {...field} placeholder="Văn A" />
@@ -297,8 +297,8 @@ export default function RegistrationForm({
               name="date_of_birth"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel className="text-gray-700 dark:text-gray-100">
-                    Ngày sinh
+                  <FormLabel className="text-gray-700 dark:text-gray-100 flex gap-2">
+                    Ngày sinh<p className="text-red-500">* bắt buộc</p>
                   </FormLabel>
                   <FormControl>
                     <DateTimeInput
@@ -320,11 +320,11 @@ export default function RegistrationForm({
                 <FormItem className="flex flex-col">
                   <FormLabel className="text-gray-700 dark:text-gray-100 flex gap-2">
                     Số điện thoại
-                    <p className="text-red-500">(* không bắt buộc)</p>
                   </FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Nhập Số điện thoại"
+                      type="tel"
                       {...field}
                       value={field.value ?? ""}
                     />
@@ -339,7 +339,7 @@ export default function RegistrationForm({
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel className="text-gray-700 dark:text-gray-100 flex gap-2">
-                    Email <p className="text-red-500">(* không bắt buộc)</p>
+                    Email
                   </FormLabel>
                   <FormControl>
                     <Input
@@ -360,8 +360,9 @@ export default function RegistrationForm({
                   name="provinceId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-gray-700 dark:text-gray-100">
+                      <FormLabel className="text-gray-700 dark:text-gray-100 flex gap-2">
                         Tỉnh / Thành phố
+                        <p className="text-red-500">* bắt buộc</p>
                       </FormLabel>
                       <FormControl>
                         <Combobox
@@ -380,8 +381,8 @@ export default function RegistrationForm({
                   name="organizationId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-gray-700 dark:text-gray-100">
-                        Tô chức
+                      <FormLabel className="text-gray-700 dark:text-gray-100 flex gap-2">
+                        Tô chức<p className="text-red-500">* bắt buộc</p>
                       </FormLabel>
                       <FormControl>
                         <Combobox
@@ -402,8 +403,8 @@ export default function RegistrationForm({
               name="username"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-gray-700 dark:text-gray-100">
-                    Tên tài khoản
+                  <FormLabel className="text-gray-700 dark:text-gray-100 flex gap-2">
+                    Tên tài khoản<p className="text-red-500">* bắt buộc</p>
                   </FormLabel>
                   <FormControl>
                     <Input {...field} placeholder="vana" />
@@ -417,8 +418,8 @@ export default function RegistrationForm({
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-gray-700 dark:text-gray-100">
-                    Mật khẩu
+                  <FormLabel className="text-gray-700 dark:text-gray-100 flex gap-2">
+                    Mật khẩu<p className="text-red-500">* bắt buộc</p>
                   </FormLabel>
                   <FormControl>
                     <PasswordInput {...field} placeholder="Nhập password" />
@@ -432,8 +433,8 @@ export default function RegistrationForm({
               name="confirmPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-gray-700 dark:text-gray-100">
-                    Xác nhận mật khẩu
+                  <FormLabel className="text-gray-700 dark:text-gray-100 flex gap-2">
+                    Xác nhận mật khẩu<p className="text-red-500">* bắt buộc</p>
                   </FormLabel>
                   <FormControl>
                     <PasswordInput {...field} placeholder="xác nhập password" />

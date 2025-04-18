@@ -76,7 +76,7 @@ async function AppPage() {
               <h1 className="text-4xl md:text-6xl font-bold mb-4 text-primary uppercase">
                 Nâng cao nhận thức xã hội
               </h1>
-              <p className="text-xl mb-8 text-black">
+              <p className="text-xl mb-8 text-black dark:text-white">
                 Tài nguyên giáo dục về bình đẳng giới, phòng chống ma túy và bạo
                 lực học đường
               </p>
@@ -93,7 +93,7 @@ async function AppPage() {
           </div>
         </div>
       </section>
-      <section className="container mx-auto px-4 py-12 md:py-16 bg-white rounded-lg ">
+      <section className="container mx-auto px-4 py-12 md:py-16 bg-white dark:bg-card rounded-lg ">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-3xl font-bold">Tin tức mới nhất</h2>
           <Link

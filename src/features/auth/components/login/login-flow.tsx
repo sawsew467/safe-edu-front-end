@@ -18,7 +18,7 @@ import { setClientCookie } from "@/lib/jsCookies";
 const LoginFlow = () => {
   const [step, setStep] = React.useState(1);
   const dispatch = useAppDispatch();
-  const [signIn] = useSignInMutation();
+  const [signIn, { isLoading }] = useSignInMutation();
   const form = useForm<PhoneNumberFormValues>({
     resolver: zodResolver(phoneNumberSchema),
     defaultValues: {
@@ -87,7 +87,13 @@ const LoginFlow = () => {
     <main className="flex min-h-screen flex-col items-center justify-center p-4 md:p-8 bg-gradient-to-b from-primary/80  to-primary/20 dark:from-[#3a5a0e]/40 dark:to-[#3a5a0e]/50 relative overflow-hidden">
       <div className="w-full relative max-w-md mx-auto z-10">
         <div className=" transition-all duration-500 transform">
-          {step === 1 && <LoginForm form={form} onSubmit={handlePhoneSubmit} />}
+          {step === 1 && (
+            <LoginForm
+              form={form}
+              isLoading={isLoading}
+              onSubmit={handlePhoneSubmit}
+            />
+          )}
           {step === 2 && <LoginSuccess />}
         </div>
       </div>

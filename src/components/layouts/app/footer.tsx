@@ -4,7 +4,7 @@ import React from "react";
 
 function AppFooter() {
   return (
-    <footer className="w-full border-t py-6 md:py-0">
+    <footer className="w-full border-t py-6 md:py-0 px-4">
       <div className="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row m-auto">
         <div className="flex items-center gap-2">
           <Image

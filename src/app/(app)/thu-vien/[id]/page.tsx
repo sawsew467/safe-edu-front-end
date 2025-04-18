@@ -57,7 +57,7 @@ export default async function LibraryDetailPage(props: { params: Params }) {
   );
 
   return (
-    <div className="min-h-screen bg-[#f8f9fa] dark:bg-[#343a40]">
+    <div className="min-h-screen bg-[#f8f9fa] dark:bg-card">
       {/* Breadcrumb */}
       {/* <div className="bg-white border-b">
         <div className="container mx-auto px-4 py-3">
