@@ -1,5 +1,3 @@
-"use client";
-
 import { baseApi } from "@/redux/baseApi";
 
 export const QuizzApi = baseApi.injectEndpoints({
@@ -75,6 +73,24 @@ export const QuizzApi = baseApi.injectEndpoints({
         return ["Quizz"];
       },
     }),
+    isDoQuizz: build.query({
+      query: ({ id }) => {
+        return {
+          url: `/quiz-result/is-submit/${id}`,
+          method: "GET",
+          flashError: true,
+        };
+      },
+    }),
+    getLeaderBoard: build.query({
+      query: ({ slug }) => {
+        return {
+          url: `/competitions/leaderboard/${slug}`,
+          method: "GET",
+          flashError: true,
+        };
+      },
+    }),
     activeQuizz: build.mutation({
       query: ({ id }) => {
         return {
@@ -100,4 +116,6 @@ export const {
   useDeleteQuizzMutation,
   useActiveQuizzMutation,
   useGetQuizzByCompetitionIdQuery,
+  useIsDoQuizzQuery,
+  useGetLeaderBoardQuery,
 } = QuizzApi;

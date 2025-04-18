@@ -1,3 +1,4 @@
+"use server";
 import React from "react";
 import { redirect } from "next/navigation";
 
@@ -9,11 +10,14 @@ import { customFetch } from "@/utils/custom-fetch";
 
 type Params = Promise<{ id: string }>;
 const fetchQuestionByQuizzId = async (id: string) => {
-  const res = await customFetch(
+  const { data } = await customFetch(
     `${constants.API_SERVER}/questions/get-all-by-quizId/${id}`,
   );
 
-  const { data } = await res.json();
+  if (!data) {
+    return {};
+  }
+
   const firstQuestion: Question = data?.data?.at(0);
   const quizz = firstQuestion?.quiz_id?.at(0);
   const question = data?.data.map((item: any) => {
@@ -29,10 +33,9 @@ const fetchQuestionByQuizzId = async (id: string) => {
 };
 
 const isSubmitted = async (id: string) => {
-  const res = await customFetch(
+  const { data } = await customFetch(
     `${constants.API_SERVER}/quiz-result/is-submit/${id}`,
   );
-  const { data } = await res.json();
 
   return data;
 };
@@ -55,7 +58,7 @@ export interface PartQuestion
     "_id" | "image" | "answer" | "question" | "point" | "time_limit"
   > {}
 
-const PartCompetitions = async ({ params }: { params: Params }) => {
+export default async function PartCompetitions({ params }: { params: Params }) {
   const { id } = await params;
   const data = await isSubmitted(id as string);
 
@@ -80,6 +83,4 @@ const PartCompetitions = async ({ params }: { params: Params }) => {
       <PartCompetitionQuizz question={question} title={quizz?.title} />
     </div>
   );
-};
-
-export default PartCompetitions;
+}

@@ -73,25 +73,25 @@ export function CompetitionArticleCard({
             width={300}
           />
         </div>
-        <div className="p-4">
+        <div className="flex flex-col flex-1 p-4">
           <h3 className="font-semibold text-lg mb-2 line-clamp-2">{title}</h3>
-          <p className=" text-base">{description}</p>
+          <p className="text-base line-clamp-2 min-h-12 flex-1">
+            {description}
+          </p>
 
-          <div className="flex md:flex-row flex-col gap-2 md:items-center">
-            <p className="md:block hidden text-sm">Từ</p>
-            <span className="text-gray-500 text-sm">
-              <p className="md:hidden block text-sm text-black dark:text-white">
-                Từ
-              </p>
-              {startDate}
-            </span>
-            <p className="md:block hidden text-sm">Tới</p>
-            <span className="text-gray-500 text-sm">
-              <p className="md:hidden block text-sm text-black dark:text-white">
-                Tới
-              </p>
-              {endDate}
-            </span>
+          <div className="flex flex-col  gap-2">
+            <div className="flex gap-2">
+              <p className=" text-sm">Bắt đầu:</p>
+              <span className="text-gray-500 text-sm">
+                <p className="capitalize">{startDate}</p>
+              </span>
+            </div>
+            <div className="flex gap-2">
+              <p className="text-sm">Kết thúc:</p>
+              <span className="text-gray-500 text-sm">
+                <p className="capitalize">{endDate}</p>
+              </span>
+            </div>
           </div>
           <div className="flex w-full justify-between mt-4">
             {/* <div className="mt-2">{getStatus(status)}</div> */}

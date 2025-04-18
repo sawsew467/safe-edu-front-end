@@ -120,7 +120,7 @@ export default function QuizResults({ quizData, user }: QuizResultsProps) {
                   </p>
                 )}
               </div>
-              <Button onClick={() => router.push("/cuoc-thi")}>
+              <Button onClick={() => router.push("..")}>
                 Quay về trang chủ
               </Button>
             </div>

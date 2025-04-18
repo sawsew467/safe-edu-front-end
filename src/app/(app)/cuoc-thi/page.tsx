@@ -41,11 +41,9 @@ const fetchLatestCompetitions = async (
   latestCompetitions: Competitions[];
 }> => {
   try {
-    const res = await customFetch(
+    const { data } = await customFetch(
       `${constants.API_SERVER}/competitions?pageNumber=${page}&pageSize=10`,
     );
-
-    const { data } = await res.json();
 
     const latestCompetitions =
       data?.items?.filter(
@@ -90,10 +88,10 @@ const CompetitionsPage = async ({ searchParams }: { searchParams: Props }) => {
             <CompetitionArticleCard
               key={item._id}
               description={item.description}
-              endDate={formatDate(item.endDate, "HH [giờ] dddd, DD/MM")}
+              endDate={formatDate(item.endDate, "dddd, DD/MM HH:mm")}
               image={item.image_url}
               slug={item.slug}
-              startDate={formatDate(item.startDate, "HH [giờ] dddd, DD/MM")}
+              startDate={formatDate(item.startDate, "dddd, DD/MM HH:mm")}
               status={item.status}
               title={item.title}
             />

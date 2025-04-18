@@ -202,7 +202,7 @@ export default function RegistrationForm({
       const message = (err as any)?.data?.error?.message;
 
       if (detail?.includes("username")) {
-        form.setError("username", { message });
+        form.setError("username", { message: "Tên tài khoản đã tồn tại" });
       }
     } finally {
       setIsSubmitting(false);
@@ -265,7 +265,7 @@ export default function RegistrationForm({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-gray-700 dark:text-gray-100 flex gap-2">
-                      Họ <p className="text-red-500">* bắt buộc</p>
+                      Họ <p className="text-red-500">*</p>
                     </FormLabel>
                     <FormControl>
                       <Input {...field} placeholder="Nguyễn" />
@@ -281,7 +281,7 @@ export default function RegistrationForm({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-gray-700 dark:text-gray-100 flex gap-2">
-                      Tên<p className="text-red-500">* bắt buộc</p>
+                      Tên<p className="text-red-500">*</p>
                     </FormLabel>
                     <FormControl>
                       <Input {...field} placeholder="Văn A" />
@@ -298,7 +298,7 @@ export default function RegistrationForm({
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel className="text-gray-700 dark:text-gray-100 flex gap-2">
-                    Ngày sinh<p className="text-red-500">* bắt buộc</p>
+                    Ngày sinh<p className="text-red-500">*</p>
                   </FormLabel>
                   <FormControl>
                     <DateTimeInput
@@ -362,7 +362,7 @@ export default function RegistrationForm({
                     <FormItem>
                       <FormLabel className="text-gray-700 dark:text-gray-100 flex gap-2">
                         Tỉnh / Thành phố
-                        <p className="text-red-500">* bắt buộc</p>
+                        <p className="text-red-500">*</p>
                       </FormLabel>
                       <FormControl>
                         <Combobox
@@ -382,7 +382,7 @@ export default function RegistrationForm({
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-gray-700 dark:text-gray-100 flex gap-2">
-                        Tô chức<p className="text-red-500">* bắt buộc</p>
+                        Trường<p className="text-red-500">*</p>
                       </FormLabel>
                       <FormControl>
                         <Combobox
@@ -404,7 +404,7 @@ export default function RegistrationForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-gray-700 dark:text-gray-100 flex gap-2">
-                    Tên tài khoản<p className="text-red-500">* bắt buộc</p>
+                    Tên tài khoản<p className="text-red-500">*</p>
                   </FormLabel>
                   <FormControl>
                     <Input {...field} placeholder="vana" />
@@ -419,7 +419,7 @@ export default function RegistrationForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-gray-700 dark:text-gray-100 flex gap-2">
-                    Mật khẩu<p className="text-red-500">* bắt buộc</p>
+                    Mật khẩu<p className="text-red-500">*</p>
                   </FormLabel>
                   <FormControl>
                     <PasswordInput {...field} placeholder="Nhập password" />
@@ -434,7 +434,7 @@ export default function RegistrationForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-gray-700 dark:text-gray-100 flex gap-2">
-                    Xác nhận mật khẩu<p className="text-red-500">* bắt buộc</p>
+                    Xác nhận mật khẩu<p className="text-red-500">*</p>
                   </FormLabel>
                   <FormControl>
                     <PasswordInput {...field} placeholder="xác nhập password" />
