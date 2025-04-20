@@ -30,6 +30,8 @@ export function DataTableToolbar<TData>({
             className="h-8"
             id="search"
             placeholder="Tìm kiếm"
+            value={table.getState().globalFilter ?? ""}
+            onChange={(e) => table.setGlobalFilter(e.target.value)}
             // value={
             //   (table.getColumn("userName")?.getFilterValue() as string) ?? ""
             // }

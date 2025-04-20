@@ -9,20 +9,60 @@ import CardList from "@/components/ui/data-card";
 import { columns } from "@/app/quan-tri/(dashboard)/cuoc-thi/columns.competitions";
 import { StatusCompetition } from "@/settings/enums";
 import TitlePage from "@/components/ui/title-page";
+import useBreadcrumb from "@/hooks/useBreadcrumb";
+
+const sortByStatus = (a: Competitions, b: Competitions) => {
+  if (
+    a.status === StatusCompetition.Ongoing &&
+    b.status !== StatusCompetition.Ongoing
+  )
+    return -1;
+  if (
+    a.status !== StatusCompetition.Ongoing &&
+    b.status === StatusCompetition.Ongoing
+  )
+    return 1;
+  if (
+    a.status === StatusCompetition.Upcoming &&
+    b.status !== StatusCompetition.Upcoming
+  )
+    return -1;
+  if (
+    a.status !== StatusCompetition.Upcoming &&
+    b.status === StatusCompetition.Upcoming
+  )
+    return 1;
+};
 
 const CompetitionsModule = () => {
-  const [isopen, setOpenDialog] = React.useState(false);
+  useBreadcrumb([
+    {
+      label: `Quản lý cuộc thi`,
+    },
+  ]);
+
   const router = useRouter();
   const { competitions, isFetching } = useGetAllCompetitionsQuery(undefined, {
-    selectFromResult: ({ data, isFetching }) => ({
-      competitions:
-        data?.data?.items?.map((item: Competitions) => ({
-          ...item,
-          status:
-            StatusCompetition[item?.status as keyof typeof StatusCompetition],
-        })) ?? [],
-      isFetching,
-    }),
+    selectFromResult: ({ data, isFetching }) => {
+      const now = new Date();
+
+      return {
+        competitions:
+          data?.data?.items
+            ?.map((item: Competitions) => ({
+              ...item,
+              status: !item?.isActive
+                ? StatusCompetition.Outgoing
+                : new Date(item?.startDate) > now
+                  ? StatusCompetition.Upcoming
+                  : new Date(item?.endDate) < now
+                    ? StatusCompetition.Outgoing
+                    : StatusCompetition.Ongoing,
+            }))
+            ?.sort(sortByStatus) ?? [],
+        isFetching,
+      };
+    },
   });
   const handleRowClick = ({ data }: { data: Competitions }) => {
     router.push(`/quan-tri/cuoc-thi/${data._id}`);

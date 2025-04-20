@@ -59,17 +59,20 @@ const fetchLatestCompetitions = async (): Promise<{
     );
 
     const latestCompetitions =
-      data?.items?.filter(
-        (item: Competitions) =>
-          item?.isActive && new Date(item.endDate).getTime() > Date.now(),
-      ) ?? [];
+      data?.items
+        ?.filter(
+          (item: Competitions) =>
+            item?.isActive && new Date(item.endDate).getTime() > Date.now(),
+        )
+        ?.sort(
+          (a: Competitions, b: Competitions) =>
+            new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime(),
+        )
+        .slice(0, 3) ?? [];
 
     return {
       totalPage: data?.totalPages ?? 0,
-      latestCompetitions: latestCompetitions?.sort(
-        (a: Competitions, b: Competitions) =>
-          new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime(),
-      ),
+      latestCompetitions: latestCompetitions,
     };
   } catch (error) {
     return {

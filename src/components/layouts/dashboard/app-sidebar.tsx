@@ -28,14 +28,14 @@ import { useAppSelector } from "@/hooks/redux-toolkit";
 
 const sideBarItems = [
   {
-    name: "Trang chủ",
-    url: "/thong-ke",
-    icon: Home,
-  },
-  {
     name: "Người dùng",
     url: "/nguoi-dung",
     icon: Users,
+  },
+  {
+    name: "Thống kê",
+    url: "/thong-ke",
+    icon: Home,
   },
   {
     name: "Tổ chức",
@@ -93,7 +93,7 @@ export function AppSidebar({
         <div
           className={cn(
             "flex gap-2 items-center transition-all",
-            open ? "p-2" : "p-0"
+            open ? "p-2" : "p-0",
           )}
         >
           <Image
@@ -121,7 +121,7 @@ export function AppSidebar({
                 <SidebarMenuButton
                   asChild
                   className={cn(
-                    item.url === `/${rootPath}` && "bg-sidebar-accent"
+                    item.url === `/${rootPath}` && "bg-sidebar-accent",
                   )}
                 >
                   <Link href={`/quan-tri${item.url}`}>

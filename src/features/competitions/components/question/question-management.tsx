@@ -65,10 +65,10 @@ const QuestionManagement = ({ closeDialog }: { closeDialog: () => void }) => {
 
   const {
     questionsQuizzs,
-    isFetching,
-  }: { questionsQuizzs: Question[]; isFetching: boolean } =
+    isSuccess,
+  }: { questionsQuizzs: Question[]; isSuccess: boolean } =
     useGetQuestionByQuizzIdQuery(quizzId ? { id: quizzId } : skipToken, {
-      selectFromResult: ({ data, isFetching }) => ({
+      selectFromResult: ({ data, isSuccess }) => ({
         questionsQuizzs:
           data?.data?.data?.map((question: QuestionQuizz) => ({
             _id: question?._id ?? "",
@@ -81,7 +81,7 @@ const QuestionManagement = ({ closeDialog }: { closeDialog: () => void }) => {
             isSaveBefore: true,
             isSave: true,
           })) ?? [],
-        isFetching,
+        isSuccess,
       }),
     });
   const [addQuestion, { isLoading: isLoadingAddQuestion }] =
@@ -94,15 +94,30 @@ const QuestionManagement = ({ closeDialog }: { closeDialog: () => void }) => {
   const { current_question, ...dirtyFields } = form.formState.dirtyFields;
   const isDirty = Object.keys(dirtyFields).length > 0;
 
+  const addFirstQuestion = async () => {
+    await addQuestion({
+      quiz_id: quizzId,
+      question: "",
+      image: "",
+      correct_answer: "",
+      answer: [],
+      time_limit: 20,
+      point: 10,
+    }).unwrap();
+  };
+
   React.useEffect(() => {
-    if (questionsQuizzs)
+    if (questionsQuizzs?.length > 0) {
       form.reset(
         questionsQuizzs.at(currentQuestion) as z.infer<typeof formSchema>,
         {
           keepDirty: false,
         },
       );
-  }, [currentQuestion, JSON.stringify(questionsQuizzs)]);
+    } else if (isSuccess) {
+      addFirstQuestion();
+    }
+  }, [currentQuestion, isSuccess, JSON.stringify(questionsQuizzs)]);
 
   const handleSave = async () => {
     onSubmit(form.getValues() as z.infer<typeof formSchema>);

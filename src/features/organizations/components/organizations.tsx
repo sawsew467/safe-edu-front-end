@@ -15,8 +15,15 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { columns } from "@/app/quan-tri/(dashboard)/to-chuc/column.organizations";
+import useBreadcrumb from "@/hooks/useBreadcrumb";
 
 const OrganizationsManagement = () => {
+  useBreadcrumb([
+    {
+      label: `Quản lý tổ chức`,
+    },
+  ]);
+
   const [isopen, setOpenDialog] = React.useState(false);
   const { organizations, isFetching } = useGetAllOrganizationQuery(undefined, {
     selectFromResult: ({ data, isFetching }) => ({

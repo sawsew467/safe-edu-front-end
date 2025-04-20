@@ -52,7 +52,7 @@ const LeftOption = ({
   };
 
   return (
-    <div className="h-full overflow-y-scroll p-2 dark:bg-gray-600 bg-gray-200 rounded-lg">
+    <div className="h-full overflow-y-scroll p-2 dark:bg-gray-600 bg-gray-50 rounded-lg">
       <FormField
         control={form.control}
         name="current_question"
@@ -65,7 +65,8 @@ const LeftOption = ({
                     key={question._id}
                     className={cn(
                       "rounded flex items-center w-full p-2 mb-4 cursor-pointer",
-                      currentQuestion !== index && "bg-gray-700",
+                      currentQuestion !== index &&
+                        "dark:bg-gray-700 bg-gray-300 hover:bg-gray-400",
                     )}
                     variant={
                       currentQuestion === index ? "outline" : "secondary"

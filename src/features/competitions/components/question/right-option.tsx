@@ -25,7 +25,7 @@ const RightOption = ({
   form: ReturnType<typeof useForm<z.infer<typeof formSchema>>>;
 }) => {
   return (
-    <div className="h-full p-2 dark:bg-gray-600 bg-gray-200 rounded-lg">
+    <div className="h-full p-2 dark:bg-gray-600 bg-gray-50 rounded-lg">
       <div className="space-y-6">
         <FormField
           control={form.control}
@@ -33,8 +33,8 @@ const RightOption = ({
           render={({ field }) => (
             <FormItem className="mb-6">
               <FormLabel className="flex items-center gap-2 mb-2">
-                <div className="text-gray-500">
-                  <Timer color="white" size={20} />
+                <div className="text-black dark:text-white">
+                  <Timer className="" size={20} />
                 </div>
                 <span className="font-medium">Giới hạn thời gian</span>
               </FormLabel>
@@ -66,7 +66,7 @@ const RightOption = ({
           render={({ field }) => (
             <FormItem className="mb-6">
               <FormLabel className="flex items-center gap-2 mb-2">
-                <div className="text-gray-500">
+                <div className="text-black dark:text-white">
                   <Star color="white" size={20} />
                 </div>
                 <span className="font-medium">Ngôi sao hy vọng</span>

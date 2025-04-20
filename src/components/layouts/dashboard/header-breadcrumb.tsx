@@ -20,7 +20,7 @@ export function HeaderBreadcrumb({ items }: BreadcrumbProps) {
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem>
-          <BreadcrumbLink className="flex items-center" href="/">
+          <BreadcrumbLink className="flex items-center" href="/quan-tri">
             <Home className="h-4 w-4 mr-2" />
             Trang chủ
           </BreadcrumbLink>

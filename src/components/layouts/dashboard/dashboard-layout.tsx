@@ -5,7 +5,7 @@ import { useRouter } from "next-nprogress-bar";
 
 import ThemeSwitcher from "./theme-switcher";
 import UserDropdown from "./user-dropdown";
-import NotificationDropdown from "./notification-dropdown";
+// import NotificationDropdown from "./notification-dropdown";
 import { HeaderBreadcrumb } from "./header-breadcrumb";
 
 import { AppSidebar } from "@/components/layouts/dashboard/app-sidebar";
@@ -80,7 +80,7 @@ export default function DashboardLayout({
           </div>
           <div className="flex items-center gap-2">
             <ThemeSwitcher />
-            <NotificationDropdown />
+            {/* <NotificationDropdown /> */}
             <UserDropdown />
           </div>
         </header>

@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { useLoginWithGoogleMutation } from "@/features/auth/api";
 import {
   setAccessToken,
+  setRefreshToken,
   setUserInfo,
   setUserRole,
 } from "@/features/auth/slice";
@@ -47,6 +48,7 @@ export function LoginForm() {
       setClientCookie(constants.USER_INFO, JSON.stringify(resFirebase.user));
       dispatch(setUserInfo(resFirebase.user));
       dispatch(setAccessToken(res?.data?.accessToken));
+      dispatch(setRefreshToken(res?.data?.refreshToken));
       dispatch(setUserRole(res?.data?.accessToken));
       router.push("/");
     } catch (error: any) {

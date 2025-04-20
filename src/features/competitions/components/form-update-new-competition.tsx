@@ -6,7 +6,6 @@ import { z } from "zod";
 import { CalendarDaysIcon } from "lucide-react";
 import { vi } from "date-fns/locale/vi";
 import { useRouter } from "next-nprogress-bar";
-import { useParams } from "next/navigation";
 import { toast } from "sonner";
 
 import { formSchema } from "../shema.competitions";
@@ -35,8 +34,7 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { Spinner } from "@/components/ui/spinner";
 
-const UpdateCompetitions = () => {
-  const { id: idCompetition } = useParams<{ id: string }>();
+const UpdateCompetitions = ({ competitionId }: { competitionId: string }) => {
   const router = useRouter();
   const [updateCompetition, { isLoading }] = useUpdateCompetitionsMutation();
 
@@ -45,7 +43,7 @@ const UpdateCompetitions = () => {
   };
 
   const { competition, isFetching } = useGetCompetitionsQuery(
-    { id: idCompetition },
+    { id: competitionId },
     {
       selectFromResult: ({ data, isFetching }) => {
         return {

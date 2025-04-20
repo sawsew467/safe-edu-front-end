@@ -25,12 +25,7 @@ import { Button } from "@/components/ui/button";
 import { StatusCompetition, StatusCompetitionVN } from "@/settings/enums";
 import { useDeleteCompetitionsMutation } from "@/features/competitions/api.competitions";
 
-export interface ColumnCompetitions
-  extends Omit<Competitions, "organizations"> {
-  organizations: string;
-}
-
-export const columns: ColumnDef<ColumnCompetitions>[] = [
+export const columns: ColumnDef<Competitions>[] = [
   {
     accessorKey: "image_url",
     cell: ({ row }) => {
@@ -67,25 +62,6 @@ export const columns: ColumnDef<ColumnCompetitions>[] = [
     ),
     meta: {
       filterVariant: "search",
-    },
-  },
-  {
-    accessorKey: "description",
-
-    cell: ({ row }) => (
-      <p className="flex w-full justify-start mb-2 text-sm">
-        {row.getValue("description")}
-      </p>
-    ),
-    meta: {
-      filterVariant: "search",
-    },
-  },
-  {
-    accessorKey: "organizations",
-    header: "Tổ chức",
-    meta: {
-      filterVariant: "select",
     },
   },
   {
@@ -152,7 +128,7 @@ export const columns: ColumnDef<ColumnCompetitions>[] = [
   },
 ];
 
-const getStatus = (row: Row<ColumnCompetitions>) => {
+const getStatus = (row: Row<Competitions>) => {
   const status = {
     value: row.original.status as keyof typeof StatusCompetitionVN,
     label: row.original.status as keyof typeof StatusCompetitionVN,
@@ -190,7 +166,7 @@ const getStatus = (row: Row<ColumnCompetitions>) => {
   }
 };
 
-const Action = (row: Row<ColumnCompetitions>) => {
+const Action = (row: Row<Competitions>) => {
   const [deleteNews] = useDeleteCompetitionsMutation();
   const handleDeleteCompetitions = async (id: string) => {
     const toastID = toast.loading("đang xóa bài báo...");
