@@ -48,11 +48,11 @@ const CompetitionsModule = () => {
 
       return {
         competitions:
-          data?.data?.items
+          data?.data
             ?.map((item: Competitions) => ({
               ...item,
               status: !item?.isActive
-                ? StatusCompetition.Outgoing
+                ? StatusCompetition.UnActive
                 : new Date(item?.startDate) > now
                   ? StatusCompetition.Upcoming
                   : new Date(item?.endDate) < now
@@ -64,6 +64,7 @@ const CompetitionsModule = () => {
       };
     },
   });
+
   const handleRowClick = ({ data }: { data: Competitions }) => {
     router.push(`/quan-tri/cuoc-thi/${data._id}`);
   };

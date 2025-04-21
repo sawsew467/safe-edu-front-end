@@ -4,17 +4,19 @@ import constants from "@/settings/constants";
 import { customFetch } from "@/utils/custom-fetch";
 type Params = Promise<{ id: string }>;
 const getQuizResults = async (id: string) => {
-  const { data } = await customFetch(
-    `${constants.API_SERVER}/quiz-result/${id}`,
-  );
+  const data = await customFetch(`${constants.API_SERVER}/quiz-result/${id}`);
 
-  return data;
+  if (data?.statusCode === 401) return null;
+
+  return data?.data;
 };
 
-const getUserProfile = async (user_id: string) => {
+const getUserProfile = async (user_id = "") => {
   const { data } = await customFetch(
     `${constants.API_SERVER}/Students/${user_id}`,
   );
+
+  if (!data) return;
   const { avatar, first_name, last_name, username } = data;
 
   return { avatar, first_name, last_name, username };

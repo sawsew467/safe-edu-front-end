@@ -1,7 +1,5 @@
 "use client";
 
-import { TypeAddNewCitizens, TypeupdateNewCitizens } from "../user.types";
-
 import { baseApi } from "@/redux/baseApi";
 
 export const authAPI = baseApi.injectEndpoints({
@@ -32,7 +30,7 @@ export const authAPI = baseApi.injectEndpoints({
       providesTags: (result, error, { phone }) => [{ type: "citizens", phone }],
     }),
     addNewCitizen: build.mutation({
-      query: (data: TypeAddNewCitizens) => ({
+      query: (data) => ({
         url: "/citizens",
         method: "POST",
         body: data,
@@ -75,7 +73,7 @@ export const authAPI = baseApi.injectEndpoints({
       },
     }),
     activeCitizen: build.mutation({
-      query: (data: TypeupdateNewCitizens) => {
+      query: (data) => {
         const { params, body } = data;
         const { id } = params;
 

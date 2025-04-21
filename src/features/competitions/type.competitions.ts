@@ -8,6 +8,7 @@ export interface Competitions {
   created_by: string | null;
   update_by: string | null;
   title: string;
+  number_join: number;
   description: string;
   startDate: string;
   endDate: string;
@@ -80,4 +81,5 @@ export interface Quizz {
   slug: string;
   isActive: boolean;
   status: string;
+  competitionId: string[];
 }

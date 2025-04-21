@@ -127,8 +127,9 @@ export type Student = {
   first_name: string;
   last_name: string;
   full_name: string;
+  username: string;
   phone_number: string;
-  organizationId: Organization;
+  organizationId: Organization[];
   avatar: string;
   date_of_birth: string;
   gender: "Male" | "Female" | "Other";

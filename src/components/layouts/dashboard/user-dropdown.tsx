@@ -73,7 +73,7 @@ function UserDropdown() {
         <DropdownMenuSeparator /> */}
         <DropdownMenuItem>
           <button className="w-full text-left" onClick={handleSignOut}>
-            Sign out
+            Đăng xuất
           </button>
         </DropdownMenuItem>
       </DropdownMenuContent>

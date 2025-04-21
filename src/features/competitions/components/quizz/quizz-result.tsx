@@ -1,6 +1,7 @@
 "use client";
 import { useRouter } from "next-nprogress-bar";
 import Image from "next/image";
+import React from "react";
 
 import { QuizResultQuestion } from "../../type.competitions";
 
@@ -9,28 +10,39 @@ import { CircularProgress } from "./circural-result";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDate } from "@/utils/format-date";
+import { deleteClientCookie } from "@/lib/jsCookies";
+import constants from "@/settings/constants";
 
 type User = {
-  first_name: string;
-  last_name: string;
-  username: string;
-  avatar: string | null;
+  first_name?: string;
+  last_name?: string;
+  username?: string;
+  avatar?: string | null;
 };
 
 interface QuizResultsProps {
   quizData: QuizResultQuestion;
-  user: User;
+  user?: User;
 }
 
 export default function QuizResults({ quizData, user }: QuizResultsProps) {
+  const router = useRouter();
+
+  React.useLayoutEffect(() => {
+    if (!quizData || !user) {
+      deleteClientCookie(constants.ACCESS_TOKEN);
+      deleteClientCookie(constants.USER_INFO);
+      deleteClientCookie(constants.REFRESH_TOKEN);
+      router.replace("/dang-nhap");
+    }
+  }, []);
+
   const { quiz_id: quizz, questions: questions, score, completedAt } = quizData;
   const totalQuestions = questions?.length || 0;
   const correctAnswers = questions?.reduce(
     (acc, question) => acc + (question.isCorrect ? 1 : 0),
     0,
   );
-
-  const router = useRouter();
 
   return (
     <div className="max-w-4xl mx-auto">

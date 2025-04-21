@@ -8,8 +8,16 @@ import { UserOverview } from "../home/components/user-overview";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import useBreadcrumb from "@/hooks/useBreadcrumb";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export default function StatisticModule() {
+  const [isOpen, setIsOpen] = React.useState(true);
+
   useBreadcrumb([
     {
       label: `Thống kê`,
@@ -18,6 +26,17 @@ export default function StatisticModule() {
 
   return (
     <div className="bg-white dark:bg-background p-4 rounded-xl border-[1px] border-stone-50 dark:border-stone-800 h-full">
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Thông Báo</DialogTitle>
+          </DialogHeader>
+          <p className="text-gray-700">
+            Tính năng này đang được phát triển. Các thông tin hiển thị hiện tại
+            chỉ là giả lập.
+          </p>
+        </DialogContent>
+      </Dialog>
       <h1 className="text-4xl font-bold mb-10">
         Bảng Điều Khiển Chiến Dịch Phòng Chống Ma Túy
       </h1>

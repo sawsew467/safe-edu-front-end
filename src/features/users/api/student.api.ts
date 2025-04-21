@@ -1,7 +1,5 @@
 "use client";
 
-import { TypeAddNewstudents, TypeupdateNewstudents } from "../user.types";
-
 import { baseApi } from "@/redux/baseApi";
 
 export const authAPI = baseApi.injectEndpoints({
@@ -23,6 +21,37 @@ export const authAPI = baseApi.injectEndpoints({
       }),
       providesTags: (result, error, { id }) => [{ type: "students", id }],
     }),
+    getUser: build.query({
+      query: () => ({
+        url: `/students/get-profile/user`,
+        method: "GET",
+        flashError: true,
+      }),
+    }),
+    updateProfile: build.mutation({
+      query: (data) => ({
+        url: `/students/update-profile`,
+        method: "POST",
+        body: data,
+        flashError: true,
+      }),
+    }),
+    changePassword: build.mutation({
+      query: (data) => ({
+        url: "/students/change-password",
+        method: "POST",
+        body: data,
+        flashError: true,
+      }),
+    }),
+    getStudentByUsername: build.query({
+      query: ({ username }) => ({
+        url: `/students/username/${username}`,
+        method: "GET",
+        flashError: true,
+      }),
+      providesTags: (result, error, { id }) => [{ type: "students", id }],
+    }),
     getStudentByPhone: build.query({
       query: ({ phone }: { phone: string }) => ({
         url: `/students/${phone}`,
@@ -31,8 +60,9 @@ export const authAPI = baseApi.injectEndpoints({
       }),
       providesTags: (result, error, { phone }) => [{ type: "students", phone }],
     }),
+
     addNewStudent: build.mutation({
-      query: (data: TypeAddNewstudents) => ({
+      query: (data) => ({
         url: "/students",
         method: "POST",
         body: data,
@@ -75,7 +105,7 @@ export const authAPI = baseApi.injectEndpoints({
       },
     }),
     activeStudents: build.mutation({
-      query: (data: TypeupdateNewstudents) => {
+      query: (data) => {
         const { params, body } = data;
         const { id } = params;
 
@@ -103,4 +133,8 @@ export const {
   useUpdateStudentMutation,
   useDeleteStudentsMutation,
   useActiveStudentsMutation,
+  useGetStudentByUsernameQuery,
+  useUpdateProfileMutation,
+  useChangePasswordMutation,
+  useGetUserQuery,
 } = authAPI;

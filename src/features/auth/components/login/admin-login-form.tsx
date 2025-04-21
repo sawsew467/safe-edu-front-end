@@ -50,7 +50,7 @@ export function LoginForm() {
       dispatch(setAccessToken(res?.data?.accessToken));
       dispatch(setRefreshToken(res?.data?.refreshToken));
       dispatch(setUserRole(res?.data?.accessToken));
-      router.push("/");
+      router.push("/quan-tri");
     } catch (error: any) {
       if (error?.status === 404) {
         toast.error("Tài khoản của bạn chưa có trong hệ thống quản trị");

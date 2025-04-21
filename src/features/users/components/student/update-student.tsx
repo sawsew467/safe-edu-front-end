@@ -4,9 +4,14 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useRouter } from "next-nprogress-bar";
+import React from "react";
 
-import { formManagerSchema } from "../../user.schema";
-import { useAddNewManagerMutation } from "../../api/manager.api";
+import {
+  useGetUserQuery,
+  useUpdateProfileMutation,
+} from "../../api/student.api";
+import { formStudentSchema } from "../../user.schema";
+import { Province } from "../../user.types";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -31,6 +36,9 @@ import {
 } from "@/components/ui/select";
 import { useGetAllOrganizationQuery } from "@/features/organizations/organization.api";
 import { Organization } from "@/features/organizations/types";
+import { DateTimeInput } from "@/components/ui/datetime-input";
+import { Combobox } from "@/components/ui/comboBox";
+import { useGetProvincesQuery } from "@/features/auth/api";
 const initialForm = {
   first_name: "",
   last_name: "",
@@ -38,53 +46,138 @@ const initialForm = {
   organization: "",
 };
 
-export default function AddNewManagerModule() {
+const formUpdateStudentSchema = formStudentSchema.extend({
+  provinceId: z
+    .union([
+      z.string({ message: "Đây là trường bắt buộc" }),
+      z.null(),
+      z.literal(""),
+    ])
+    .optional(),
+  organizationId: z
+    .union([
+      z.string({ message: "Đây là trường bắt buộc" }),
+      z.null(),
+      z.literal(""),
+    ])
+    .optional(),
+});
+
+type OrganizationOptions = {
+  label: string;
+  value: string;
+  province_id?: string;
+};
+
+export default function UpdateProfileModule() {
   const router = useRouter();
+  const [organizationsByProvince, setOrganizationsByProvince] = React.useState(
+    [],
+  );
+  const [selectedProvince, setSelectedProvince] = React.useState("");
 
   useBreadcrumb([
     {
-      label: "Quản lí viên",
-      href: "/nguoi-dung?tab=manager",
+      label: "Học sinh",
+      href: "/quan-tri/nguoi-dung?tab=student",
     },
     {
-      label: "Thêm quản lí viên mới",
+      label: "Thêm học sinh mới",
     },
   ]);
-  const [createManagerAccount] = useAddNewManagerMutation();
-  const { organizations } = useGetAllOrganizationQuery(undefined, {
+  const [updateStudent] = useUpdateProfileMutation();
+  const { user } = useGetUserQuery(undefined, {
     selectFromResult: ({ data }) => ({
-      organizations:
-        data?.data?.items?.map((item: Organization) => ({
-          label: item?.name,
-          value: item?._id,
-        })) ?? [],
+      user: data?.data,
     }),
   });
 
-  const form = useForm<z.infer<typeof formManagerSchema>>({
+  const { provinces }: { provinces: Array<{ label: string; value: string }> } =
+    useGetProvincesQuery(
+      {},
+      {
+        selectFromResult: ({ data }) => {
+          return {
+            provinces: data?.data
+              ? data?.data?.items?.map((province: Province) => ({
+                  label: province?.name,
+                  value: province?._id,
+                }))
+              : [],
+          };
+        },
+      },
+    );
+
+  const { organizations } = useGetAllOrganizationQuery(undefined, {
+    skip: !provinces,
+    selectFromResult: ({ data }) => {
+      return {
+        organizations: data?.data
+          ? data?.data?.items?.map((org: Organization) => ({
+              label: org?.name,
+              value: org?._id,
+              province_id: org?.province_id?._id,
+            }))
+          : [],
+      };
+    },
+  });
+  const form = useForm<z.infer<typeof formUpdateStudentSchema>>({
     mode: "onSubmit",
-    resolver: zodResolver(formManagerSchema),
+    resolver: zodResolver(formUpdateStudentSchema),
     defaultValues: initialForm,
   });
+
+  React.useEffect(() => {
+    if (provinces && organizations) {
+      const filteredOrganizations = organizations?.filter(
+        (org: OrganizationOptions) => org?.province_id === selectedProvince,
+      );
+
+      setOrganizationsByProvince(filteredOrganizations);
+    }
+  }, [provinces?.length, organizations?.length, selectedProvince]);
+
   const handleBack = () => {
-    router.replace("/nguoi-dung?tab=manager");
+    router.back();
   };
 
-  async function onSubmit(data: z.infer<typeof formManagerSchema>) {
+  React.useEffect(() => {
+    if (user) {
+      form.setValue("first_name", user?.first_name);
+      form.setValue("last_name", user?.last_name);
+      form.setValue("email", user?.email);
+      form.setValue("phone_number", user?.phone_number);
+      form.setValue("date_of_birth", new Date(user?.date_of_birth));
+      form.setValue("organizationId", user?.organizationId?.[0]?._id);
+    }
+  }, [user, form]);
+
+  async function onSubmit(data: z.infer<typeof formUpdateStudentSchema>) {
     const toasID = toast.loading("đang tạo tài khoản...");
+    const { email, phone_number, organizationId } = data;
+
+    delete data.provinceId;
+    if (!email) delete data.email;
+    if (!phone_number) delete data.phone_number;
+    if (!organizationId) delete data.organizationId;
 
     try {
-      await createManagerAccount(data).unwrap();
-      toast.success("Tạo tài khoản thành công", { id: toasID });
+      await updateStudent({
+        ...data,
+        date_of_birth: data?.date_of_birth?.toISOString(),
+      }).unwrap();
+      toast.success("Thay đổi tài khoản thành công", { id: toasID });
       handleBack();
     } catch (error) {
-      toast.error("Tạo tài khoản thất bại", { id: toasID });
+      toast.error("Thay đổi tài khoản thất bại", { id: toasID });
     }
   }
 
   return (
     <>
-      <TitlePage title="Thêm Quản trị viên" />
+      <TitlePage title="Thay đổi hồ sơ" />
       <Form {...form}>
         <form
           className="space-y-8 flex flex-col"
@@ -127,18 +220,14 @@ export default function AddNewManagerModule() {
             <div className="col-span-6">
               <FormField
                 control={form.control}
-                name="email"
+                name="date_of_birth"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>Ngày sinh</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="nhập email..."
-                        type="email"
-                        {...field}
-                      />
+                      <DateTimeInput format="dd/MM/yyyy" {...field} />
                     </FormControl>
-                    <FormDescription>Email làm việc của bạn.</FormDescription>
+                    <FormDescription>ngày sinh của bạn.</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -157,6 +246,7 @@ export default function AddNewManagerModule() {
                         placeholder="nhập sdt..."
                         {...field}
                         defaultCountry="VN"
+                        value={field.value ?? ""}
                       />
                     </FormControl>
                     <FormDescription>
@@ -170,14 +260,57 @@ export default function AddNewManagerModule() {
           </div>
           <FormField
             control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="nhập mail..."
+                    type="text"
+                    {...field}
+                    value={field.value ?? ""}
+                  />
+                </FormControl>
+                <FormDescription>Nhập email của bạn</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="provinceId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-gray-700 dark:text-gray-100 flex gap-2">
+                  Tỉnh / Thành phố
+                  <p className="text-red-500">*</p>
+                </FormLabel>
+                <FormControl>
+                  <Combobox
+                    options={provinces}
+                    placeholder="Chọn tỉnh / thành phố"
+                    value={field.value ?? ""}
+                    onValueChange={(e: string) => {
+                      field.onChange(e);
+                      setSelectedProvince(e);
+                    }}
+                  />
+                </FormControl>
+                <FormMessage className="text-red-500 text-sm" />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
             name="organizationId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Tổ chức quản lí</FormLabel>
+                <FormLabel>Trường</FormLabel>
                 <FormControl className="w-full">
                   <Select
                     {...field}
-                    defaultValue={field.value}
+                    value={field.value ?? ""}
                     onValueChange={field.onChange}
                   >
                     <FormControl>
@@ -186,7 +319,7 @@ export default function AddNewManagerModule() {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {organizations?.map(
+                      {organizationsByProvince?.map(
                         ({
                           label,
                           value,

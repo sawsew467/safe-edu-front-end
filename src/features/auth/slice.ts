@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 import { getClientCookie, setClientCookie } from "@/lib/jsCookies";
 import constants from "@/settings/constants";
-import { ManagerRole } from "@/settings/enums";
+import { UserRoleBE } from "@/settings/enums";
 import { decodeToken } from "@/utils/decode-token";
 
 interface AuthSliceInterface {
@@ -15,7 +15,7 @@ interface AuthSliceInterface {
   refresh_token: string | null;
   user_role: {
     userId: string;
-    role: ManagerRole;
+    role: keyof typeof UserRoleBE;
   } | null;
 }
 
@@ -40,7 +40,7 @@ const initialState: AuthSliceInterface = {
     if (!decode_token) return null;
 
     return {
-      role: decode_token?.role as ManagerRole,
+      role: decode_token?.role as keyof typeof UserRoleBE,
       userId: decode_token?.userId,
     };
   })(),
@@ -69,7 +69,7 @@ export const authSlice = createSlice({
         if (!decode_token) return null;
 
         return {
-          role: decode_token?.role as ManagerRole,
+          role: decode_token?.role as keyof typeof UserRoleBE,
           userId: decode_token?.userId,
         };
       })();

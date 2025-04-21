@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { User } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next-nprogress-bar";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -24,10 +24,12 @@ export type UserType = {
   username: string;
 };
 function UserDropdown({ userInfo }: { userInfo: UserType }) {
+  const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
 
-  const [isOpen, setIsOpen] = useState(false);
-
+  const handleGetProfile = () => {
+    router.push(`/trang-ca-nhan/${userInfo?.username}`);
+  };
   const handleSignOut = () => {
     deleteClientCookie(constants.USER_INFO);
     deleteClientCookie(constants.ACCESS_TOKEN);
@@ -80,8 +82,13 @@ function UserDropdown({ userInfo }: { userInfo: UserType }) {
         </DropdownMenuItem> */}
         {/* <DropdownMenuSeparator /> */}
         <DropdownMenuItem>
+          <button className="w-full text-left" onClick={handleGetProfile}>
+            Trang cá nhân
+          </button>
+        </DropdownMenuItem>
+        <DropdownMenuItem>
           <button className="w-full text-left" onClick={handleSignOut}>
-            Sign out
+            Đăng xuất
           </button>
         </DropdownMenuItem>
       </DropdownMenuContent>

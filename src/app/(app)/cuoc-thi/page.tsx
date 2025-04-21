@@ -42,11 +42,11 @@ const fetchLatestCompetitions = async (
 }> => {
   try {
     const { data } = await customFetch(
-      `${constants.API_SERVER}/competitions?pageNumber=${page}&pageSize=10`,
+      `${constants.API_SERVER}/competitions?pageNumber=${page}&pageSize=10&filter={"isActive":"true"}`,
     );
 
     const latestCompetitions =
-      data?.items?.filter(
+      data?.filter(
         (item: Competitions) =>
           item?.isActive && new Date(item.endDate).getTime() > Date.now(),
       ) ?? [];

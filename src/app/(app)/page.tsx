@@ -58,11 +58,12 @@ const fetchLatestCompetitions = async (): Promise<{
       `${constants.API_SERVER}/competitions?pageNumber=${1}&pageSize=10`,
     );
 
+    console.log("data", data);
     const latestCompetitions =
-      data?.items
+      data
         ?.filter(
           (item: Competitions) =>
-            item?.isActive && new Date(item.endDate).getTime() > Date.now(),
+            item?.isActive && new Date(item.endDate) > new Date(),
         )
         ?.sort(
           (a: Competitions, b: Competitions) =>

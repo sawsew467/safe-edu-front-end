@@ -63,6 +63,7 @@ export default function RegistrationForm({
   const router = useRouter();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectProvince, setSelectProvince] = useState("");
   const [organizationsByProvince, setOrganizationsByProvince] = useState([]);
   const dispatch = useAppDispatch();
 
@@ -129,14 +130,13 @@ export default function RegistrationForm({
 
   React.useEffect(() => {
     if (provinces && organizations) {
-      const selectedProvince = form.getValues("provinceId");
       const filteredOrganizations = organizations?.filter(
-        (org: OrganizationOptions) => org?.province_id === selectedProvince,
+        (org: OrganizationOptions) => org?.province_id === selectProvince,
       );
 
       setOrganizationsByProvince(filteredOrganizations);
     }
-  }, [provinces.length, organizations.length, form.getValues("provinceId")]);
+  }, [provinces.length, organizations.length, selectProvince]);
 
   const handleSubmit = async (
     data: StudentRegistrationFormValues | CitizenRegistrationFormValues,
@@ -369,7 +369,10 @@ export default function RegistrationForm({
                           options={provinces}
                           placeholder="Chọn tỉnh / thành phố"
                           value={field.value}
-                          onValueChange={field.onChange}
+                          onValueChange={(e: string) => {
+                            field.onChange(e);
+                            setSelectProvince(e);
+                          }}
                         />
                       </FormControl>
                       <FormMessage className="text-red-500 text-sm" />

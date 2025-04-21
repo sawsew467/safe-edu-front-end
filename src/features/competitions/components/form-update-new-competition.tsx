@@ -5,7 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { CalendarDaysIcon } from "lucide-react";
 import { vi } from "date-fns/locale/vi";
-import { useRouter } from "next-nprogress-bar";
 import { toast } from "sonner";
 
 import { formSchema } from "../shema.competitions";
@@ -35,12 +34,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Spinner } from "@/components/ui/spinner";
 
 const UpdateCompetitions = ({ competitionId }: { competitionId: string }) => {
-  const router = useRouter();
   const [updateCompetition, { isLoading }] = useUpdateCompetitionsMutation();
-
-  const handleRouterBack = () => {
-    router.back();
-  };
 
   const { competition, isFetching } = useGetCompetitionsQuery(
     { id: competitionId },
@@ -57,6 +51,14 @@ const UpdateCompetitions = ({ competitionId }: { competitionId: string }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
+  const handleRouterBack = () => {
+    form.setValue("title", competition?.title);
+    form.setValue("description", competition?.description);
+    form.setValue("startDate", new Date(competition?.startDate));
+    form.setValue("endDate", new Date(competition?.endDate));
+    form.setValue("image_url", competition?.image_url);
+    form.setValue("slug", competition?.slug);
+  };
 
   useEffect(() => {
     if (competition) {
@@ -79,9 +81,11 @@ const UpdateCompetitions = ({ competitionId }: { competitionId: string }) => {
     const idToast = toast.loading("Đang thay đổi cuộc thi");
 
     try {
-      await updateCompetition(data).unwrap();
+      await updateCompetition({
+        params: { id: competitionId },
+        body: data,
+      }).unwrap();
       toast.success("Thay đổi cuộc thi thành công", { id: idToast });
-      handleRouterBack();
     } catch {
       toast.error("Thay đổi cuộc thi thất bại", { id: idToast });
     }
@@ -262,10 +266,10 @@ const UpdateCompetitions = ({ competitionId }: { competitionId: string }) => {
             variant="destructive"
             onClick={handleRouterBack}
           >
-            Hủy tác vụ
+            Hoàn tác
           </Button>
           <Button className="font-medium" isLoading={isLoading} type="submit">
-            Thêm
+            Thay đổi
           </Button>
         </div>
       </form>

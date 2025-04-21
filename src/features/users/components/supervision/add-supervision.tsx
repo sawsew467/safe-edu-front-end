@@ -36,7 +36,7 @@ export default function AddNewSupervisionModule() {
   useBreadcrumb([
     {
       label: "Quản lí",
-      href: "/nguoi-dung?tab=supervision",
+      href: "/quan-tri/nguoi-dung?tab=supervision",
     },
     {
       label: "Thêm quan sát viên mới",
@@ -46,7 +46,7 @@ export default function AddNewSupervisionModule() {
   const { pronvinces } = useGetAllProvinceQuery(undefined, {
     selectFromResult: ({ data }) => ({
       pronvinces:
-        data?.items.map((item: { name: string; _id: string }) => ({
+        data?.data?.items?.map((item: { name: string; _id: string }) => ({
           label: item?.name,
           value: item?._id,
         })) ?? [],

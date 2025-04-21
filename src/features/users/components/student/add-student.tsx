@@ -45,7 +45,7 @@ export default function AddNewStudentModule() {
   useBreadcrumb([
     {
       label: "Học sinh",
-      href: "/nguoi-dung?tab=student",
+      href: "/quan-tri/nguoi-dung?tab=student",
     },
     {
       label: "Thêm học sinh mới",
@@ -55,7 +55,7 @@ export default function AddNewStudentModule() {
   const { organizations } = useGetAllOrganizationQuery(undefined, {
     selectFromResult: ({ data }) => ({
       organizations:
-        data?.items?.map((item: Organization) => ({
+        data?.data?.items?.map((item: Organization) => ({
           label: item?.name,
           value: item?._id,
         })) ?? [],
@@ -157,6 +157,7 @@ export default function AddNewStudentModule() {
                         placeholder="nhập sdt..."
                         {...field}
                         defaultCountry="VN"
+                        value={field.value ?? ""}
                       />
                     </FormControl>
                     <FormDescription>

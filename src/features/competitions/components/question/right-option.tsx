@@ -67,7 +67,7 @@ const RightOption = ({
             <FormItem className="mb-6">
               <FormLabel className="flex items-center gap-2 mb-2">
                 <div className="text-black dark:text-white">
-                  <Star color="white" size={20} />
+                  <Star size={20} />
                 </div>
                 <span className="font-medium">Ngôi sao hy vọng</span>
               </FormLabel>

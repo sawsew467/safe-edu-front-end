@@ -2,7 +2,7 @@ import Image from "next/image";
 import { TimerIcon } from "lucide-react";
 import { CheckCircledIcon, CrossCircledIcon } from "@radix-ui/react-icons";
 
-import ActionCompetitions from "../action-join-compeititions";
+import ActionCompetitions from "./action-join-compeititions";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";

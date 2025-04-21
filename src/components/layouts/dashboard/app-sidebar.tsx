@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import {
-  Home,
+  ChartPie,
   LibraryBig,
   Newspaper,
   Pyramid,
@@ -35,7 +35,7 @@ const sideBarItems = [
   {
     name: "Thống kê",
     url: "/thong-ke",
-    icon: Home,
+    icon: ChartPie,
   },
   {
     name: "Tổ chức",

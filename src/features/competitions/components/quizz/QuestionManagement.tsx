@@ -68,7 +68,7 @@ const QuizzManagement = ({ competitionId }: { competitionId: string }) => {
             </Button>
           </DialogTrigger>
           <DialogContent>
-            <DialogTitle>Thêm cuộc thi</DialogTitle>
+            <DialogTitle>Thêm phần thi</DialogTitle>
             <FormAddNewQuizz
               competitionId={competitionId}
               setOpenDialog={setOpenDialog}
@@ -77,7 +77,7 @@ const QuizzManagement = ({ competitionId }: { competitionId: string }) => {
         </Dialog>
         <Dialog open={isOpenDialogUpdate} onOpenChange={closeDialogQuestion}>
           <DialogContent>
-            <DialogTitle>Chỉnh sửa cuộc thi</DialogTitle>
+            <DialogTitle>Chỉnh sửa phần thi</DialogTitle>
             <FormUpdateQuizz
               competitionId={competitionId}
               idDialogQuestion={idDialogQuestion!}
