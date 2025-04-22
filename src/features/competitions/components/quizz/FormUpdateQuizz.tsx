@@ -105,7 +105,7 @@ const FormUpdateQuizz = ({
               <FormItem>
                 <FormLabel>Tiêu đề</FormLabel>
                 <FormControl>
-                  <Input placeholder="nhập tiêu đề" {...field} />
+                  <Input placeholder="Nhập tiêu đề" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -117,12 +117,12 @@ const FormUpdateQuizz = ({
           name="type"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Thể loại cuộc thi</FormLabel>
+              <FormLabel>Thể loại phần thi</FormLabel>
               <FormControl>
                 <Combobox
                   className="w-full"
                   options={quizzType}
-                  placeholder="Chọn thể loại cuộc thi"
+                  placeholder="Chọn thể loại phần thi"
                   value={field.value}
                   variant="outline"
                   onValueChange={field.onChange}

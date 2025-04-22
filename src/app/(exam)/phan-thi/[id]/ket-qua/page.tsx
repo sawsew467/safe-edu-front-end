@@ -11,9 +11,9 @@ const getQuizResults = async (id: string) => {
   return data?.data;
 };
 
-const getUserProfile = async (user_id = "") => {
+const getUserProfile = async () => {
   const { data } = await customFetch(
-    `${constants.API_SERVER}/Students/${user_id}`,
+    `${constants.API_SERVER}/Students/get-profile/user`,
   );
 
   if (!data) return;
@@ -25,7 +25,7 @@ const getUserProfile = async (user_id = "") => {
 export default async function Home({ params }: { params: Params }) {
   const { id } = await params;
   const data: QuizResultQuestion = await getQuizResults(id);
-  const user = await getUserProfile(data?.user_id);
+  const user = await getUserProfile();
 
   return (
     <main className="container mx-auto py-8 px-4">

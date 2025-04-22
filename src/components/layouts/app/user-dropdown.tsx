@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { User } from "lucide-react";
 import { useRouter } from "next-nprogress-bar";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -15,6 +14,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import constants from "@/settings/constants";
 import { deleteClientCookie } from "@/lib/jsCookies";
+import { useGetUserQuery } from "@/features/users/api/student.api";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export type UserType = {
   achievements: String[];
@@ -23,12 +24,19 @@ export type UserType = {
   last_name: string;
   username: string;
 };
-function UserDropdown({ userInfo }: { userInfo: UserType }) {
+function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
 
+  const { user, isFetching } = useGetUserQuery(undefined, {
+    selectFromResult: ({ data, isFetching }) => ({
+      user: data?.data,
+      isFetching,
+    }),
+  });
+
   const handleGetProfile = () => {
-    router.push(`/trang-ca-nhan/${userInfo?.username}`);
+    router.push(`/trang-ca-nhan/${user?.username}`);
   };
   const handleSignOut = () => {
     deleteClientCookie(constants.USER_INFO);
@@ -44,11 +52,12 @@ function UserDropdown({ userInfo }: { userInfo: UserType }) {
         <Button className="relative h-8 w-8 rounded-full" variant="ghost">
           <Avatar className="h-8 w-8">
             <AvatarImage
-              alt={`${userInfo?.first_name || ""} ${userInfo?.last_name || ""}`}
-              src={userInfo?.avatar || ""}
+              alt={`${user?.first_name || ""} ${user?.last_name || ""}`}
+              className="object-cover"
+              src={user?.avatar || ""}
             />
             <AvatarFallback>
-              <User className="h-4 w-4" />
+              <Skeleton className="h-4 w-4 rounded-full" />
             </AvatarFallback>
           </Avatar>
         </Button>
@@ -57,10 +66,10 @@ function UserDropdown({ userInfo }: { userInfo: UserType }) {
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">
-              {`${userInfo?.first_name || ""} ${userInfo?.last_name || ""}`}
+              {`${user?.first_name || ""} ${user?.last_name || ""}`}
             </p>
             <p className="text-xs leading-none text-muted-foreground">
-              {userInfo?.username || ""}
+              {user?.username || ""}
             </p>
           </div>
         </DropdownMenuLabel>

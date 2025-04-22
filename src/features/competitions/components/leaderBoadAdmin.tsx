@@ -75,6 +75,7 @@ export default function PremiumLeaderboardAdmin({ slug }: { slug: string }) {
         <p className="text-sm">Chưa có học sinh nào tham gia.</p>
       </div>
     );
+  if (isFetching) return <LeaderboardSkeleton />;
 
   return (
     <div className="space-y-8">
@@ -132,43 +133,39 @@ export default function PremiumLeaderboardAdmin({ slug }: { slug: string }) {
       )}
 
       {/* Main Leaderboard */}
-      <Card className="max-w-6xl mx-auto overflow-hidden border-none shadow-xl">
-        <CardHeader className="bg-gradient-to-r from-[#75A815] to-[#8BC34A] py-6">
-          <div className="flex items-center justify-center space-x-2 text-white">
-            <Trophy className="h-6 w-6" />
-            <h2 className="text-center text-2xl font-bold">Bảng Xếp Hạng</h2>
-          </div>
-        </CardHeader>
-        <CardContent className="p-0">
-          {isFetching ? (
-            <LeaderboardSkeleton />
-          ) : (
-            !isFetching &&
-            data && (
-              <div>
-                <div className="grid grid-cols-12 bg-gray-100 dark:bg-gray-800 p-4 text-sm font-medium text-gray-500 dark:text-gray-100">
-                  <div className="col-span-2 text-start">Hạng</div>
-                  <div className="col-span-6 md:col-span-4">Học viên</div>
-                  <div className="col-span-4 md:col-span-6 text-center">
-                    Điểm số
-                  </div>
-                  {/* <div className="hidden md:col-span-4 md:block">Tiến độ</div> */}
+
+      {!isFetching && data && (
+        <Card className="max-w-6xl mx-auto overflow-hidden border-none shadow-xl">
+          <CardHeader className="bg-gradient-to-r from-[#75A815] to-[#8BC34A] py-6">
+            <div className="flex items-center justify-center space-x-2 text-white">
+              <Trophy className="h-6 w-6" />
+              <h2 className="text-center text-2xl font-bold">Bảng Xếp Hạng</h2>
+            </div>
+          </CardHeader>
+          <CardContent className="p-0">
+            <div>
+              <div className="grid grid-cols-12 bg-gray-100 dark:bg-gray-800 p-4 text-sm font-medium text-gray-500 dark:text-gray-100">
+                <div className="col-span-2 text-start">Hạng</div>
+                <div className="col-span-6 md:col-span-4">Học viên</div>
+                <div className="col-span-4 md:col-span-6 text-center">
+                  Điểm số
                 </div>
-                <div className="w-full">
-                  {data?.map((item: UserScore, index: number) => (
-                    <LeaderboardItem
-                      key={item.user._id}
-                      maxScore={maxScore}
-                      rank={index + 1}
-                      userScore={item}
-                    />
-                  ))}
-                </div>
+                {/* <div className="hidden md:col-span-4 md:block">Tiến độ</div> */}
               </div>
-            )
-          )}
-        </CardContent>
-      </Card>
+              <div className="w-full">
+                {data?.map((item: UserScore, index: number) => (
+                  <LeaderboardItem
+                    key={item.user._id}
+                    maxScore={maxScore}
+                    rank={index + 1}
+                    userScore={item}
+                  />
+                ))}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

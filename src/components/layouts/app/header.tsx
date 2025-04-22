@@ -3,15 +3,15 @@ import React from "react";
 import Image from "next/image";
 import { cookies } from "next/headers";
 
-import UserDropdown, { UserType } from "./user-dropdown";
+import UserDropdown from "./user-dropdown";
 
 import ThemeSwitcher from "@/components/layouts/dashboard/theme-switcher";
 import { Button } from "@/components/ui/button";
+import constants from "@/settings/constants";
 
 async function AppHeader() {
   const cookiesStore = await cookies();
-  const user_info = cookiesStore.get("_user_info");
-  const userInfo = user_info ? JSON.parse(user_info.value) : null;
+  const access_token = cookiesStore.get(constants.ACCESS_TOKEN);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -50,8 +50,8 @@ async function AppHeader() {
         </nav>
         <div className="flex items-center gap-4">
           <ThemeSwitcher />
-          {userInfo ? (
-            <UserDropdown userInfo={userInfo as UserType} />
+          {access_token ? (
+            <UserDropdown />
           ) : (
             <>
               <Link href="/dang-nhap">

@@ -57,7 +57,7 @@ const ChangePassowordModule = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
-      <DialogContent className="p-4 md:max-w-none max-w-[375px] rounded-lg">
+      <DialogContent className="p-4 md:max-w-lg max-w-[375px] rounded-lg">
         <DialogTitle>Thay đổi mật khẩu</DialogTitle>
 
         <Form {...form}>

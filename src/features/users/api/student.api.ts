@@ -27,6 +27,7 @@ export const authAPI = baseApi.injectEndpoints({
         method: "GET",
         flashError: true,
       }),
+      providesTags: ["students", "citizens"],
     }),
     updateProfile: build.mutation({
       query: (data) => ({
@@ -35,6 +36,11 @@ export const authAPI = baseApi.injectEndpoints({
         body: data,
         flashError: true,
       }),
+      invalidatesTags: (result, error) => {
+        if (error) return [];
+
+        return ["students", "citizens"];
+      },
     }),
     changePassword: build.mutation({
       query: (data) => ({

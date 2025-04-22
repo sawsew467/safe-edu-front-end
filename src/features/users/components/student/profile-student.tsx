@@ -270,6 +270,7 @@ export default function ProfilePage() {
                   >
                     <AvatarImage
                       alt={`${data?.first_name} ${data?.last_name}`}
+                      className="object-cover"
                       src={data?.avatar || "/placeholder.svg"}
                     />
                     <AvatarFallback>
@@ -418,13 +419,18 @@ export default function ProfilePage() {
                       <MotionDiv
                         key={index}
                         animate={{ opacity: 1, y: 0 }}
-                        className="border rounded-lg p-4 "
+                        className="border rounded-lg p-4 cursor-pointer"
                         initial={{ opacity: 0, y: 20 }}
                         transition={{ delay: 0.1 * index }}
                         whileHover={{
                           scale: 1.02,
                           boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
                         }}
+                        onClick={() =>
+                          router.push(
+                            `/cuoc-thi/id/${result?.quiz_id?.competitionId?.at(0)}`,
+                          )
+                        }
                       >
                         <div className="flex justify-between items-start mb-2">
                           <div>

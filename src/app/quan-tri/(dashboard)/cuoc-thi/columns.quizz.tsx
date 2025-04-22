@@ -4,7 +4,7 @@ import {
   CrossCircledIcon,
   DotsHorizontalIcon,
 } from "@radix-ui/react-icons";
-import { Eye, Pencil } from "lucide-react";
+import { Pencil } from "lucide-react";
 import { toast } from "sonner";
 import React from "react";
 import Link from "next/link";
@@ -49,7 +49,7 @@ export const columns: ColumnDef<Quizz>[] = [
     },
   },
   {
-    accessorKey: "isActive",
+    accessorKey: "status",
     header: "Trạng thái",
     cell: ({ row }) => getStatus(row),
     enableSorting: false,
@@ -107,15 +107,6 @@ const Action = (row: Row<Quizz>) => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem asChild>
-          <Link
-            className="cursor-pointer flex gap-2 px-2 py-1 justify-start w-full"
-            href={`/quan-tri/cuoc-thi/${row.original._id}`}
-          >
-            <Eye className="h-4 w-4 text-blue-500" />
-            {<span className="">{"Xem"}</span>}
-          </Link>
-        </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link
             className="cursor-pointer flex gap-2 px-2 py-1 justify-start w-full"

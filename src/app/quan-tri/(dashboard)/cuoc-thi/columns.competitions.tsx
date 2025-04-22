@@ -77,16 +77,31 @@ export const columns: ColumnDef<Competitions>[] = [
     filterFn: filterDateRange,
   },
   {
-    header: "Các ngày diễn ra",
+    accessorKey: "startDate",
+    header: "Băt đầu",
     cell: ({ row }) => {
       const startDate = formatDate(row.original.startDate, "DD/MM/yyyy");
+
+      return (
+        <div className="space-y-2">
+          <p>{startDate}</p>
+        </div>
+      );
+    },
+    meta: {
+      filterVariant: "dateRange",
+    },
+    filterFn: filterDateRange,
+  },
+  {
+    accessorKey: "endDate",
+    header: "kết thúc",
+    cell: ({ row }) => {
       const endDate = formatDate(row.original.endDate, "DD/MM/yyyy");
 
       return (
         <div className="space-y-2">
-          <p>
-            {startDate} - {endDate}
-          </p>
+          <p>{endDate}</p>
         </div>
       );
     },
@@ -105,6 +120,17 @@ export const columns: ColumnDef<Competitions>[] = [
   {
     accessorKey: "number_join",
     header: "Tổng người tham gia",
+    cell: ({ row }) => {
+      const numberJoin = row.getValue("number_join") as number;
+
+      return (
+        <div className="flex items-center justify-center">
+          <span>
+            <p>{numberJoin} học sinh</p>
+          </span>
+        </div>
+      );
+    },
     meta: {
       filterVariant: "numberRange",
     },
