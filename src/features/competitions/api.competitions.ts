@@ -69,8 +69,8 @@ export const competitionsApi = baseApi.injectEndpoints({
     activeCompetitions: build.mutation({
       query: ({ id }) => {
         return {
-          url: `/competitions/${id}/isActive`,
-          method: "PATCH",
+          url: `/competitions/isActive/${id}`,
+          method: "GET",
           flashError: true,
         };
       },

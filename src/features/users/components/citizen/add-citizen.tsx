@@ -139,6 +139,7 @@ export default function AddNewCitizenModule() {
                         placeholder="nhập sdt..."
                         {...field}
                         defaultCountry="VN"
+                        value={field.value ?? ""}
                       />
                     </FormControl>
                     <FormDescription>

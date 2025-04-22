@@ -79,16 +79,25 @@ export const formStudentSchema = z.object({
     .min(1, { message: "Đây là trường bắt buộc." })
     .max(25, { message: "Tên quá dài" })
     .trim(),
-
   last_name: z
     .string()
     .min(1, { message: "Đây là trường bắt buộc." })
     .max(25, { message: "Tên quá dài" })
     .trim(),
   phone_number: z
-    .string()
-    .min(1, { message: "Đây là trường bắt buộc." })
-    .regex(phoneRegex, "SDT không đúng định dạng"),
+    .union([
+      z.string().regex(phoneRegex, "Số điện thoại không hợp lệ!"),
+      z.null(),
+      z.literal(""),
+    ])
+    .optional(),
+  email: z
+    .union([
+      z.string().email({ message: "Email không hợp lệ" }),
+      z.null(),
+      z.literal(""),
+    ])
+    .optional(),
   organizationId: z.string().min(1, { message: "Đây là trường bắt buộc." }),
   date_of_birth: z.date({ message: "Đây là trường bắt buộc." }),
 });
@@ -104,8 +113,18 @@ export const formCitizenSchema = z.object({
     .max(25, { message: "Tên quá dài" })
     .trim(),
   phone_number: z
-    .string()
-    .min(1, { message: "Đây là trường bắt buộc." })
-    .regex(phoneRegex, "SDT không đúng định dạng"),
+    .union([
+      z.string().regex(phoneRegex, "Số điện thoại không hợp lệ!"),
+      z.null(),
+      z.literal(""),
+    ])
+    .optional(),
+  email: z
+    .union([
+      z.string().email({ message: "Email không hợp lệ" }),
+      z.null(),
+      z.literal(""),
+    ])
+    .optional(),
   date_of_birth: z.date({ message: "Đây là trường bắt buộc." }),
 });

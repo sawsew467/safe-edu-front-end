@@ -4,7 +4,6 @@ import Image from "next/image";
 
 import constants from "@/settings/constants";
 import { Competitions, Quizz } from "@/features/competitions/type.competitions";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/utils/format-date";
 import QuizzArticleCard from "@/features/competitions/components/quizz/quizz-artile-card";
@@ -60,15 +59,23 @@ const QuizzPage = async (props: { params: Params }) => {
       value: "phan-thi",
       content: () => (
         <div className="grid mt-6 gap-6">
-          {quizzs?.map((quizz) => (
-            <QuizzArticleCard
-              key={quizz?._id}
-              id={quizz?._id}
-              slug={quizz?._id}
-              title={quizz?.title}
-              type={quizz?.type}
-            />
-          ))}
+          {quizzs.length != 0 ? (
+            quizzs?.map((quizz) => (
+              <QuizzArticleCard
+                key={quizz?._id}
+                id={quizz?._id}
+                slug={quizz?._id}
+                title={quizz?.title}
+                type={quizz?.type}
+              />
+            ))
+          ) : (
+            <div className="flex items-center justify-center w-full h-full">
+              <h1 className="text-2xl font-bold text-center text-gray-500">
+                Chưa có phần thi nào cho cuộc thi này
+              </h1>
+            </div>
+          )}
         </div>
       ),
     },
@@ -77,24 +84,19 @@ const QuizzPage = async (props: { params: Params }) => {
       value: "xep-hang",
       content: () => (
         <div className="w-full">
-          <PremiumLeaderboard slug={slug} />
+          {quizzs.length != 0 ? (
+            <PremiumLeaderboard slug={slug} />
+          ) : (
+            <div className="flex mt-6 items-center justify-center w-full h-full">
+              <h1 className="text-2xl font-bold text-center text-gray-500">
+                Chưa có phần thi nào cho cuộc thi này
+              </h1>
+            </div>
+          )}
         </div>
       ),
     },
   ];
-
-  if (!quizzs || quizzs.length === 0) {
-    return (
-      <div className="h-screen flex flex-col items-center justify-center space-y-4 px-4">
-        <h1 className="text-center font-semibold md:text-3xl text-lg">
-          Phần thi đang được chuẩn bị hãy quay lại sau nhé!
-        </h1>
-        <form action={`/cuoc-thi`} method="get">
-          <Button type="submit">Quay lại cuộc thi</Button>
-        </form>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen relative">

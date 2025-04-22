@@ -11,7 +11,7 @@ import { customFetch } from "@/utils/custom-fetch";
 type Params = Promise<{ id: string }>;
 const fetchQuestionByQuizzId = async (id: string) => {
   const { data } = await customFetch(
-    `${constants.API_SERVER}/questions/get-all-by-quizId/${id}`,
+    `${constants.API_SERVER}/questions/get-all-by-quizId/${id}?filter={"isActive":"true"}`,
   );
 
   if (!data) {

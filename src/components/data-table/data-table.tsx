@@ -76,6 +76,7 @@ export default function DataTable<TData, TValue>({
       location: false,
       otherInformation: false,
     });
+  const [globalFilter, setGlobalFilter] = React.useState("");
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
   );
@@ -85,6 +86,7 @@ export default function DataTable<TData, TValue>({
     columns,
     state: {
       sorting,
+      globalFilter,
       columnVisibility,
       columnFilters,
     },
@@ -95,6 +97,7 @@ export default function DataTable<TData, TValue>({
     onColumnVisibilityChange: setColumnVisibility,
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    onGlobalFilterChange: setGlobalFilter,
     onColumnFiltersChange: setColumnFilters,
   });
 

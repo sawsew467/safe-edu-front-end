@@ -54,7 +54,7 @@ export default function AddNewManagerModule() {
   const { organizations } = useGetAllOrganizationQuery(undefined, {
     selectFromResult: ({ data }) => ({
       organizations:
-        data?.items?.map((item: Organization) => ({
+        data?.data?.items?.map((item: Organization) => ({
           label: item?.name,
           value: item?._id,
         })) ?? [],

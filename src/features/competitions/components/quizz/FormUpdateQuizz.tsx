@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -14,9 +14,10 @@ const formSchema = z.object({
 });
 
 import { toast } from "sonner";
+import { skipToken } from "@reduxjs/toolkit/query";
 
+import { useGetQuizzQuery, useUpdateQuizzMutation } from "../../api.quizz";
 import { quizzType } from "../../data.competitions";
-import { useAddNewQuizzMutation } from "../../api.quizz";
 
 import {
   Form,
@@ -29,35 +30,66 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Combobox } from "@/components/ui/comboBox";
+import { Spinner } from "@/components/ui/spinner";
 
-const AddNewQuizz = ({
+const FormUpdateQuizz = ({
   setOpenDialog,
   competitionId,
+  idDialogQuestion,
 }: {
   setOpenDialog: React.Dispatch<React.SetStateAction<boolean>>;
   competitionId: string;
+  idDialogQuestion: string | null;
 }) => {
-  const [addQuizz, { isLoading }] = useAddNewQuizzMutation();
+  const [updateQuizz, { isLoading }] = useUpdateQuizzMutation();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      title: "",
+      type: "",
+    },
   });
+
+  const { quizz, isFetching } = useGetQuizzQuery(
+    idDialogQuestion ? { id: idDialogQuestion } : skipToken,
+    {
+      selectFromResult: ({ data, isFetching }) => ({
+        quizz: data?.data,
+        isFetching: isFetching,
+      }),
+    },
+  );
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     const idToast = toast.loading("Đang thêm mới phần thi");
 
-    addQuizz({ ...data, competitionId })
+    updateQuizz({
+      params: { id: idDialogQuestion },
+      body: { ...data, competitionId },
+    })
       .unwrap()
       .then(() => {
         toast.success("Thêm mới phần thi thành công", { id: idToast });
-        setOpenDialog(false);
       })
-      .catch((error) => {
-        toast.error(error.data.message, { id: idToast });
+      .catch((error: any) => {
+        toast.error(error?.data?.message, { id: idToast });
       });
+    handleBack();
   };
+
+  useEffect(() => {
+    if (quizz) form.reset(quizz);
+  }, [quizz]);
   const handleBack = () => {
     setOpenDialog(false);
   };
+
+  if (isFetching)
+    return (
+      <div className="w-full h-full flex justify-center items-center">
+        <Spinner />
+      </div>
+    );
 
   return (
     <Form {...form}>
@@ -73,7 +105,7 @@ const AddNewQuizz = ({
               <FormItem>
                 <FormLabel>Tiêu đề</FormLabel>
                 <FormControl>
-                  <Input placeholder="nhập tiêu đề" {...field} />
+                  <Input placeholder="Nhập tiêu đề" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -118,4 +150,4 @@ const AddNewQuizz = ({
   );
 };
 
-export default AddNewQuizz;
+export default FormUpdateQuizz;

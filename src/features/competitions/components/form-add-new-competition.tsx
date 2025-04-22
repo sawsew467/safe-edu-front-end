@@ -3,10 +3,10 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { CalendarDaysIcon } from "lucide-react";
-import { vi } from "date-fns/locale/vi";
 import { useRouter } from "next-nprogress-bar";
 import { toast } from "sonner";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
 
 import { formSchema } from "../shema.competitions";
 import { useAddNewCompetitionsMutation } from "../api.competitions";
@@ -29,6 +29,8 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 
 const AddNewCompetitions = () => {
   const router = useRouter();
@@ -74,7 +76,7 @@ const AddNewCompetitions = () => {
               <FormItem>
                 <FormLabel>Tiêu đề</FormLabel>
                 <FormControl>
-                  <Input placeholder="nhập tiêu đề" {...field} />
+                  <Input placeholder="Nhập tiêu đề" {...field} />
                 </FormControl>
                 <FormDescription>
                   Đây là tiêu đề được hiển thị ở bên ngoài cuộc thi
@@ -92,7 +94,7 @@ const AddNewCompetitions = () => {
               <FormItem>
                 <FormLabel>Mô tả</FormLabel>
                 <FormControl>
-                  <Input placeholder="nhập mô tả" {...field} />
+                  <Textarea placeholder="Nhập mô tả" {...field} rows={3} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -100,40 +102,42 @@ const AddNewCompetitions = () => {
           )}
         />
         <div className="space-y-2">
-          <h2>Khoảng thời gian diễn ra</h2>
-          <div className="flex gap-4">
+          <p className="text-sm">Thời gian diễn ra</p>
+          <div className="grid grid-cols-2 gap-4">
             <FormField
               control={form.control}
               name="startDate"
               render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Popover>
-                      <PopoverTrigger asChild>
+                <FormItem className="flex flex-col">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
                         <Button
-                          className="flex-1 justify-start font-normal"
-                          variant="outline"
+                          className={cn(
+                            "w-full pl-3 text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                          )}
+                          variant={"outline"}
                         >
-                          {field.value
-                            ? field.value.toLocaleDateString()
-                            : "Ngày bắt đầu"}
-                          <CalendarDaysIcon className="ml-auto h-4 w-4 opacity-50 hover:opacity-100" />
+                          {field.value ? (
+                            format(field.value, "dd/MM/yyyy")
+                          ) : (
+                            <span>Chọn ngày bắt đầu</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                         </Button>
-                      </PopoverTrigger>
-                      <PopoverContent align="start" className="w-auto p-0">
-                        <Calendar
-                          required
-                          locale={vi}
-                          mode="single"
-                          selected={field.value}
-                          onSelect={(date) => {
-                            if (date && date.getDate() >= new Date().getDate())
-                              field.onChange(date);
-                          }}
-                        />
-                      </PopoverContent>
-                    </Popover>
-                  </FormControl>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent align="start" className="w-auto p-0">
+                      <Calendar
+                        initialFocus
+                        disabled={(date) => date < new Date("1900-01-01")}
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                      />
+                    </PopoverContent>
+                  </Popover>
                   <FormMessage />
                 </FormItem>
               )}
@@ -142,41 +146,43 @@ const AddNewCompetitions = () => {
               control={form.control}
               name="endDate"
               render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Popover>
-                      <PopoverTrigger asChild>
+                <FormItem className="flex flex-col">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
                         <Button
-                          className="flex-1 justify-start font-normal"
-                          disabled={!form.getValues("startDate")}
-                          variant="outline"
+                          className={cn(
+                            "w-full pl-3 text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                          )}
+                          variant={"outline"}
                         >
-                          {field.value
-                            ? field.value.toLocaleDateString()
-                            : "Ngày kết thúc"}
-                          <CalendarDaysIcon className="ml-auto h-4 w-4 opacity-50 hover:opacity-100" />
+                          {field.value ? (
+                            format(field.value, "dd/MM/yyyy")
+                          ) : (
+                            <span>Chọn ngày kết thúc</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                         </Button>
-                      </PopoverTrigger>
-                      <PopoverContent align="start" className="w-auto p-0">
-                        <Calendar
-                          required
-                          locale={vi}
-                          mode="single"
-                          selected={field.value}
-                          onSelect={(date) => {
-                            if (!date) return;
-                            if (
-                              date < form.getValues("startDate") ||
-                              date.getDate() < new Date().getDate()
-                            )
-                              return;
-                            field.onChange(date);
-                          }}
-                        />
-                      </PopoverContent>
-                    </Popover>
-                  </FormControl>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent align="start" className="w-auto p-0">
+                      <Calendar
+                        initialFocus
+                        disabled={(date) => {
+                          const startDate = form.getValues("startDate");
 
+                          // Disable dates before start date (if start date is selected)
+                          return startDate
+                            ? date < startDate
+                            : date < new Date("1900-01-01");
+                        }}
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                      />
+                    </PopoverContent>
+                  </Popover>
                   <FormMessage />
                 </FormItem>
               )}
@@ -194,7 +200,7 @@ const AddNewCompetitions = () => {
               <FormItem>
                 <FormLabel>Mã định danh</FormLabel>
                 <FormControl>
-                  <Input placeholder="nhập mã định danh" {...field} />
+                  <Input placeholder="Nhập mã định danh" {...field} />
                 </FormControl>
                 <FormDescription>
                   Đây là mã định danh dẫn đén cuộc thi

@@ -6,6 +6,35 @@ export const phoneNumberSchema = z.object({
   password: z.string().min(1, { message: "Vui lòng nhập mật khẩu" }),
 });
 
+export const ChangePasswordShema = z
+  .object({
+    old_password: z.string().min(1, { message: "Vui lòng nhập mật khẩu cũ" }),
+    password: z.string().min(1, { message: "Vui lòng nhập mật khẩu" }),
+    confirm_password: z
+      .string()
+      .min(1, { message: "Vui lòng xác nhận mật khẩu" }),
+  })
+  .refine((data) => data.confirm_password === data.password, {
+    message: "Mật khẩu không khớp",
+    path: ["confirm_password"],
+  })
+  .refine(
+    (data) =>
+      /[A-Z]/.test(data.password) &&
+      /[a-z]/.test(data.password) &&
+      /[0-9]/.test(data.password) &&
+      /[^A-Za-z0-9]/.test(data.password),
+    {
+      message:
+        "Mật khẩu phải có ít nhất 1 chữ in hoa, 1 chữ thường, 1 số và 1 ký tự đặc biệt",
+      path: ["password"],
+    },
+  )
+  .refine((data) => data.old_password !== data.password, {
+    message: "Mật khẩu mới không được giống mật khẩu cũ",
+    path: ["password"],
+  });
+
 export type PhoneNumberFormValues = z.infer<typeof phoneNumberSchema>;
 // Base schema without refinement
 

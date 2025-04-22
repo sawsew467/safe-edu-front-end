@@ -2,7 +2,7 @@ import Image from "next/image";
 import { TimerIcon } from "lucide-react";
 import { CheckCircledIcon, CrossCircledIcon } from "@radix-ui/react-icons";
 
-import ActionCompetitions from "../action-join-compeititions";
+import ActionCompetitions from "./action-join-compeititions";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -75,11 +75,11 @@ export function CompetitionArticleCard({
         </div>
         <div className="flex flex-col flex-1 p-4">
           <h3 className="font-semibold text-lg mb-2 line-clamp-2">{title}</h3>
-          <p className="text-base line-clamp-2 min-h-12 flex-1">
+          <p className="text-base line-clamp-2 min-h-12 flex-1 mb-2">
             {description}
           </p>
 
-          <div className="flex flex-col  gap-2">
+          <div className="flex flex-col gap-1">
             <div className="flex gap-2">
               <p className=" text-sm">Bắt đầu:</p>
               <span className="text-gray-500 text-sm">

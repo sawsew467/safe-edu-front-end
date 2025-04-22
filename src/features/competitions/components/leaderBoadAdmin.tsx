@@ -1,22 +1,17 @@
 "use client";
-import {
-  Award,
-  Crown,
-  Medal,
-  Star,
-  TrendingUp,
-  Trophy,
-  Users,
-} from "lucide-react";
+import { Award, Star, TrendingUp, Trophy, Users } from "lucide-react";
 import { motion } from "framer-motion";
+import { skipToken } from "@reduxjs/toolkit/query";
+import { useRouter } from "next-nprogress-bar";
 
-import { useGetLeaderBoardQuery } from "../../api.quizz";
+import { useGetLeaderBoardQuery } from "../api.quizz";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { useAppSelector } from "@/hooks/redux-toolkit";
 interface User {
   _id: string;
   first_name: string;
@@ -43,15 +38,16 @@ const getMaxScore = (data: UserScore[]) => {
   return Math.max(...data.map((item) => item.score));
 };
 
-export default function PremiumLeaderboard({ slug }: { slug: string }) {
+export default function PremiumLeaderboardAdmin({ slug }: { slug: string }) {
   // Use React Query to fetch data
-  const { data, isLoading, error } = useGetLeaderBoardQuery(
-    { slug },
+  const { data, isFetching, error, isSuccess } = useGetLeaderBoardQuery(
+    slug ? { slug } : skipToken,
     {
-      selectFromResult: ({ data, isLoading, error }) => ({
+      selectFromResult: ({ data, isFetching, error, isSuccess }) => ({
         data: data?.data as UserScore[],
-        isLoading,
+        isFetching,
         error,
+        isSuccess,
       }),
     }
   );
@@ -73,10 +69,18 @@ export default function PremiumLeaderboard({ slug }: { slug: string }) {
 
   const maxScore = data ? getMaxScore(data) : 0;
 
+  if (!isFetching && data?.length === 0)
+    return (
+      <div className="flex items-center justify-center py-10 text-gray-500 dark:text-gray-400">
+        <p className="text-sm">Chưa có học sinh nào tham gia.</p>
+      </div>
+    );
+  if (isFetching) return <LeaderboardSkeleton />;
+
   return (
     <div className="space-y-8">
       {/* Header Stats */}
-      {!isLoading && data && (
+      {!isFetching && data && (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <Card className="bg-gradient-to-br from-amber-50 to-amber-100 border-amber-200">
             <CardContent className="flex items-center justify-between p-6">
@@ -128,123 +132,17 @@ export default function PremiumLeaderboard({ slug }: { slug: string }) {
         </div>
       )}
 
-      {/* Top 3 Podium */}
-      <div className="relative mx-auto h-80 max-w-2xl">
-        {/* Second Place */}
-        {data?.length >= 2 && (
-          <motion.div
-            animate={{ y: 0, opacity: 1 }}
-            className="absolute left-0 bottom-0 w-1/3"
-            initial={{ y: 50, opacity: 0 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-          >
-            <div className="flex flex-col items-center">
-              <Avatar className="h-16 w-16 border-4 border-gray-300 shadow-lg">
-                <AvatarImage
-                  alt={`${data?.[1]?.user.first_name} ${data?.[1]?.user.last_name}`}
-                  src={data?.[1]?.user.avatar || "/placeholder.svg"}
-                />
-                <AvatarFallback className="bg-gray-300 text-gray-700">
-                  {data?.[1]?.user.first_name.charAt(0)}
-                  {data?.[1]?.user.last_name.charAt(0)}
-                </AvatarFallback>
-              </Avatar>
-              <div className="mt-2 rounded-full bg-gray-200 p-1.5">
-                <Medal className="h-5 w-5 text-gray-600" />
-              </div>
-              <p className="mt-1 text-center font-medium text-sm">
-                {data?.[1]?.user.first_name}
-              </p>
-              <p className="text-gray-600 text-xs">
-                {data?.[1]?.score.toFixed(1)}
-              </p>
-            </div>
-            <div className="mx-auto mt-2 h-20 w-24 rounded-t-lg bg-gray-300" />
-          </motion.div>
-        )}
-
-        {/* First Place */}
-        {data?.length >= 1 && (
-          <motion.div
-            animate={{ y: 0, opacity: 1 }}
-            className="absolute left-1/3 bottom-0 w-1/3"
-            initial={{ y: 50, opacity: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <div className="flex flex-col items-center">
-              <div className="mb-1">
-                <Crown className="h-6 w-6 text-yellow-500" />
-              </div>
-              <Avatar className="h-20 w-20 border-4 border-yellow-400 shadow-lg">
-                <AvatarImage
-                  alt={`${data?.[0]?.user.first_name} ${data?.[0]?.user.last_name}`}
-                  src={data?.[0]?.user.avatar || "/placeholder.svg"}
-                />
-                <AvatarFallback className="bg-yellow-100 text-yellow-800">
-                  {data?.[0]?.user.first_name.charAt(0)}
-                  {data?.[0]?.user.last_name.charAt(0)}
-                </AvatarFallback>
-              </Avatar>
-              <div className="mt-2 rounded-full bg-yellow-200 p-1.5">
-                <Trophy className="h-5 w-5 text-yellow-600" />
-              </div>
-              <p className="mt-1 text-center font-bold">
-                {data?.[0]?.user.first_name}
-              </p>
-              <p className="text-yellow-600 font-medium">
-                {data?.[0]?.score.toFixed(1)}
-              </p>
-            </div>
-            <div className="mx-auto mt-2 h-32 w-24 rounded-t-lg bg-yellow-400" />
-          </motion.div>
-        )}
-
-        {/* Third Place */}
-        {data?.length >= 3 && (
-          <motion.div
-            animate={{ y: 0, opacity: 1 }}
-            className="absolute right-0 bottom-0 w-1/3"
-            initial={{ y: 50, opacity: 0 }}
-            transition={{ delay: 0.4, duration: 0.5 }}
-          >
-            <div className="flex flex-col items-center">
-              <Avatar className="h-14 w-14 border-4 border-amber-700 shadow-lg">
-                <AvatarImage
-                  alt={`${data?.[2]?.user.first_name} ${data?.[2]?.user.last_name}`}
-                  src={data?.[2]?.user.avatar || "/placeholder.svg"}
-                />
-                <AvatarFallback className="bg-amber-100 text-amber-800">
-                  {data?.[2]?.user.first_name.charAt(0)}
-                  {data?.[2]?.user.last_name.charAt(0)}
-                </AvatarFallback>
-              </Avatar>
-              <div className="mt-2 rounded-full bg-amber-200 p-1.5">
-                <Medal className="h-5 w-5 text-amber-700" />
-              </div>
-              <p className="mt-1 text-center font-medium text-sm">
-                {data?.[2]?.user.first_name}
-              </p>
-              <p className="text-amber-700 text-xs">
-                {data?.[2]?.score.toFixed(1)}
-              </p>
-            </div>
-            <div className="mx-auto mt-2 h-16 w-24 rounded-t-lg bg-amber-700" />
-          </motion.div>
-        )}
-      </div>
-
       {/* Main Leaderboard */}
-      <Card className="max-w-6xl mx-auto overflow-hidden border-none shadow-xl">
-        <CardHeader className="bg-gradient-to-r from-[#75A815] to-[#8BC34A] py-6">
-          <div className="flex items-center justify-center space-x-2 text-white">
-            <Trophy className="h-6 w-6" />
-            <h2 className="text-center text-2xl font-bold">Bảng Xếp Hạng</h2>
-          </div>
-        </CardHeader>
-        <CardContent className="p-0">
-          {isLoading ? (
-            <LeaderboardSkeleton />
-          ) : (
+
+      {!isFetching && data && (
+        <Card className="max-w-6xl mx-auto overflow-hidden border-none shadow-xl">
+          <CardHeader className="bg-gradient-to-r from-[#75A815] to-[#8BC34A] py-6">
+            <div className="flex items-center justify-center space-x-2 text-white">
+              <Trophy className="h-6 w-6" />
+              <h2 className="text-center text-2xl font-bold">Bảng Xếp Hạng</h2>
+            </div>
+          </CardHeader>
+          <CardContent className="p-0">
             <div>
               <div className="grid grid-cols-12 bg-gray-100 dark:bg-gray-800 p-4 text-sm font-medium text-gray-500 dark:text-gray-100">
                 <div className="col-span-2 text-start">Hạng</div>
@@ -255,7 +153,7 @@ export default function PremiumLeaderboard({ slug }: { slug: string }) {
                 {/* <div className="hidden md:col-span-4 md:block">Tiến độ</div> */}
               </div>
               <div className="w-full">
-                {data?.map((item: UserScore, index) => (
+                {data?.map((item: UserScore, index: number) => (
                   <LeaderboardItem
                     key={item.user._id}
                     maxScore={maxScore}
@@ -265,9 +163,9 @@ export default function PremiumLeaderboard({ slug }: { slug: string }) {
                 ))}
               </div>
             </div>
-          )}
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
@@ -283,6 +181,8 @@ function LeaderboardItem({
 }) {
   const { user, score } = userScore;
   const fullName = `${user.first_name} ${user.last_name}`;
+  const router = useRouter();
+  const { user_role } = useAppSelector((state) => state.auth);
 
   // Format score to 2 decimal places if needed
   const formattedScore = score % 1 === 0 ? score.toString() : score.toFixed(1);
@@ -316,6 +216,11 @@ function LeaderboardItem({
       )}
       initial={{ opacity: 0, y: 20 }}
       transition={{ delay: rank * 0.05, duration: 0.3 }}
+      onClick={() => {
+        if (user_role?.role === "Student")
+          router.push(`/quan-tri/nguoi-dung/hoc-sinh/${user._id}`);
+        else router.push(`/quan-tri/nguoi-dung/cong-dan/${user._id}`);
+      }}
     >
       {/* Rank */}
       <div className="col-span-2 flex justify-start">

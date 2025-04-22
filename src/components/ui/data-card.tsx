@@ -46,7 +46,7 @@ export default function CardList<TData, TValue>({
   );
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
-    pageSize: 10,
+    pageSize: 9,
   });
 
   const table = useReactTable({
@@ -71,7 +71,7 @@ export default function CardList<TData, TValue>({
       <div className="mb-4 flex items-end justify-between gap-4">
         <Input
           className="flex-1 max-w-96"
-          placeholder="tìm kiếm tổ chức..."
+          placeholder="Tìm kiếm..."
           type="search"
           value={globalFilter}
           onChange={(e) => setGlobalFilter(e.target.value)}
