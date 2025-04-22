@@ -49,7 +49,7 @@ export default function PremiumLeaderboardAdmin({ slug }: { slug: string }) {
         error,
         isSuccess,
       }),
-    },
+    }
   );
 
   const totalScore = data?.reduce((acc, item) => acc + item.score, 0) || 0;
@@ -146,7 +146,7 @@ export default function PremiumLeaderboardAdmin({ slug }: { slug: string }) {
             <div>
               <div className="grid grid-cols-12 bg-gray-100 dark:bg-gray-800 p-4 text-sm font-medium text-gray-500 dark:text-gray-100">
                 <div className="col-span-2 text-start">Hạng</div>
-                <div className="col-span-6 md:col-span-4">Học viên</div>
+                <div className="col-span-6 md:col-span-4">Thí sinh</div>
                 <div className="col-span-4 md:col-span-6 text-center">
                   Điểm số
                 </div>
@@ -212,7 +212,7 @@ function LeaderboardItem({
       animate={{ opacity: 1, y: 0 }}
       className={cn(
         "grid grid-cols-12 items-center border-b border-gray-100 dark:border-gray-900 dark:hover:border-gray-800 p-4 hover:bg-gray-50 transition-colors",
-        isTopThree && "bg-gray-50 dark:bg-gray-700",
+        isTopThree && "bg-gray-50 dark:bg-gray-700"
       )}
       initial={{ opacity: 0, y: 20 }}
       transition={{ delay: rank * 0.05, duration: 0.3 }}
@@ -227,7 +227,7 @@ function LeaderboardItem({
         <div
           className={cn(
             "flex h-8 w-8 items-center justify-center rounded-full font-bold shadow-sm",
-            getRankStyles(),
+            getRankStyles()
           )}
         >
           {rank}
@@ -246,7 +246,7 @@ function LeaderboardItem({
                   ? "border-gray-300"
                   : rank === 3
                     ? "border-amber-700"
-                    : "border-gray-200",
+                    : "border-gray-200"
             )}
           >
             <AvatarImage
@@ -263,7 +263,7 @@ function LeaderboardItem({
                   ? "bg-yellow-400"
                   : rank === 2
                     ? "bg-gray-300"
-                    : "bg-amber-700",
+                    : "bg-amber-700"
               )}
             >
               <Star className="h-3 w-3 text-white" />
@@ -288,7 +288,7 @@ function LeaderboardItem({
                 ? "bg-gray-400 text-gray-950"
                 : rank === 3
                   ? "bg-amber-700 text-white"
-                  : "bg-[#75A815] text-white",
+                  : "bg-[#75A815] text-white"
           )}
         >
           {formattedScore} điểm
@@ -325,7 +325,7 @@ function LeaderboardSkeleton() {
     <div>
       <div className="grid grid-cols-12 bg-gray-100 p-4 text-sm font-medium text-gray-500">
         <div className="col-span-1 text-center">Hạng</div>
-        <div className="col-span-7 md:col-span-5">Học viên</div>
+        <div className="col-span-7 md:col-span-5">Thí sinh</div>
         <div className="col-span-4 md:col-span-2 text-center">Điểm số</div>
         <div className="hidden md:col-span-4 md:block">Tiến độ</div>
       </div>
