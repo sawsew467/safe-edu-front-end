@@ -9,6 +9,7 @@ import {
   Users,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { useRouter } from "next-nprogress-bar";
 
 import { useGetLeaderBoardQuery } from "../../api.quizz";
 
@@ -292,6 +293,7 @@ function LeaderboardItem({
 }) {
   const { user, score } = userScore;
   const fullName = `${user.first_name} ${user.last_name}`;
+  const router = useRouter();
 
   // Format score to 2 decimal places if needed
   const formattedScore = score % 1 === 0 ? score.toString() : score.toFixed(1);
@@ -345,7 +347,7 @@ function LeaderboardItem({
         <div className="relative">
           <Avatar
             className={cn(
-              "h-10 w-10 border-2",
+              "h-10 w-10 cursor-pointer border-2",
               rank === 1
                 ? "border-yellow-400"
                 : rank === 2
@@ -354,6 +356,9 @@ function LeaderboardItem({
                     ? "border-amber-700"
                     : "border-gray-200",
             )}
+            onClick={() => {
+              router.push(`/trang-ca-nhan/${user.username}`);
+            }}
           >
             <AvatarImage
               alt={fullName}

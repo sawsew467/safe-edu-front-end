@@ -65,7 +65,13 @@ export const studentRegistrationSchema = z
   .object({
     organizationId: z.string().min(1, { message: "Vui lòng chọn trường" }),
     provinceId: z.string().min(1, { message: "Vui lòng chọn trường" }),
-    username: z.string().min(1, { message: "Vui lòng nhập tên đăng nhập" }),
+    username: z
+      .string()
+      .min(1, { message: "Vui lòng nhập tên đăng nhập" })
+      .regex(/^[\w-]+$/, {
+        message:
+          "Tên đăng nhập chỉ được chứa chữ cái không dấu, số, dấu gạch dưới và dấu gạch ngang",
+      }),
     password: z.string().min(1, { message: "Vui lòng nhập mật khẩu" }),
     confirmPassword: z
       .string()
@@ -121,7 +127,13 @@ export type SignUpFormValues = z.infer<typeof studentRegistrationSchema>;
 // Citizen registration schema (same as base schema for now)
 export const citizenRegistrationSchema = z
   .object({
-    username: z.string().min(1, { message: "Vui lòng nhập tên đăng nhập" }),
+    username: z
+      .string()
+      .min(1, { message: "Vui lòng nhập tên đăng nhập" })
+      .regex(/^[\w-]+$/, {
+        message:
+          "Tên đăng nhập chỉ được chứa chữ cái không dấu, số, dấu gạch dưới và dấu gạch ngang",
+      }),
     password: z.string().min(1, { message: "Vui lòng nhập mật khẩu" }),
     confirmPassword: z
       .string()
