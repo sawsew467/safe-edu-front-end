@@ -18,9 +18,9 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const cookiesStore = await cookies();
-  const user_info = cookiesStore.get(constants.USER_INFO)?.value;
+  const access_token = cookiesStore.get(constants.ACCESS_TOKEN)?.value;
 
-  if (user_info) redirect("/");
+  if (access_token) redirect("/");
 
   return <div>{children}</div>;
 }

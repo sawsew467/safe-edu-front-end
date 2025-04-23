@@ -19,8 +19,6 @@ import { Button } from "@/components/ui/button";
 import { TimerProgress } from "@/components/ui/timer-progress";
 import TimerProgressCircle from "@/components/ui/timer-progress-circle";
 import { Card } from "@/components/ui/card";
-import { deleteClientCookie } from "@/lib/jsCookies";
-import constants from "@/settings/constants";
 interface PropsPartCompetitionQuizz {
   title?: string;
   question?: PartQuestion[];
@@ -34,14 +32,6 @@ const PartCompetitionQuizz = ({
   title,
   question,
 }: PropsPartCompetitionQuizz) => {
-  React.useLayoutEffect(() => {
-    if (question === undefined) {
-      deleteClientCookie(constants.ACCESS_TOKEN);
-      deleteClientCookie(constants.USER_INFO);
-      window.location.reload();
-    }
-  }, [question]);
-
   const router = useRouter();
   const { id } = useParams();
   const [current_time, set_current_time] = React.useState(0);
@@ -75,7 +65,7 @@ const PartCompetitionQuizz = ({
       // Hiển thị cảnh báo (chỉ hoạt động ở trình duyệt hỗ trợ)
       event.preventDefault();
       event.returnValue = "Bạn có chắc chắn muốn rời khỏi trang này không?";
-      router.replace(`/phan-thi/${id}/ket-qua`);
+      // router.replace(`/phan-thi/${id}/ket-qua`);
     };
 
     window.addEventListener("beforeunload", handleBeforeUnload);

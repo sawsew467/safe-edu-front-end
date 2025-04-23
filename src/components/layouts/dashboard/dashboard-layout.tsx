@@ -54,6 +54,7 @@ export default function DashboardLayout({
 
   const isMobile = useIsMobile();
 
+  console.log("access_token", access_token);
   useLayoutEffect(() => {
     if (!access_token) {
       router.replace("/quan-tri/dang-nhap");

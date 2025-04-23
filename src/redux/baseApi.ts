@@ -59,13 +59,13 @@ export const baseQueryWithReauth: typeof baseQuery = async (
       // Retry original request with new token
       result = await baseQuery(args, api, extraOptions);
       if (result?.error?.status === 401) {
-        deleteClientCookie(constants.ACCESS_TOKEN);
-        deleteClientCookie(constants.REFRESH_TOKEN);
+        deleteClientCookie(constants.ACCESS_TOKEN_ADMIN);
+        deleteClientCookie(constants.REFRESH_TOKEN_ADMIN);
         deleteClientCookie(constants.USER_INFO);
       }
     } else {
-      deleteClientCookie(constants.ACCESS_TOKEN);
-      deleteClientCookie(constants.REFRESH_TOKEN);
+      deleteClientCookie(constants.ACCESS_TOKEN_ADMIN);
+      deleteClientCookie(constants.REFRESH_TOKEN_ADMIN);
       deleteClientCookie(constants.USER_INFO);
 
       return { error: { status: 401, data: "Unauthorized" } };

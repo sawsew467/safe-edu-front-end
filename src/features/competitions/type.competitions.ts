@@ -63,10 +63,12 @@ export interface QuizResultQuestion {
   answer: string;
   isCorrect: boolean;
   score: number;
+  totalQuestion: number;
   created_at: string;
   updated_at: string;
   id: string;
   completedAt: string;
+  startAt: string;
 }
 
 export interface QuestionResult extends Question {

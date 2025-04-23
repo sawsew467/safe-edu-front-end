@@ -25,6 +25,23 @@ interface QuizResultsProps {
   user?: User;
 }
 
+function formatDurationToHHMMSS(startISO: string, endISO: string): string {
+  const start = new Date(startISO);
+  const end = new Date(endISO);
+
+  const durationMs = end.getTime() - start.getTime();
+  const totalSeconds = Math.floor(durationMs / 1000);
+
+  const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, "0");
+  const minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(
+    2,
+    "0",
+  );
+  const seconds = String(totalSeconds % 60).padStart(2, "0");
+
+  return `${hours}:${minutes}:${seconds}`;
+}
+
 export default function QuizResults({ quizData, user }: QuizResultsProps) {
   const router = useRouter();
 
@@ -37,8 +54,16 @@ export default function QuizResults({ quizData, user }: QuizResultsProps) {
     }
   }, []);
 
-  const { quiz_id: quizz, questions: questions, score, completedAt } = quizData;
-  const totalQuestions = questions?.length || 0;
+  const {
+    quiz_id: quizz,
+    questions: questions,
+    score,
+    completedAt,
+    startAt,
+    totalQuestion,
+  } = quizData;
+
+  const totalQuestions = questions?.length || totalQuestion || 0;
   const correctAnswers = questions?.reduce(
     (acc, question) => acc + (question.isCorrect ? 1 : 0),
     0,
@@ -90,13 +115,23 @@ export default function QuizResults({ quizData, user }: QuizResultsProps) {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 grid-rows-2 gap-4">
-              <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg text-center col-span-2 flex justify-center items-center gap-4">
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Nộp bài vào lúc:
-                </p>
-                <p className="md:text-2xl text-md font-bold">
-                  {formatDate(completedAt, "HH:mm:ss [Ngày] DD/MM")}
-                </p>
+              <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg  col-span-2 space-y-4 ">
+                <div className="flex text-center gap-4 justify-start items-center">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Nộp bài vào lúc:
+                  </p>
+                  <p className="md:text-2xl text-md font-bold">
+                    {formatDate(completedAt, "HH:mm:ss [Ngày] DD/MM")}
+                  </p>
+                </div>
+                <div className="flex text-center gap-4 justify-start items-center">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Thời gian làm bài:
+                  </p>
+                  <p className="md:text-2xl text-md font-bold">
+                    {formatDurationToHHMMSS(startAt, completedAt)}
+                  </p>
+                </div>
               </div>
               <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg text-center">
                 <p className="text-sm text-gray-500 dark:text-gray-400">

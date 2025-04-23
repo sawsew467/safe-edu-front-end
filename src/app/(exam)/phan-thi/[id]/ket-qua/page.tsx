@@ -27,6 +27,8 @@ export default async function Home({ params }: { params: Params }) {
   const data: QuizResultQuestion = await getQuizResults(id);
   const user = await getUserProfile();
 
+  console.log("data", data);
+
   return (
     <main className="container mx-auto py-8 px-4">
       <QuizResults quizData={data} user={user} />
