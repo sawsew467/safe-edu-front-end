@@ -132,8 +132,12 @@ export default function QuizResults({ quizData, user }: QuizResultsProps) {
                   </p>
                 )}
               </div>
-              <Button onClick={() => router.push("..")}>
-                Quay về trang chủ
+              <Button
+                onClick={() =>
+                  router.push(`/cuoc-thi/id/${quizz?.competitionId?.at(0)}`)
+                }
+              >
+                Trờ về
               </Button>
             </div>
           </CardContent>

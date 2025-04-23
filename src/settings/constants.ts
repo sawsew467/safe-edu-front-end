@@ -5,7 +5,9 @@ const SITE_URL = "/";
 
 const USER_INFO = "_user_info";
 const ACCESS_TOKEN = "_access_token";
+const ACCESS_TOKEN_ADMIN = "_access_token_admin";
 const REFRESH_TOKEN = "_refresh_token";
+const REFRESH_TOKEN_ADMIN = "_refresh_token_admin";
 const IS_AUTH = "_is_auth";
 const IS_EXPAND = "_is_expand";
 
@@ -21,6 +23,8 @@ const FIREBASE_KEY_PAIR = process.env.NEXT_PUBLIC_FIREBASE_KEY_PAIR;
 
 const constants = {
   IS_EXPAND,
+  ACCESS_TOKEN_ADMIN,
+  REFRESH_TOKEN_ADMIN,
   API_SERVER,
   ASSETS_URL,
   SITE_URL,
