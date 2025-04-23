@@ -192,8 +192,8 @@ export default function RegistrationForm({
           username,
         }),
       );
-      dispatch(setAccessToken(res?.data?.access_token));
       dispatch(setUserRole(res?.data?.access_token));
+      dispatch(setAccessToken(res?.data?.access_token));
       dispatch(setRefreshToken(res?.data?.refresh_token));
 
       setIsSubmitted(true);

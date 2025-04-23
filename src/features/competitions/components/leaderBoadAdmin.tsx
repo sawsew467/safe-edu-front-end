@@ -146,7 +146,7 @@ export default function PremiumLeaderboardAdmin({ slug }: { slug: string }) {
             <div>
               <div className="grid grid-cols-12 bg-gray-100 dark:bg-gray-800 p-4 text-sm font-medium text-gray-500 dark:text-gray-100">
                 <div className="col-span-2 text-start">Hạng</div>
-                <div className="col-span-6 md:col-span-4">Học viên</div>
+                <div className="col-span-6 md:col-span-4">Thí sinh</div>
                 <div className="col-span-4 md:col-span-6 text-center">
                   Điểm số
                 </div>
@@ -325,7 +325,7 @@ function LeaderboardSkeleton() {
     <div>
       <div className="grid grid-cols-12 bg-gray-100 p-4 text-sm font-medium text-gray-500">
         <div className="col-span-1 text-center">Hạng</div>
-        <div className="col-span-7 md:col-span-5">Học viên</div>
+        <div className="col-span-7 md:col-span-5">Thí sinh</div>
         <div className="col-span-4 md:col-span-2 text-center">Điểm số</div>
         <div className="hidden md:col-span-4 md:block">Tiến độ</div>
       </div>

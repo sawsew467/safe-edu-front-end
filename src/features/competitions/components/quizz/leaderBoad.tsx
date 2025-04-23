@@ -142,7 +142,10 @@ export default function PremiumLeaderboard({ slug }: { slug: string }) {
               <Avatar className="h-16 w-16 border-4 border-gray-300 shadow-lg">
                 <AvatarImage
                   alt={`${data?.[1]?.user.first_name} ${data?.[1]?.user.last_name}`}
+                  className="object-cover"
+                  height={40}
                   src={data?.[1]?.user.avatar || "/placeholder.svg"}
+                  width={40}
                 />
                 <AvatarFallback className="bg-gray-300 text-gray-700">
                   {data?.[1]?.user.first_name.charAt(0)}
@@ -178,7 +181,10 @@ export default function PremiumLeaderboard({ slug }: { slug: string }) {
               <Avatar className="h-20 w-20 border-4 border-yellow-400 shadow-lg">
                 <AvatarImage
                   alt={`${data?.[0]?.user.first_name} ${data?.[0]?.user.last_name}`}
+                  className="object-cover"
+                  height={40}
                   src={data?.[0]?.user.avatar || "/placeholder.svg"}
+                  width={40}
                 />
                 <AvatarFallback className="bg-yellow-100 text-yellow-800">
                   {data?.[0]?.user.first_name.charAt(0)}
@@ -211,7 +217,10 @@ export default function PremiumLeaderboard({ slug }: { slug: string }) {
               <Avatar className="h-14 w-14 border-4 border-amber-700 shadow-lg">
                 <AvatarImage
                   alt={`${data?.[2]?.user.first_name} ${data?.[2]?.user.last_name}`}
+                  className="object-cover"
+                  height={40}
                   src={data?.[2]?.user.avatar || "/placeholder.svg"}
+                  width={40}
                 />
                 <AvatarFallback className="bg-amber-100 text-amber-800">
                   {data?.[2]?.user.first_name.charAt(0)}
@@ -248,7 +257,7 @@ export default function PremiumLeaderboard({ slug }: { slug: string }) {
             <div>
               <div className="grid grid-cols-12 bg-gray-100 dark:bg-gray-800 p-4 text-sm font-medium text-gray-500 dark:text-gray-100">
                 <div className="col-span-2 text-start">Hạng</div>
-                <div className="col-span-6 md:col-span-4">Học viên</div>
+                <div className="col-span-6 md:col-span-4">Thí sinh</div>
                 <div className="col-span-4 md:col-span-6 text-center">
                   Điểm số
                 </div>
@@ -313,6 +322,8 @@ function LeaderboardItem({
       className={cn(
         "grid grid-cols-12 items-center border-b border-gray-100 dark:border-gray-900 dark:hover:border-gray-800 p-4 hover:bg-gray-50 transition-colors",
         isTopThree && "bg-gray-50 dark:bg-gray-700",
+        "grid grid-cols-12 items-center border-b border-gray-100 dark:border-gray-900 dark:hover:border-gray-800 p-4 hover:bg-gray-50 transition-colors",
+        isTopThree && "bg-gray-50 dark:bg-gray-700",
       )}
       initial={{ opacity: 0, y: 20 }}
       transition={{ delay: rank * 0.05, duration: 0.3 }}
@@ -346,7 +357,10 @@ function LeaderboardItem({
           >
             <AvatarImage
               alt={fullName}
+              className="object-cover"
+              height={40}
               src={user.avatar || "/placeholder.svg"}
+              width={40}
             />
             <AvatarFallback>{`${user.first_name.charAt(0)}${user.last_name.charAt(0)}`}</AvatarFallback>
           </Avatar>
@@ -420,7 +434,7 @@ function LeaderboardSkeleton() {
     <div>
       <div className="grid grid-cols-12 bg-gray-100 p-4 text-sm font-medium text-gray-500">
         <div className="col-span-1 text-center">Hạng</div>
-        <div className="col-span-7 md:col-span-5">Học viên</div>
+        <div className="col-span-7 md:col-span-5">Thí sinh</div>
         <div className="col-span-4 md:col-span-2 text-center">Điểm số</div>
         <div className="hidden md:col-span-4 md:block">Tiến độ</div>
       </div>

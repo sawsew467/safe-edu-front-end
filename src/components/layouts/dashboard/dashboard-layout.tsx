@@ -18,6 +18,8 @@ import {
 import { cn } from "@/utils/cn";
 import { useAppSelector } from "@/hooks/redux-toolkit";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { getClientCookie } from "@/lib/jsCookies";
+import constants from "@/settings/constants";
 
 const getScrollbarWidth = (): number => {
   if (typeof window === "undefined" || typeof document === "undefined") {
@@ -45,7 +47,7 @@ export default function DashboardLayout({
     return () => window.removeEventListener("resize", updateScrollbarWidth);
   }, [open]);
 
-  const { userInfo } = useAppSelector((state) => state.auth);
+  const access_token = getClientCookie(constants.ACCESS_TOKEN_ADMIN);
   const { breadcrumbs } = useAppSelector((state) => state.layout);
 
   const router = useRouter();
@@ -53,10 +55,10 @@ export default function DashboardLayout({
   const isMobile = useIsMobile();
 
   useLayoutEffect(() => {
-    if (!userInfo) {
+    if (!access_token) {
       router.replace("/quan-tri/dang-nhap");
     }
-  }, [userInfo]);
+  }, [access_token]);
 
   return (
     <SidebarProvider>

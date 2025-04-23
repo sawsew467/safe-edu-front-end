@@ -58,7 +58,6 @@ const fetchLatestCompetitions = async (): Promise<{
       `${constants.API_SERVER}/competitions?pageNumber=${1}&pageSize=10`,
     );
 
-    console.log("data", data);
     const latestCompetitions =
       data
         ?.filter(

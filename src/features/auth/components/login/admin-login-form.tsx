@@ -47,9 +47,9 @@ export function LoginForm() {
 
       setClientCookie(constants.USER_INFO, JSON.stringify(resFirebase.user));
       dispatch(setUserInfo(resFirebase.user));
+      dispatch(setUserRole(res?.data?.accessToken));
       dispatch(setAccessToken(res?.data?.accessToken));
       dispatch(setRefreshToken(res?.data?.refreshToken));
-      dispatch(setUserRole(res?.data?.accessToken));
       router.push("/quan-tri");
     } catch (error: any) {
       if (error?.status === 404) {

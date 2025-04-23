@@ -48,8 +48,6 @@ const QuizzPage = async (props: { params: Params }) => {
     (slug ?? "") as string,
   );
 
-  console.log("quizzs", quizzs);
-
   const competition: Competitions = await fetchCompetitionsById(
     (slug ?? "") as string,
   );

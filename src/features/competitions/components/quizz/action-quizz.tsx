@@ -12,10 +12,11 @@ const ActionQuizz = ({ slug, data }: { slug: string; data: SubmitType }) => {
 
   return (
     <Button
-      className="flex justify-center items-center gap-2 bg-[#8bba34] hover:bg-[#7aa52c] text-white font-medium py-2 px-4 rounded-md"
+      className="flex justify-center items-center gap-2  font-medium py-2 px-4 rounded-md"
+      variant={!data?.isSubmit ? "default" : "outline"}
       onClick={() => {
-        if (data?.isSubmit) router.push(`/phan-thi/${slug}/ket-qua`);
-        else router.push(`/phan-thi/${slug}`);
+        if (data?.isSubmit) router.replace(`/phan-thi/${slug}/ket-qua`);
+        else router.replace(`/phan-thi/${slug}`);
       }}
     >
       {data?.isSubmit ? "Xem kết quả" : "Bắt đầu"}

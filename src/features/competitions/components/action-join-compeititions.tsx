@@ -9,6 +9,7 @@ const ActionCompetitions = ({ slug }: { slug: string }) => {
 
   return (
     <Button
+      className="w-full"
       onClick={() => {
         router.push(`/cuoc-thi/${slug}`);
       }}

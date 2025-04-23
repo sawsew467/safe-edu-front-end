@@ -11,9 +11,13 @@ import { setAccessToken, setRefreshToken } from "@/features/auth/slice";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: constants.API_SERVER,
-  prepareHeaders: (headers) => {
-    const accessToken = getClientCookie(constants.ACCESS_TOKEN);
+  prepareHeaders: (headers, { getState }) => {
+    let accessToken;
+    const userRole = (getState() as any).auth.user_role?.role;
 
+    if (userRole === "Student" || userRole === "Citizen")
+      accessToken = getClientCookie(constants.ACCESS_TOKEN);
+    else accessToken = getClientCookie(constants.ACCESS_TOKEN_ADMIN);
     headers.set("Content-Type", "application/json");
 
     if (accessToken) {

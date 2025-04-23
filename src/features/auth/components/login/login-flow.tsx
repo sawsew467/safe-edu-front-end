@@ -65,9 +65,9 @@ const LoginFlow = () => {
         }),
       );
 
+      dispatch(setUserRole(res?.data?.access_token));
       dispatch(setAccessToken(res?.data?.access_token));
       dispatch(setRefreshToken(res?.data?.refresh_token));
-      dispatch(setUserRole(res?.data?.access_token));
       setStep(2);
     } catch (error) {
       const message: string =

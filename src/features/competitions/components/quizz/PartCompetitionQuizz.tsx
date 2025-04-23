@@ -69,6 +69,22 @@ const PartCompetitionQuizz = ({
 
     return () => clearInterval(interval);
   }, [open]);
+
+  React.useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      // Hiển thị cảnh báo (chỉ hoạt động ở trình duyệt hỗ trợ)
+      event.preventDefault();
+      event.returnValue = "Bạn có chắc chắn muốn rời khỏi trang này không?";
+      router.replace(`/phan-thi/${id}/ket-qua`);
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+
   React.useEffect(() => {
     if (current_question?._id) {
       set_current_time(0);
@@ -176,7 +192,7 @@ const PartCompetitionQuizz = ({
               maxValue={currentTimeLimit}
               size={150}
               strokeWidth={14}
-              value={current_time ? currentTimeLimit - current_time : 0}
+              value={currentTimeLimit - current_time}
             />
           </div>
         </Card>
