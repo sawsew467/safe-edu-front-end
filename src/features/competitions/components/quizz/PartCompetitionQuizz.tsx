@@ -14,7 +14,7 @@ import { useSubmissionQuestionMutation } from "../../api.question";
 import OptionsForm from "./OptionsForm";
 
 import { Badge } from "@/components/ui/badge";
-import { PartQuestion } from "@/app/(exam)/phan-thi/[id]/page";
+import { PartQuestion } from "@/app/(exam)/phan-thi-ly-thuyet/[id]/page";
 import { Button } from "@/components/ui/button";
 import { TimerProgress } from "@/components/ui/timer-progress";
 import TimerProgressCircle from "@/components/ui/timer-progress-circle";

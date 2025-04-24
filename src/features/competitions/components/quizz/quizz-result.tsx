@@ -124,14 +124,16 @@ export default function QuizResults({ quizData, user }: QuizResultsProps) {
                     {formatDate(completedAt, "HH:mm:ss [Ngày] DD/MM")}
                   </p>
                 </div>
-                <div className="flex text-center gap-4 justify-start items-center">
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Thời gian làm bài:
-                  </p>
-                  <p className="md:text-2xl text-md font-bold">
-                    {formatDurationToHHMMSS(startAt, completedAt)}
-                  </p>
-                </div>
+                {startAt && (
+                  <div className="flex text-center gap-4 justify-start items-center">
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      Thời gian làm bài:
+                    </p>
+                    <p className="md:text-2xl text-md font-bold">
+                      {formatDurationToHHMMSS(startAt, completedAt)}
+                    </p>
+                  </div>
+                )}
               </div>
               <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg text-center">
                 <p className="text-sm text-gray-500 dark:text-gray-400">

@@ -91,5 +91,7 @@ export const baseApi = createApi({
     "Competitions",
     "Quizz",
     "Question",
+    "Picture",
+    "Comment",
   ],
 });

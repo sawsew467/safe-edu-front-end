@@ -1,3 +1,5 @@
+import { Citizens, Student } from "../users/user.types";
+
 import { QuizzType } from "@/settings/enums";
 
 export interface Competitions {
@@ -85,3 +87,26 @@ export interface Quizz {
   status: string;
   competitionId: string[];
 }
+
+export type Picture = {
+  _id: string;
+  isActive: boolean;
+  deleted_at: string | null;
+  deleted_by: string | null;
+  created_by: string | null;
+  update_by: string | null;
+  picture: string;
+  name: string;
+  description: string;
+  user_id: Student | Citizens;
+  quiz_id: Quizz;
+  startedAt: string;
+  completedAt: string;
+  created_at: string;
+  updatedAt: string;
+  score?: number | null;
+  feedback: string | null;
+  quiz_result_id?: string;
+  __v: number;
+  id: string;
+};

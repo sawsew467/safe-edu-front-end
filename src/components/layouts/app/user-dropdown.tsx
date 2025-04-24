@@ -39,9 +39,11 @@ function UserDropdown() {
     router.push(`/trang-ca-nhan/${user?.username}`);
   };
   const handleSignOut = () => {
-    deleteClientCookie(constants.USER_INFO);
+    deleteClientCookie(constants.ACCESS_TOKEN_ADMIN);
+    deleteClientCookie(constants.REFRESH_TOKEN_ADMIN);
     deleteClientCookie(constants.ACCESS_TOKEN);
     deleteClientCookie(constants.REFRESH_TOKEN);
+    deleteClientCookie(constants.USER_INFO);
 
     window.location.reload();
   };

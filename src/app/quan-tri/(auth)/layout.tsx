@@ -3,18 +3,19 @@
 import { useRouter } from "next-nprogress-bar";
 import React, { useLayoutEffect } from "react";
 
-import { useAppSelector } from "@/hooks/redux-toolkit";
+import { getClientCookie } from "@/lib/jsCookies";
+import constants from "@/settings/constants";
 
 function AuthLayout({ children }: { children: React.ReactNode }) {
-  const { userInfo } = useAppSelector((state) => state.auth);
+  const accessToken = getClientCookie(constants.ACCESS_TOKEN_ADMIN);
 
   const router = useRouter();
 
   useLayoutEffect(() => {
-    if (userInfo) {
+    if (accessToken) {
       router.replace("/quan-tri/nguoi-dung");
     }
-  }, [userInfo]);
+  }, [accessToken]);
 
   return <div>{children}</div>;
 }

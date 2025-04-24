@@ -46,9 +46,9 @@ export enum Status {
 }
 export enum QuizzType {
   SingleChoice = "Phần thi lý thuyết",
-  PaintingPropaganda = "Phần thi thực hành",
+  PaintingPropaganda = "Vẽ tranh cổ động",
   SocialThinking = "Nghĩ luận xã hội",
-  Practical = "Vẽ tranh cổ động",
+  Practical = "Phần thi thực hành",
 }
 export enum QuizzTypeVN {
   "Phần thi lý thuyết" = "phan-thi-ly-thuyet",

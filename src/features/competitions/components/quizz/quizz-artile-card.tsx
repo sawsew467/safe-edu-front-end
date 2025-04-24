@@ -45,7 +45,10 @@ export default function QuizzArticleCard({
             </Badge>
           </div>
           <div className="flex justify-between items-end">
-            <ActionQuizz data={data?.data} slug={slug} />
+            <ActionQuizz
+              data={{ isSubmit: data?.data?.isSubmit, type }}
+              slug={slug}
+            />
           </div>
         </div>
       </CardContent>
