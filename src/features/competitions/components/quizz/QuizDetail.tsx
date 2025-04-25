@@ -21,11 +21,9 @@ import { QuizzType } from "@/settings/enums";
 const QuizDetail = ({
   closeDialog,
   id,
-  isOpen,
 }: {
   closeDialog: () => void;
   id: string;
-  isOpen: boolean;
 }) => {
   const { quiz, isFetching }: { quiz: Quizz; isFetching: boolean } =
     useGetQuizzQuery(id ? { id } : skipToken, {
@@ -34,8 +32,6 @@ const QuizDetail = ({
         isFetching,
       }),
     });
-
-  console.log("quiz", quiz);
 
   if (isFetching)
     return (

@@ -97,9 +97,11 @@ const PictureContent = ({
                   <p className="text-lg text-center font-semibold first-letter:uppercase">
                     {currentPicture?.name}
                   </p>
-                  <div className="flex gap-1 items-start">
-                    <p className="min-w-12">Mô tả:</p>
-                    <p className="text-base">{currentPicture?.description}</p>
+                  <div>
+                    <span className="min-w-12 mr-2">Mô tả:</span>
+                    <span className="text-base text-gray-700">
+                      {currentPicture?.description}
+                    </span>
                   </div>
                 </div>
                 <FormField

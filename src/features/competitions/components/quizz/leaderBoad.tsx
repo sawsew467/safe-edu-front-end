@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useRouter } from "next-nprogress-bar";
+import Link from "next/link";
 
 import { useGetLeaderBoardQuery } from "../../api.quizz";
 
@@ -18,6 +19,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { useAppSelector } from "@/hooks/redux-toolkit";
 interface User {
   _id: string;
   first_name: string;
@@ -46,6 +48,9 @@ const getMaxScore = (data: UserScore[]) => {
 
 export default function PremiumLeaderboard({ slug }: { slug: string }) {
   // Use React Query to fetch data
+
+  const { user_role } = useAppSelector((state) => state.auth);
+
   const { data, isLoading, error } = useGetLeaderBoardQuery(
     { slug },
     {
@@ -59,6 +64,15 @@ export default function PremiumLeaderboard({ slug }: { slug: string }) {
 
   const totalScore = data?.reduce((acc, item) => acc + item.score, 0) || 0;
   const averageScore = totalScore / (data?.length || 1);
+
+  const isDoQuizz = data?.some((item) => item.user._id === user_role?.userId);
+
+  const myScore =
+    data?.find((item) => item.user._id === user_role?.userId)?.score ||
+    undefined;
+
+  const myRank =
+    data?.findIndex((item) => item.user._id === user_role?.userId) + 1;
 
   if (error) {
     return (
@@ -95,37 +109,71 @@ export default function PremiumLeaderboard({ slug }: { slug: string }) {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-emerald-50 to-emerald-100 border-emerald-200">
-            <CardContent className="flex items-center justify-between p-6">
-              <div className="space-y-1">
-                <h3 className="text-sm font-medium text-emerald-800">
-                  Điểm Cao Nhất
-                </h3>
-                <p className="text-2xl font-bold text-emerald-900">
-                  {maxScore.toFixed(1)}
-                </p>
-              </div>
-              <div className="rounded-full bg-emerald-200 p-3">
-                <TrendingUp className="h-6 w-6 text-emerald-700" />
-              </div>
-            </CardContent>
-          </Card>
+          {isDoQuizz ? (
+            <Card className="bg-gradient-to-br from-emerald-50 to-emerald-100 border-emerald-200">
+              <CardContent className="flex items-center justify-between p-6">
+                <div className="space-y-1">
+                  <h3 className="text-sm font-medium text-emerald-800">
+                    Điểm Của Bạn
+                  </h3>
+                  <p className="text-2xl font-bold text-emerald-900">
+                    {(myScore ?? 0)?.toFixed(1)}
+                  </p>
+                </div>
+                <div className="rounded-full bg-emerald-200 p-3">
+                  <TrendingUp className="h-6 w-6 text-emerald-700" />
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <Card className="bg-gradient-to-br from-emerald-50 to-emerald-100 border-emerald-200">
+              <CardContent className="flex items-center justify-between p-6">
+                <div className="space-y-1">
+                  <h3 className="text-sm font-medium text-emerald-800">
+                    Điểm Cao Nhất
+                  </h3>
+                  <p className="text-2xl font-bold text-emerald-900">
+                    {maxScore.toFixed(1)}
+                  </p>
+                </div>
+                <div className="rounded-full bg-emerald-200 p-3">
+                  <TrendingUp className="h-6 w-6 text-emerald-700" />
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
-          <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
-            <CardContent className="flex items-center justify-between p-6">
-              <div className="space-y-1">
-                <h3 className="text-sm font-medium text-purple-800">
-                  Điểm trung bình
-                </h3>
-                <p className="text-2xl font-bold text-purple-900">
-                  {averageScore.toFixed(1)}
-                </p>
-              </div>
-              <div className="rounded-full bg-purple-200 p-3">
-                <Award className="h-6 w-6 text-purple-700" />
-              </div>
-            </CardContent>
-          </Card>
+          {isDoQuizz ? (
+            <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
+              <CardContent className="flex items-center justify-between p-6">
+                <div className="space-y-1">
+                  <h3 className="text-sm font-medium text-purple-800">
+                    Thứ hạng hiện tại
+                  </h3>
+                  <p className="text-2xl font-bold text-purple-900">{myRank}</p>
+                </div>
+                <div className="rounded-full bg-purple-200 p-3">
+                  <Award className="h-6 w-6 text-purple-700" />
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
+              <CardContent className="flex items-center justify-between p-6">
+                <div className="space-y-1">
+                  <h3 className="text-sm font-medium text-purple-800">
+                    Điểm trung bình
+                  </h3>
+                  <p className="text-2xl font-bold text-purple-900">
+                    {averageScore.toFixed(1)}
+                  </p>
+                </div>
+                <div className="rounded-full bg-purple-200 p-3">
+                  <Award className="h-6 w-6 text-purple-700" />
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
       )}
 
@@ -157,7 +205,7 @@ export default function PremiumLeaderboard({ slug }: { slug: string }) {
                 <Medal className="h-5 w-5 text-gray-600" />
               </div>
               <p className="mt-1 text-center font-medium text-sm">
-                {data?.[1]?.user.first_name}
+                {data?.[1]?.user.first_name} {data?.[1]?.user.last_name}c
               </p>
               <p className="text-gray-600 text-xs">
                 {data?.[1]?.score.toFixed(1)}
@@ -196,7 +244,7 @@ export default function PremiumLeaderboard({ slug }: { slug: string }) {
                 <Trophy className="h-5 w-5 text-yellow-600" />
               </div>
               <p className="mt-1 text-center font-bold">
-                {data?.[0]?.user.first_name}
+                {data?.[0]?.user.first_name} {data?.[0]?.user.last_name}
               </p>
               <p className="text-yellow-600 font-medium">
                 {data?.[0]?.score.toFixed(1)}
@@ -232,7 +280,7 @@ export default function PremiumLeaderboard({ slug }: { slug: string }) {
                 <Medal className="h-5 w-5 text-amber-700" />
               </div>
               <p className="mt-1 text-center font-medium text-sm">
-                {data?.[2]?.user.first_name}
+                {data?.[2]?.user.first_name} {data?.[2]?.user.last_name}
               </p>
               <p className="text-amber-700 text-xs">
                 {data?.[2]?.score.toFixed(1)}
@@ -268,6 +316,7 @@ export default function PremiumLeaderboard({ slug }: { slug: string }) {
                 {data?.map((item: UserScore, index) => (
                   <LeaderboardItem
                     key={item.user._id}
+                    isMySelf={item.user._id === user_role?.userId}
                     maxScore={maxScore}
                     rank={index + 1}
                     userScore={item}
@@ -286,10 +335,12 @@ function LeaderboardItem({
   userScore,
   rank,
   maxScore,
+  isMySelf = false,
 }: {
   userScore: UserScore;
   rank: number;
   maxScore: number;
+  isMySelf: boolean;
 }) {
   const { user, score } = userScore;
   const fullName = `${user.first_name} ${user.last_name}`;
@@ -386,8 +437,16 @@ function LeaderboardItem({
         </div>
 
         <div className="ml-3">
-          <div className="font-medium line-clamp-1">{fullName}</div>
-          <div className="text-xs text-gray-500">@{user.username}</div>
+          <Link
+            className={cn(
+              "font-medium line-clamp-1 hover:underline",
+              isMySelf && "text-[#75A815]",
+            )}
+            href={`/trang-ca-nhan/${user?.username}`}
+          >
+            {fullName}
+          </Link>
+          <div className="text-xs text-gray-500">@{user?.username}</div>
         </div>
       </div>
 

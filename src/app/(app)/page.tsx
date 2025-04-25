@@ -116,8 +116,8 @@ async function AppPage() {
                 Nâng cao nhận thức xã hội
               </h1>
               <p className="text-xl mb-8 text-black dark:text-white">
-                Tài nguyên giáo dục về bình đẳng giới, phòng chống ma túy và bạo
-                lực học đường
+                Tài nguyên giáo dục về phòng chống ma túy, bạo lực học đường và
+                bình đẳng giới
               </p>
             </div>
             <div className="flex justify-center">

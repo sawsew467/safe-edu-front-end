@@ -41,9 +41,6 @@ import { Combobox } from "@/components/ui/comboBox";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAppDispatch } from "@/hooks/redux-toolkit";
-import { decodeToken } from "@/utils/decode-token";
-import constants from "@/settings/constants";
-import { setClientCookie } from "@/lib/jsCookies";
 
 interface RegistrationFormProps {
   userType: "student" | "citizen";
@@ -160,38 +157,7 @@ export default function RegistrationForm({
           ...rest,
         }).unwrap();
       }
-      const user = decodeToken(res?.data?.access_token);
-      let url = "";
 
-      switch (user?.role) {
-        case "Citizen":
-          url = `${constants.API_SERVER}/Citizens/${user?.userId}`;
-          break;
-        case "Student":
-          url = `${constants.API_SERVER}/Students/${user?.userId}`;
-          break;
-      }
-      const res_user_infor = await fetch(url, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${res?.data?.access_token}`,
-        },
-      });
-
-      const user_infor = await res_user_infor?.json();
-      const { avatar, achievements, first_name, last_name, username } =
-        user_infor?.data;
-
-      setClientCookie(
-        constants.USER_INFO,
-        JSON.stringify({
-          avatar,
-          achievements,
-          first_name,
-          last_name,
-          username,
-        }),
-      );
       dispatch(setUserRole(res?.data?.access_token));
       dispatch(setAccessToken(res?.data?.access_token));
       dispatch(setRefreshToken(res?.data?.refresh_token));
@@ -261,7 +227,7 @@ export default function RegistrationForm({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
-                name="last_name"
+                name="first_name"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-gray-700 dark:text-gray-100 flex gap-2">
@@ -277,7 +243,7 @@ export default function RegistrationForm({
 
               <FormField
                 control={form.control}
-                name="first_name"
+                name="last_name"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-gray-700 dark:text-gray-100 flex gap-2">

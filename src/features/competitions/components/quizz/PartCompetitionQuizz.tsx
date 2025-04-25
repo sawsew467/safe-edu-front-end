@@ -61,21 +61,6 @@ const PartCompetitionQuizz = ({
   }, [open]);
 
   React.useEffect(() => {
-    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-      // Hiển thị cảnh báo (chỉ hoạt động ở trình duyệt hỗ trợ)
-      event.preventDefault();
-      event.returnValue = "Bạn có chắc chắn muốn rời khỏi trang này không?";
-      // router.replace(`/phan-thi/${id}/ket-qua`);
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, []);
-
-  React.useEffect(() => {
     if (current_question?._id) {
       set_current_time(0);
     }
@@ -101,7 +86,7 @@ const PartCompetitionQuizz = ({
         setOpen(false);
       }
     } else {
-      router.replace(`/phan-thi/${id}/ket-qua`);
+      router.replace(`/phan-thi-ly-thuyet/${id}/ket-qua`);
     }
   };
 

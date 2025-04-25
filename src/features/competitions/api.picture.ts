@@ -10,6 +10,14 @@ export const PictureApi = baseApi.injectEndpoints({
       }),
       providesTags: ["Picture"],
     }),
+    getMyPicture: build.query({
+      query: ({ id }) => ({
+        url: `/picture/my-picture/${id}`,
+        method: "GET",
+        flashError: true,
+      }),
+      providesTags: ["Picture"],
+    }),
     getPicture: build.query({
       query: ({ id }) => ({
         url: `/picture/${id}`,
@@ -28,7 +36,7 @@ export const PictureApi = baseApi.injectEndpoints({
       invalidatesTags: (result, error) => {
         if (error) return [];
 
-        return ["Picture"];
+        return ["Picture", "Quizz"];
       },
     }),
     GetAllQuizResultPicture: build.query({
@@ -55,6 +63,11 @@ export const PictureApi = baseApi.injectEndpoints({
           body: data,
           flashError: true,
         };
+      },
+      invalidatesTags: (result, error) => {
+        if (error) return [];
+
+        return ["Picture"];
       },
     }),
 
@@ -127,4 +140,5 @@ export const {
   useGetAllQuizResultPictureQuery,
   useCommentPictureMutation,
   useGetAllCommentByPictureIdQuery,
+  useGetMyPictureQuery,
 } = PictureApi;

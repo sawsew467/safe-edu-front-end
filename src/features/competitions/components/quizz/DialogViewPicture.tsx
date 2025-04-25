@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import moment from "moment";
+import { toast } from "sonner";
 
 import {
   useCommentPictureMutation,
@@ -16,19 +17,18 @@ import {
 } from "../../api.picture";
 import { Picture } from "../../type.competitions";
 
-import { StarRating } from "./start-rating";
-
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Citizens, Student } from "@/features/users/user.types";
 import { formatDate } from "@/utils/format-date";
+import { deleteClientCookie } from "@/lib/jsCookies";
+import constants from "@/settings/constants";
 
 const getBadge = (isGraded: boolean) => {
   if (isGraded)
@@ -83,9 +83,11 @@ const formSchema = z.object({
 const DialogViewPicture = ({
   id,
   quiz_id,
+  open,
 }: {
   id: string;
   quiz_id: string;
+  open: boolean;
 }) => {
   const router = useRouter();
   const { picture, isFetching }: { picture: Picture; isFetching: boolean } =
@@ -115,22 +117,22 @@ const DialogViewPicture = ({
   };
 
   return (
-    <Dialog open={!!id} onOpenChange={handleCloseModal}>
-      {isFetching ? (
-        <DialogContent className="relative flex flex-col md:flex-row h-[80vh] min-w-[80vw] rounded-lg p-0 overflow-hidden border-none">
-          <SkeletonDetail />
-        </DialogContent>
-      ) : (
-        <DialogContent className="flex flex-col md:flex-row h-[80vh] min-w-[80vw] rounded-lg p-0 overflow-hidden border-none">
-          <div className="md:block hidden h-full w-full">
-            <RightSide comments={comments} picture={picture} />
-          </div>
+    <Dialog open={open} onOpenChange={handleCloseModal}>
+      <DialogContent className="flex flex-col md:flex-row h-[80vh] min-w-[80vw] rounded-lg p-0 overflow-hidden border-none">
+        {isFetching ? (
+          <SkeletonDetail isFetching={isFetchingComment} />
+        ) : (
+          <>
+            <div className="md:block hidden h-full w-full">
+              <RightSide comments={comments} picture={picture} />
+            </div>
 
-          <ScrollArea className="md:hidden block">
-            <RightSide comments={comments} picture={picture} />
-          </ScrollArea>
-        </DialogContent>
-      )}
+            <ScrollArea className="md:hidden block">
+              <RightSide comments={comments} picture={picture} />
+            </ScrollArea>
+          </>
+        )}
+      </DialogContent>
     </Dialog>
   );
 };
@@ -147,8 +149,6 @@ const RightSide = ({
   const score = picture?.score;
   const maxScore = 10;
 
-  const ratingColor = getRatingColor(score ?? 0, maxScore);
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
@@ -162,7 +162,11 @@ const RightSide = ({
       form.reset({
         content: "",
       });
-    } catch (error) {}
+    } catch (error) {
+      toast.error("Xin hãy đăng nhập, rồi hãy bình luận");
+      deleteClientCookie(constants.ACCESS_TOKEN);
+      deleteClientCookie(constants.REFRESH_TOKEN);
+    }
   }
 
   return (
@@ -186,21 +190,27 @@ const RightSide = ({
               href={`/trang-ca-nhan/${picture?.user_id?.username}`}
             >
               <Avatar className="h-8 w-8">
-                <AvatarImage alt="User" src={picture?.user_id?.avatar} />
+                <AvatarImage
+                  alt="User"
+                  className="object-cover"
+                  src={picture?.user_id?.avatar}
+                />
                 <AvatarFallback>{picture?.user_id?.username}</AvatarFallback>
               </Avatar>
             </Link>
             <div>
               <div className="flex gap-2 items-center">
                 <Link
-                  className="font-semibold text-sm hover:underline"
+                  className="font-semibold  flex gap-1 items-center text-sm hover:underline"
                   href={`/trang-ca-nhan/${picture?.user_id?.username}`}
                 >
-                  {picture?.user_id?.username}
+                  {picture?.user_id?.first_name} {picture?.user_id?.last_name}
+                  <p className="text-gray-500 font-light">
+                    @{picture?.user_id?.username}
+                  </p>
                 </Link>
-                {getBadge(picture?.score !== undefined)}
               </div>
-              <p className="text-xs text-muted-foreground  capitalize">
+              <p className="text-xs text-muted-foreground mt-1 capitalize">
                 {formatDate(
                   picture?.created_at,
                   "dddd, [Ngày] DD [tháng] MM[,] YYYY",
@@ -208,97 +218,82 @@ const RightSide = ({
               </p>
             </div>
           </div>
-          {score !== undefined && (
-            <div className="flex mt-3 flex-col space-y-1">
-              <div className="flex items-center gap-1">
-                <StarRating rating={score ?? 0} />
-                <span className={cn("ml-2 font-bold text-lg", ratingColor)}>
-                  {score}
-                </span>
-                <span className="text-sm text-muted-foreground">
-                  /{maxScore}
-                </span>
-              </div>
-
-              <div className="flex items-center">
-                <span className={cn("text-sm font-medium", ratingColor)}>
-                  Đánh giá: {picture?.feedback}
-                </span>
-              </div>
+          <div className="mt-2">
+            <div className="flex-1">
+              <span className="text-sm">
+                <p className="">
+                  Tên bức ảnh là{" "}
+                  <strong className="text-[#75A815] first-letter:capitalize">
+                    {picture?.name}
+                  </strong>
+                  .
+                </p>
+                <p>{picture?.description}.</p>
+              </span>
             </div>
-          )}
+            <p className="text-xs text-muted-foreground mt-1">
+              {formatDateFromNow(picture?.created_at)}
+            </p>
+          </div>
         </div>
         <ScrollArea className="flex-1 p-4">
           <div className="space-y-4">
-            <div className="flex items-start gap-2">
-              <Avatar className="h-8 w-8">
-                <AvatarImage
-                  alt="User"
-                  src={picture?.user_id?.avatar ?? "/placeholder.svg"}
-                />
-                <AvatarFallback>{picture?.user_id?.username}</AvatarFallback>
-              </Avatar>
-              <div>
-                <div className="flex-1">
-                  <span className="font-semibold text-sm mr-2">
-                    {picture?.user_id?.username}
-                  </span>
-                  <span className="text-sm flex gap-1">
-                    <p className="">
-                      Tên bức ảnh là{" "}
-                      <strong className="text-[#75A815] first-letter:capitalize">
-                        {picture?.name}
-                      </strong>
-                      . {picture?.description}
-                    </p>
-                  </span>
-                </div>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {formatDateFromNow(picture?.created_at)}
-                </p>
-              </div>
-            </div>
-
-            {comments?.map((comment) => (
-              <div key={comment?._id} className="flex items-start w-full gap-2">
-                <Link
-                  className="cursor-pointer"
-                  href={`/trang-ca-nhan/${comment?.user_id?.username}`}
-                >
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage
-                      alt={comment?.user_id?.username}
-                      src={comment?.user_id?.avatar}
-                    />
-                    <AvatarFallback>
-                      {comment?.user_id?.username
-                        ?.substring(0, 2)
-                        .toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                </Link>
-                <div className="w-full">
-                  <div className="">
+            {comments?.length !== 0 ? (
+              <>
+                {comments?.map((comment) => (
+                  <div
+                    key={comment?._id}
+                    className="flex items-start w-full gap-2"
+                  >
                     <Link
-                      className="cursor-pointer hover:underline font-semibold text-sm mr-2"
+                      className="cursor-pointer"
                       href={`/trang-ca-nhan/${comment?.user_id?.username}`}
                     >
-                      {comment?.user_id?.username}
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage
+                          alt={comment?.user_id?.username}
+                          className="object-cover"
+                          src={comment?.user_id?.avatar}
+                        />
+                        <AvatarFallback>
+                          {comment?.user_id?.username
+                            ?.substring(0, 2)
+                            .toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
                     </Link>
-                    <p className="text-sm break-words break-all">
-                      {comment?.content}
-                    </p>
+                    <div className="w-full">
+                      <div className="">
+                        <Link
+                          className="cursor-pointer flex gap-1 hover:underline font-semibold text-sm mr-2"
+                          href={`/trang-ca-nhan/${comment?.user_id?.username}`}
+                        >
+                          {comment?.user_id?.first_name}{" "}
+                          {comment?.user_id?.last_name}
+                          <p className="text-gray-500 font-light">
+                            @{picture?.user_id?.username}
+                          </p>
+                        </Link>
+                        <p className="text-sm break-words break-all">
+                          {comment?.content}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-4 mt-1">
+                        <p className="text-xs text-muted-foreground">
+                          {formatDateFromNow(comment?.created_at)}
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-4 mt-1">
-                    <p className="text-xs text-muted-foreground">
-                      {formatDateFromNow(comment?.created_at)}
-                    </p>
-                  </div>
-                </div>
+                ))}
+                <div className="w-full h-20" />
+              </>
+            ) : (
+              <div className="flex items-center justify-center w-full h-full">
+                <p className="text-gray-500">Hãy là người bình luận đầu tiền</p>
               </div>
-            ))}
+            )}
           </div>
-          <div className="w-full h-2" />
         </ScrollArea>
         <div className="md:static md:bg-none bg-white dark:bg-background absolute w-full h-20 bottom-0 p-4 border-t">
           <Form {...form}>
@@ -314,6 +309,7 @@ const RightSide = ({
                     <FormControl>
                       <Input
                         {...field}
+                        autoComplete="off"
                         className="h-9 bg-transparent  border-none focus-visible:outline-none focus-visible:ring-0"
                         placeholder="Bình luận..."
                       />
@@ -337,9 +333,9 @@ const RightSide = ({
   );
 };
 
-export function SkeletonDetail() {
+export function SkeletonDetail({ isFetching }: { isFetching: boolean }) {
   return (
-    <div className="flex flex-col md:flex-row w-full mx-auto border rounded-lg overflow-hidden bg-white">
+    <div className="flex flex-col md:flex-row w-full mx-auto border rounded-lg overflow-hidden bg-white dark:bg-black">
       {/* Left side - Image skeleton */}
       <div className="md:w-1/2 aspect-square relative">
         <Skeleton className="absolute inset-0 w-full h-full" />
@@ -375,101 +371,7 @@ export function SkeletonDetail() {
         </div>
 
         {/* Caption and comments */}
-        <div className="flex-1 overflow-y-auto p-4">
-          {/* Caption */}
-          <div className="flex items-start gap-2 mb-6">
-            <Skeleton className="h-8 w-8 rounded-full shrink-0" />
-            <div className="space-y-2 w-full">
-              <div className="flex items-center gap-2">
-                <Skeleton className="h-4 w-20" />
-              </div>
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-3/4" />
-              <Skeleton className="h-3 w-12" />
-            </div>
-          </div>
-
-          {/* Comments - with varying widths for more realistic look */}
-          <div className="flex items-start gap-2 mb-6">
-            <Skeleton className="h-8 w-8 rounded-full shrink-0" />
-            <div className="space-y-2 flex-1">
-              <div className="flex items-center gap-2">
-                <Skeleton className="h-4 w-16" />
-              </div>
-              <Skeleton className="h-4 w-3/4" />
-              <div className="flex items-center gap-4">
-                <Skeleton className="h-3 w-8" />
-                <Skeleton className="h-3 w-16" />
-                <Skeleton className="h-3 w-12" />
-              </div>
-            </div>
-            <Skeleton className="h-6 w-6 rounded-full" />
-          </div>
-
-          <div className="flex items-start gap-2 mb-6">
-            <Skeleton className="h-8 w-8 rounded-full shrink-0" />
-            <div className="space-y-2 flex-1">
-              <div className="flex items-center gap-2">
-                <Skeleton className="h-4 w-20" />
-              </div>
-              <Skeleton className="h-4 w-1/2" />
-              <div className="flex items-center gap-4">
-                <Skeleton className="h-3 w-8" />
-                <Skeleton className="h-3 w-12" />
-                <Skeleton className="h-3 w-12" />
-              </div>
-            </div>
-            <Skeleton className="h-6 w-6 rounded-full" />
-          </div>
-
-          <div className="flex items-start gap-2 mb-6">
-            <Skeleton className="h-8 w-8 rounded-full shrink-0" />
-            <div className="space-y-2 flex-1">
-              <div className="flex items-center gap-2">
-                <Skeleton className="h-4 w-24" />
-              </div>
-              <Skeleton className="h-4 w-5/6" />
-              <div className="flex items-center gap-4">
-                <Skeleton className="h-3 w-8" />
-                <Skeleton className="h-3 w-10" />
-                <Skeleton className="h-3 w-12" />
-              </div>
-            </div>
-            <Skeleton className="h-6 w-6 rounded-full" />
-          </div>
-
-          <div className="flex items-start gap-2 mb-6">
-            <Skeleton className="h-8 w-8 rounded-full shrink-0" />
-            <div className="space-y-2 flex-1">
-              <div className="flex items-center gap-2">
-                <Skeleton className="h-4 w-16" />
-              </div>
-              <Skeleton className="h-4 w-2/3" />
-              <div className="flex items-center gap-4">
-                <Skeleton className="h-3 w-8" />
-                <Skeleton className="h-3 w-14" />
-                <Skeleton className="h-3 w-12" />
-              </div>
-            </div>
-            <Skeleton className="h-6 w-6 rounded-full" />
-          </div>
-
-          <div className="flex items-start gap-2 mb-6">
-            <Skeleton className="h-8 w-8 rounded-full shrink-0" />
-            <div className="space-y-2 flex-1">
-              <div className="flex items-center gap-2">
-                <Skeleton className="h-4 w-20" />
-              </div>
-              <Skeleton className="h-4 w-1/3" />
-              <div className="flex items-center gap-4">
-                <Skeleton className="h-3 w-8" />
-                <Skeleton className="h-3 w-12" />
-                <Skeleton className="h-3 w-12" />
-              </div>
-            </div>
-            <Skeleton className="h-6 w-6 rounded-full" />
-          </div>
-        </div>
+        {isFetching && <ComentSkeleton />}
 
         {/* Comment input */}
         <div className="p-4 border-t">
@@ -482,5 +384,103 @@ export function SkeletonDetail() {
     </div>
   );
 }
+
+const ComentSkeleton = () => (
+  <div className="flex-1 overflow-y-auto p-4">
+    {/* Caption */}
+    <div className="flex items-start gap-2 mb-6">
+      <Skeleton className="h-8 w-8 rounded-full shrink-0" />
+      <div className="space-y-2 w-full">
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-4 w-20" />
+        </div>
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-4 w-3/4" />
+        <Skeleton className="h-3 w-12" />
+      </div>
+    </div>
+
+    {/* Comments - with varying widths for more realistic look */}
+    <div className="flex items-start gap-2 mb-6">
+      <Skeleton className="h-8 w-8 rounded-full shrink-0" />
+      <div className="space-y-2 flex-1">
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-4 w-16" />
+        </div>
+        <Skeleton className="h-4 w-3/4" />
+        <div className="flex items-center gap-4">
+          <Skeleton className="h-3 w-8" />
+          <Skeleton className="h-3 w-16" />
+          <Skeleton className="h-3 w-12" />
+        </div>
+      </div>
+      <Skeleton className="h-6 w-6 rounded-full" />
+    </div>
+
+    <div className="flex items-start gap-2 mb-6">
+      <Skeleton className="h-8 w-8 rounded-full shrink-0" />
+      <div className="space-y-2 flex-1">
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-4 w-20" />
+        </div>
+        <Skeleton className="h-4 w-1/2" />
+        <div className="flex items-center gap-4">
+          <Skeleton className="h-3 w-8" />
+          <Skeleton className="h-3 w-12" />
+          <Skeleton className="h-3 w-12" />
+        </div>
+      </div>
+      <Skeleton className="h-6 w-6 rounded-full" />
+    </div>
+
+    <div className="flex items-start gap-2 mb-6">
+      <Skeleton className="h-8 w-8 rounded-full shrink-0" />
+      <div className="space-y-2 flex-1">
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-4 w-24" />
+        </div>
+        <Skeleton className="h-4 w-5/6" />
+        <div className="flex items-center gap-4">
+          <Skeleton className="h-3 w-8" />
+          <Skeleton className="h-3 w-10" />
+          <Skeleton className="h-3 w-12" />
+        </div>
+      </div>
+      <Skeleton className="h-6 w-6 rounded-full" />
+    </div>
+
+    <div className="flex items-start gap-2 mb-6">
+      <Skeleton className="h-8 w-8 rounded-full shrink-0" />
+      <div className="space-y-2 flex-1">
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-4 w-16" />
+        </div>
+        <Skeleton className="h-4 w-2/3" />
+        <div className="flex items-center gap-4">
+          <Skeleton className="h-3 w-8" />
+          <Skeleton className="h-3 w-14" />
+          <Skeleton className="h-3 w-12" />
+        </div>
+      </div>
+      <Skeleton className="h-6 w-6 rounded-full" />
+    </div>
+
+    <div className="flex items-start gap-2 mb-6">
+      <Skeleton className="h-8 w-8 rounded-full shrink-0" />
+      <div className="space-y-2 flex-1">
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-4 w-20" />
+        </div>
+        <Skeleton className="h-4 w-1/3" />
+        <div className="flex items-center gap-4">
+          <Skeleton className="h-3 w-8" />
+          <Skeleton className="h-3 w-12" />
+          <Skeleton className="h-3 w-12" />
+        </div>
+      </div>
+      <Skeleton className="h-6 w-6 rounded-full" />
+    </div>
+  </div>
+);
 
 export default DialogViewPicture;

@@ -16,7 +16,7 @@ export const initialQuestion: Question = {
 
 export const quizzType = [
   { label: QuizzType.SingleChoice, value: QuizzType.SingleChoice },
-  // { label: QuizzType.PaintingPropaganda, value: QuizzType.PaintingPropaganda },
-  { label: QuizzType.Practical, value: QuizzType.Practical },
+  { label: QuizzType.PaintingPropaganda, value: QuizzType.PaintingPropaganda },
+  // { label: QuizzType.Practical, value: QuizzType.Practical },
   // { label: QuizzType.SocialThinking, value: QuizzType.SocialThinking },
 ];

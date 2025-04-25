@@ -8,15 +8,18 @@ import LeftOption from "./left-option";
 import PictureContent from "./picture-content";
 
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 
 const PictureManagement = ({ closeDialog }: { closeDialog: () => void }) => {
   const params = useSearchParams();
   const quiz_id = params.get("id") as string;
-  const { pictures } = useGetAllPictureByQuizIdQuery(
+  const { pictures, isFetching, isSuccess } = useGetAllPictureByQuizIdQuery(
     quiz_id ? { id: quiz_id } : skipToken,
     {
-      selectFromResult: ({ data }) => ({
+      selectFromResult: ({ data, isFetching, isSuccess }) => ({
         pictures: data?.data,
+        isFetching,
+        isSuccess,
       }),
     },
   );
@@ -24,6 +27,21 @@ const PictureManagement = ({ closeDialog }: { closeDialog: () => void }) => {
   const [currentPictureIndex, setCurrentPicture] = React.useState(0);
 
   const currentPicture = pictures?.[currentPictureIndex];
+
+  if (isFetching)
+    return (
+      <div className="w-full h-full flex items-center justify-center">
+        <Spinner className="size-24" />
+      </div>
+    );
+  if (isSuccess && pictures?.length === 0)
+    return (
+      <div className="flex items-center justify-center w-full h-[80vh]">
+        <p className="text-center text-3xl text-gray-500">
+          Chưa có bức tranh nào được gửi lên
+        </p>
+      </div>
+    );
 
   return (
     <div className="space-y-4 pt-4">

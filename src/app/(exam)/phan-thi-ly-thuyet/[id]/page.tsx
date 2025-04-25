@@ -62,7 +62,7 @@ export default async function PartCompetitions({ params }: { params: Params }) {
   const { id } = await params;
   const data = await isSubmitted(id as string);
 
-  if (data?.isSubmit) redirect(`/phan-thi/${id}/ket-qua`);
+  if (data?.isSubmit) redirect(`/phan-thi-ly-thuyet/${id}/ket-qua`);
   const { question, quizz }: { question?: PartQuestion[]; quizz?: Quizz } =
     await fetchQuestionByQuizzId((id ?? "") as string);
 

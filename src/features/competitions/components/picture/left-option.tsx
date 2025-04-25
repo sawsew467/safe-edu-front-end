@@ -27,7 +27,7 @@ const LeftOption = ({
               currentPicture !== index &&
                 "dark:bg-gray-700 bg-gray-300 hover:bg-gray-400",
             )}
-            variant={currentPicture === index ? "outline" : "secondary"}
+            variant={currentPicture === index ? "outline" :  "secondary"}
             onClick={() => setCurrentPicture(index)}
           >
             {picture?.score === undefined

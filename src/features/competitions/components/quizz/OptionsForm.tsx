@@ -55,13 +55,13 @@ const OptionsForm = ({
                 >
                   <Button
                     className={cn(
-                      "w-full md:py-8 py-6 font-bold transition-all  bg-gradient-to-br",
+                      "w-full text-center whitespace-normal md:py-4 h-full py-2 break-words break-all font-bold transition-all bg-gradient-to-br",
                       pickColor(index),
                     )}
                     value={answer}
                     onClick={() => field.onChange(answer)}
                   >
-                    {answer}
+                    <p className="text-sm break-words break-all">{answer}</p>
                   </Button>
                 </motion.div>
               )}

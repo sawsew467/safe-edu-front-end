@@ -91,7 +91,6 @@ const QuizzManagement = ({ competitionId }: { competitionId: string }) => {
             <QuizDetail
               closeDialog={closeDialogQuestion}
               id={idDialogQuestion!}
-              isOpen={isOpenDialogQuestion}
             />
           </DialogContent>
         </Dialog>

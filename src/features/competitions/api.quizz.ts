@@ -81,6 +81,7 @@ export const QuizzApi = baseApi.injectEndpoints({
           flashError: true,
         };
       },
+      providesTags: ["Quizz"],
     }),
     getLeaderBoard: build.query({
       query: ({ slug }) => {
