@@ -16,8 +16,11 @@ const formSchema = z.object({
 import { toast } from "sonner";
 import { skipToken } from "@reduxjs/toolkit/query";
 
-import { useGetQuizzQuery, useUpdateQuizzMutation } from "../../api.quizz";
 import { quizzType } from "../../data.competitions";
+import {
+  useGetQuizzQuery,
+  useUpdateQuizzMutation,
+} from "../../api.admin.quizz";
 
 import {
   Form,

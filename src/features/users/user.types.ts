@@ -170,6 +170,7 @@ export type Citizens = {
   full_name: string;
   phone_number: string;
   organizationId: Organization;
+  username: string;
   avatar: string;
   date_of_birth: string;
   gender: "Male" | "Female" | "Other";

@@ -7,7 +7,7 @@ export default function Chat() {
     api: "/api/chat",
   });
 
-  console.log("🚀 ~ Chat ~ messages:", messages);
+  // console.log("🚀 ~ Chat ~ messages:", messages);
 
   return (
     <div className="flex flex-col w-full max-w-md py-24 mx-auto stretch">

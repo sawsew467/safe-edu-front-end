@@ -10,7 +10,7 @@ import {
   useAddNewQuestionMutation,
   useGetQuestionByQuizzIdQuery,
   useUpdateQuestionMutation,
-} from "../../api.question";
+} from "../../api.admin.question";
 
 import QuestionContent from "./question-content";
 import RightOption from "./right-option";

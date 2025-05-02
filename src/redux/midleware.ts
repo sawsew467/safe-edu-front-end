@@ -13,7 +13,8 @@ export const rtkQueryErrorLogger: Middleware =
       const statusCode = payload?.status;
       const message = payload?.data?.message;
 
-      toast.error(message || "Có lỗi xảy ra trong quá trình xử lý yêu cầu");
+      if (statusCode !== 401)
+        toast.error(message || "Có lỗi xảy ra trong quá trình xử lý yêu cầu");
     }
 
     return next(action);

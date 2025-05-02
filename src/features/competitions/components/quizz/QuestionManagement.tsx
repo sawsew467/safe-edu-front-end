@@ -3,11 +3,11 @@ import { useRouter } from "next-nprogress-bar";
 import { useSearchParams } from "next/navigation";
 
 import { Quizz } from "../../type.competitions";
-import QuestionManagement from "../question/question-management";
 import { useGetQuizzByCompetitionIdQuery } from "../../api.quizz";
 
 import FormAddNewQuizz from "./FormAddNewQuizz";
 import FormUpdateQuizz from "./FormUpdateQuizz";
+import QuizDetail from "./QuizDetail";
 
 import CardList from "@/components/ui/data-card";
 import {
@@ -88,7 +88,10 @@ const QuizzManagement = ({ competitionId }: { competitionId: string }) => {
         <Dialog open={isOpenDialogQuestion} onOpenChange={closeDialogQuestion}>
           <DialogTitle hidden>Danh sách câu hỏi</DialogTitle>
           <DialogContent className="!w-[90vw] !max-w-none">
-            <QuestionManagement closeDialog={closeDialogQuestion} />
+            <QuizDetail
+              closeDialog={closeDialogQuestion}
+              id={idDialogQuestion!}
+            />
           </DialogContent>
         </Dialog>
       </div>

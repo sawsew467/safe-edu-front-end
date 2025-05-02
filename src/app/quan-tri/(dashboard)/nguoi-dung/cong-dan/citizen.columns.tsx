@@ -125,9 +125,7 @@ const Action = ({ row }: { row: Row<Citizens> }) => {
       toast.success("Tạm dừng thành công", {
         id: toastID,
       });
-    } catch (err) {
-      console.log("err", err);
-
+    } catch {
       toast.error("Tạm dừng thất bại", { id: toastID });
     }
   };
@@ -142,8 +140,7 @@ const Action = ({ row }: { row: Row<Citizens> }) => {
       toast.success("Mở lại thành công", {
         id: toastID,
       });
-    } catch (err) {
-      console.log("err", err);
+    } catch {
       toast.error("Mở lại thất bại", { id: toastID });
     }
   };

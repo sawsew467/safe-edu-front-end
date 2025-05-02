@@ -55,11 +55,21 @@ export const authSlice = createSlice({
     },
     setAccessToken: (state, action) => {
       state.access_token = action.payload;
-      setClientCookie(constants.ACCESS_TOKEN, action.payload);
+      if (
+        state.user_role?.role === "Student" ||
+        state.user_role?.role === "Citizen"
+      )
+        setClientCookie(constants.ACCESS_TOKEN, action.payload);
+      else setClientCookie(constants.ACCESS_TOKEN_ADMIN, action.payload);
     },
     setRefreshToken: (state, action) => {
       state.refresh_token = action.payload;
-      setClientCookie(constants.REFRESH_TOKEN, action.payload);
+      if (
+        state.user_role?.role === "Student" ||
+        state.user_role?.role === "Citizen"
+      )
+        setClientCookie(constants.REFRESH_TOKEN, action.payload);
+      else setClientCookie(constants.REFRESH_TOKEN_ADMIN, action.payload);
     },
     setUserRole: (state, action) => {
       state.user_role = (() => {

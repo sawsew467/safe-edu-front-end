@@ -9,6 +9,8 @@ import {
   Users,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { useRouter } from "next-nprogress-bar";
+import Link from "next/link";
 
 import { useGetLeaderBoardQuery } from "../../api.quizz";
 
@@ -17,6 +19,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { useAppSelector } from "@/hooks/redux-toolkit";
 interface User {
   _id: string;
   first_name: string;
@@ -45,6 +48,9 @@ const getMaxScore = (data: UserScore[]) => {
 
 export default function PremiumLeaderboard({ slug }: { slug: string }) {
   // Use React Query to fetch data
+
+  const { user_role } = useAppSelector((state) => state.auth);
+
   const { data, isLoading, error } = useGetLeaderBoardQuery(
     { slug },
     {
@@ -53,11 +59,20 @@ export default function PremiumLeaderboard({ slug }: { slug: string }) {
         isLoading,
         error,
       }),
-    }
+    },
   );
 
   const totalScore = data?.reduce((acc, item) => acc + item.score, 0) || 0;
   const averageScore = totalScore / (data?.length || 1);
+
+  const isDoQuizz = data?.some((item) => item.user._id === user_role?.userId);
+
+  const myScore =
+    data?.find((item) => item.user._id === user_role?.userId)?.score ||
+    undefined;
+
+  const myRank =
+    data?.findIndex((item) => item.user._id === user_role?.userId) + 1;
 
   if (error) {
     return (
@@ -94,37 +109,71 @@ export default function PremiumLeaderboard({ slug }: { slug: string }) {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-emerald-50 to-emerald-100 border-emerald-200">
-            <CardContent className="flex items-center justify-between p-6">
-              <div className="space-y-1">
-                <h3 className="text-sm font-medium text-emerald-800">
-                  Điểm Cao Nhất
-                </h3>
-                <p className="text-2xl font-bold text-emerald-900">
-                  {maxScore.toFixed(1)}
-                </p>
-              </div>
-              <div className="rounded-full bg-emerald-200 p-3">
-                <TrendingUp className="h-6 w-6 text-emerald-700" />
-              </div>
-            </CardContent>
-          </Card>
+          {isDoQuizz ? (
+            <Card className="bg-gradient-to-br from-emerald-50 to-emerald-100 border-emerald-200">
+              <CardContent className="flex items-center justify-between p-6">
+                <div className="space-y-1">
+                  <h3 className="text-sm font-medium text-emerald-800">
+                    Điểm Của Bạn
+                  </h3>
+                  <p className="text-2xl font-bold text-emerald-900">
+                    {(myScore ?? 0)?.toFixed(1)}
+                  </p>
+                </div>
+                <div className="rounded-full bg-emerald-200 p-3">
+                  <TrendingUp className="h-6 w-6 text-emerald-700" />
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <Card className="bg-gradient-to-br from-emerald-50 to-emerald-100 border-emerald-200">
+              <CardContent className="flex items-center justify-between p-6">
+                <div className="space-y-1">
+                  <h3 className="text-sm font-medium text-emerald-800">
+                    Điểm Cao Nhất
+                  </h3>
+                  <p className="text-2xl font-bold text-emerald-900">
+                    {maxScore.toFixed(1)}
+                  </p>
+                </div>
+                <div className="rounded-full bg-emerald-200 p-3">
+                  <TrendingUp className="h-6 w-6 text-emerald-700" />
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
-          <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
-            <CardContent className="flex items-center justify-between p-6">
-              <div className="space-y-1">
-                <h3 className="text-sm font-medium text-purple-800">
-                  Điểm trung bình
-                </h3>
-                <p className="text-2xl font-bold text-purple-900">
-                  {averageScore.toFixed(1)}
-                </p>
-              </div>
-              <div className="rounded-full bg-purple-200 p-3">
-                <Award className="h-6 w-6 text-purple-700" />
-              </div>
-            </CardContent>
-          </Card>
+          {isDoQuizz ? (
+            <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
+              <CardContent className="flex items-center justify-between p-6">
+                <div className="space-y-1">
+                  <h3 className="text-sm font-medium text-purple-800">
+                    Thứ hạng hiện tại
+                  </h3>
+                  <p className="text-2xl font-bold text-purple-900">{myRank}</p>
+                </div>
+                <div className="rounded-full bg-purple-200 p-3">
+                  <Award className="h-6 w-6 text-purple-700" />
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
+              <CardContent className="flex items-center justify-between p-6">
+                <div className="space-y-1">
+                  <h3 className="text-sm font-medium text-purple-800">
+                    Điểm trung bình
+                  </h3>
+                  <p className="text-2xl font-bold text-purple-900">
+                    {averageScore.toFixed(1)}
+                  </p>
+                </div>
+                <div className="rounded-full bg-purple-200 p-3">
+                  <Award className="h-6 w-6 text-purple-700" />
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
       )}
 
@@ -142,7 +191,10 @@ export default function PremiumLeaderboard({ slug }: { slug: string }) {
               <Avatar className="h-16 w-16 border-4 border-gray-300 shadow-lg">
                 <AvatarImage
                   alt={`${data?.[1]?.user.first_name} ${data?.[1]?.user.last_name}`}
+                  className="object-cover"
+                  height={40}
                   src={data?.[1]?.user.avatar || "/placeholder.svg"}
+                  width={40}
                 />
                 <AvatarFallback className="bg-gray-300 text-gray-700">
                   {data?.[1]?.user.first_name.charAt(0)}
@@ -153,7 +205,7 @@ export default function PremiumLeaderboard({ slug }: { slug: string }) {
                 <Medal className="h-5 w-5 text-gray-600" />
               </div>
               <p className="mt-1 text-center font-medium text-sm">
-                {data?.[1]?.user.first_name}
+                {data?.[1]?.user.first_name} {data?.[1]?.user.last_name}c
               </p>
               <p className="text-gray-600 text-xs">
                 {data?.[1]?.score.toFixed(1)}
@@ -178,7 +230,10 @@ export default function PremiumLeaderboard({ slug }: { slug: string }) {
               <Avatar className="h-20 w-20 border-4 border-yellow-400 shadow-lg">
                 <AvatarImage
                   alt={`${data?.[0]?.user.first_name} ${data?.[0]?.user.last_name}`}
+                  className="object-cover"
+                  height={40}
                   src={data?.[0]?.user.avatar || "/placeholder.svg"}
+                  width={40}
                 />
                 <AvatarFallback className="bg-yellow-100 text-yellow-800">
                   {data?.[0]?.user.first_name.charAt(0)}
@@ -189,7 +244,7 @@ export default function PremiumLeaderboard({ slug }: { slug: string }) {
                 <Trophy className="h-5 w-5 text-yellow-600" />
               </div>
               <p className="mt-1 text-center font-bold">
-                {data?.[0]?.user.first_name}
+                {data?.[0]?.user.first_name} {data?.[0]?.user.last_name}
               </p>
               <p className="text-yellow-600 font-medium">
                 {data?.[0]?.score.toFixed(1)}
@@ -211,7 +266,10 @@ export default function PremiumLeaderboard({ slug }: { slug: string }) {
               <Avatar className="h-14 w-14 border-4 border-amber-700 shadow-lg">
                 <AvatarImage
                   alt={`${data?.[2]?.user.first_name} ${data?.[2]?.user.last_name}`}
+                  className="object-cover"
+                  height={40}
                   src={data?.[2]?.user.avatar || "/placeholder.svg"}
+                  width={40}
                 />
                 <AvatarFallback className="bg-amber-100 text-amber-800">
                   {data?.[2]?.user.first_name.charAt(0)}
@@ -222,7 +280,7 @@ export default function PremiumLeaderboard({ slug }: { slug: string }) {
                 <Medal className="h-5 w-5 text-amber-700" />
               </div>
               <p className="mt-1 text-center font-medium text-sm">
-                {data?.[2]?.user.first_name}
+                {data?.[2]?.user.first_name} {data?.[2]?.user.last_name}
               </p>
               <p className="text-amber-700 text-xs">
                 {data?.[2]?.score.toFixed(1)}
@@ -258,6 +316,7 @@ export default function PremiumLeaderboard({ slug }: { slug: string }) {
                 {data?.map((item: UserScore, index) => (
                   <LeaderboardItem
                     key={item.user._id}
+                    isMySelf={item.user._id === user_role?.userId}
                     maxScore={maxScore}
                     rank={index + 1}
                     userScore={item}
@@ -276,13 +335,16 @@ function LeaderboardItem({
   userScore,
   rank,
   maxScore,
+  isMySelf = false,
 }: {
   userScore: UserScore;
   rank: number;
   maxScore: number;
+  isMySelf: boolean;
 }) {
   const { user, score } = userScore;
   const fullName = `${user.first_name} ${user.last_name}`;
+  const router = useRouter();
 
   // Format score to 2 decimal places if needed
   const formattedScore = score % 1 === 0 ? score.toString() : score.toFixed(1);
@@ -312,7 +374,9 @@ function LeaderboardItem({
       animate={{ opacity: 1, y: 0 }}
       className={cn(
         "grid grid-cols-12 items-center border-b border-gray-100 dark:border-gray-900 dark:hover:border-gray-800 p-4 hover:bg-gray-50 transition-colors",
-        isTopThree && "bg-gray-50 dark:bg-gray-700"
+        isTopThree && "bg-gray-50 dark:bg-gray-700",
+        "grid grid-cols-12 items-center border-b border-gray-100 dark:border-gray-900 dark:hover:border-gray-800 p-4 hover:bg-gray-50 transition-colors",
+        isTopThree && "bg-gray-50 dark:bg-gray-700",
       )}
       initial={{ opacity: 0, y: 20 }}
       transition={{ delay: rank * 0.05, duration: 0.3 }}
@@ -322,7 +386,7 @@ function LeaderboardItem({
         <div
           className={cn(
             "flex h-8 w-8 items-center justify-center rounded-full font-bold shadow-sm",
-            getRankStyles()
+            getRankStyles(),
           )}
         >
           {rank}
@@ -334,19 +398,25 @@ function LeaderboardItem({
         <div className="relative">
           <Avatar
             className={cn(
-              "h-10 w-10 border-2",
+              "h-10 w-10 cursor-pointer border-2",
               rank === 1
                 ? "border-yellow-400"
                 : rank === 2
                   ? "border-gray-300"
                   : rank === 3
                     ? "border-amber-700"
-                    : "border-gray-200"
+                    : "border-gray-200",
             )}
+            onClick={() => {
+              router.push(`/trang-ca-nhan/${user.username}`);
+            }}
           >
             <AvatarImage
               alt={fullName}
+              className="object-cover"
+              height={40}
               src={user.avatar || "/placeholder.svg"}
+              width={40}
             />
             <AvatarFallback>{`${user.first_name.charAt(0)}${user.last_name.charAt(0)}`}</AvatarFallback>
           </Avatar>
@@ -358,7 +428,7 @@ function LeaderboardItem({
                   ? "bg-yellow-400"
                   : rank === 2
                     ? "bg-gray-300"
-                    : "bg-amber-700"
+                    : "bg-amber-700",
               )}
             >
               <Star className="h-3 w-3 text-white" />
@@ -367,8 +437,16 @@ function LeaderboardItem({
         </div>
 
         <div className="ml-3">
-          <div className="font-medium line-clamp-1">{fullName}</div>
-          <div className="text-xs text-gray-500">@{user.username}</div>
+          <Link
+            className={cn(
+              "font-medium line-clamp-1 hover:underline",
+              isMySelf && "text-[#75A815]",
+            )}
+            href={`/trang-ca-nhan/${user?.username}`}
+          >
+            {fullName}
+          </Link>
+          <div className="text-xs text-gray-500">@{user?.username}</div>
         </div>
       </div>
 
@@ -383,7 +461,7 @@ function LeaderboardItem({
                 ? "bg-gray-400 text-gray-950"
                 : rank === 3
                   ? "bg-amber-700 text-white"
-                  : "bg-[#75A815] text-white"
+                  : "bg-[#75A815] text-white",
           )}
         >
           {formattedScore} điểm

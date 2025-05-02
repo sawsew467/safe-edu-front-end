@@ -47,9 +47,7 @@ export function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
       const { data } = await uploadImage(formData).unwrap();
 
       return data?.data;
-    } catch (err) {
-      console.log("🚀 ~ handleUploadImage ~ err:", err);
-    }
+    } catch {}
   }, []);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {

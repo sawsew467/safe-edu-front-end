@@ -26,11 +26,13 @@ export default function QuizzArticleCard({
   slug,
   type,
   id,
+  status,
 }: {
   title: string;
   slug: string;
   type: string;
   id: string;
+  status: "Upcoming" | "Outgoing" | "Ongoing";
 }) {
   const { data } = useIsDoQuizzQuery({ id });
 
@@ -45,7 +47,11 @@ export default function QuizzArticleCard({
             </Badge>
           </div>
           <div className="flex justify-between items-end">
-            <ActionQuizz data={data?.data} slug={slug} />
+            <ActionQuizz
+              data={{ isSubmit: data?.data?.isSubmit, type }}
+              slug={slug}
+              status={status}
+            />
           </div>
         </div>
       </CardContent>

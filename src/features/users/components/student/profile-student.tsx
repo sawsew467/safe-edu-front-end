@@ -57,9 +57,11 @@ export default function ProfilePage() {
   // Tính điểm trung bình
   const averageScore = data?.quizResults
     ? data?.quizResults?.reduce(
-        (acc: number, result: any) => acc + result?.score,
+        (acc: number, result: any) => acc + (result?.score || 0),
         0,
-      ) / (data?.quizResults?.length || 1)
+      ) /
+      (data?.quizResults?.filter((item) => item?.score !== undefined).length ||
+        1)
     : 0;
 
   // Variants cho animation
@@ -92,139 +94,6 @@ export default function ProfilePage() {
   const handleChangePassword = () => {
     setIsOpenModelChangePassword(true);
   };
-
-  // Component Skeleton cho profile
-  const ProfileSkeleton = () => (
-    <div className="container mx-auto py-6 px-4 md:px-6">
-      <div className="grid gap-6 md:grid-cols-[1fr_2fr]">
-        <div className="space-y-6">
-          {/* Profile Card Skeleton */}
-          <Card>
-            <CardHeader className="pb-2">
-              <div className="flex justify-center">
-                <Skeleton className="h-24 w-24 rounded-full" />
-              </div>
-            </CardHeader>
-            <CardContent className="text-center">
-              <Skeleton className="h-8 w-[200px] mx-auto mb-2" />
-              <Skeleton className="h-4 w-[120px] mx-auto mb-4" />
-              <div className="flex justify-center">
-                <Skeleton className="h-6 w-[150px]" />
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Personal Info Card Skeleton */}
-          <Card>
-            <CardHeader>
-              <Skeleton className="h-6 w-[180px] mb-2" />
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {[1, 2, 3]?.map((i) => (
-                <div key={i} className="flex items-center gap-3">
-                  <Skeleton className="h-5 w-5 rounded-full" />
-                  <div className="space-y-2 flex-1">
-                    <Skeleton className="h-4 w-[100px]" />
-                    <Skeleton className="h-4 w-full" />
-                  </div>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-
-          {/* Average Score Card Skeleton */}
-          <Card>
-            <CardHeader>
-              <Skeleton className="h-6 w-[150px] mb-2" />
-              <Skeleton className="h-4 w-[200px]" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-center mb-2">
-                <Skeleton className="h-8 w-[80px] mx-auto" />
-              </div>
-              <Skeleton className="h-2 w-full" />
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="space-y-6">
-          {/* Quiz Results Card Skeleton */}
-          <Card>
-            <CardHeader>
-              <Skeleton className="h-6 w-[180px] mb-2" />
-              <Skeleton className="h-4 w-[250px]" />
-            </CardHeader>
-            <CardContent>
-              <div className="flex gap-2 mb-6">
-                {[1, 2, 3]?.map((i) => (
-                  <Skeleton key={i} className="h-10 w-[80px]" />
-                ))}
-              </div>
-              <div className="space-y-4">
-                {[1, 2, 3, 4, 5]?.map((i) => (
-                  <div key={i} className="border rounded-lg p-4">
-                    <div className="flex justify-between items-start mb-2">
-                      <div>
-                        <Skeleton className="h-5 w-[150px] mb-2" />
-                        <Skeleton className="h-4 w-[100px]" />
-                      </div>
-                      <Skeleton className="h-6 w-[60px]" />
-                    </div>
-                    <Skeleton className="h-2 w-full mb-2" />
-                    <Skeleton className="h-3 w-[120px]" />
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Analysis Card Skeleton */}
-          <Card>
-            <CardHeader>
-              <Skeleton className="h-6 w-[150px] mb-2" />
-              <Skeleton className="h-4 w-[200px]" />
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-8">
-                <div>
-                  <Skeleton className="h-5 w-[180px] mb-4" />
-                  <div className="space-y-4">
-                    {[1, 2, 3, 4, 5]?.map((i) => (
-                      <div
-                        key={i}
-                        className="grid grid-cols-[1fr_auto] gap-2 items-center"
-                      >
-                        <div>
-                          <Skeleton className="h-4 w-[150px] mb-2" />
-                          <Skeleton className="h-2 w-full" />
-                        </div>
-                        <Skeleton className="h-4 w-[40px]" />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <Skeleton className="h-5 w-[150px] mb-4" />
-                  <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-                    {[1, 2, 3, 4]?.map((i) => (
-                      <div
-                        key={i}
-                        className="rounded-lg border p-3 text-center"
-                      >
-                        <Skeleton className="h-3 w-[80px] mx-auto mb-2" />
-                        <Skeleton className="h-8 w-[40px] mx-auto" />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    </div>
-  );
 
   // Hiển thị skeleton khi đang tải
   if (isFetching) {
@@ -414,23 +283,19 @@ export default function ProfilePage() {
               </CardHeader>
               <CardContent>
                 <div className="flex flex-col gap-4 mb-6">
-                  {data?.quizResults?.map(
-                    (result: QuizResultQuestion, index: number) => (
+                  {data?.quizResults
+                    ?.filter((item) => item?.score !== undefined)
+                    ?.map((result: QuizResultQuestion, index: number) => (
                       <MotionDiv
                         key={index}
                         animate={{ opacity: 1, y: 0 }}
-                        className="border rounded-lg p-4 cursor-pointer"
+                        className="border rounded-lg p-4 "
                         initial={{ opacity: 0, y: 20 }}
                         transition={{ delay: 0.1 * index }}
                         whileHover={{
                           scale: 1.02,
                           boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
                         }}
-                        onClick={() =>
-                          router.push(
-                            `/cuoc-thi/id/${result?.quiz_id?.competitionId?.at(0)}`,
-                          )
-                        }
                       >
                         <div className="flex justify-between items-start mb-2">
                           <div>
@@ -470,8 +335,7 @@ export default function ProfilePage() {
                           {formatDate(result?.completedAt, "DD/MM/YYYY HH:mm")}
                         </p>
                       </MotionDiv>
-                    ),
-                  )}
+                    ))}
                 </div>
               </CardContent>
             </MotionCard>
@@ -599,3 +463,133 @@ export default function ProfilePage() {
     </>
   );
 }
+
+// Component Skeleton cho profile
+const ProfileSkeleton = () => (
+  <div className="container mx-auto py-6 px-4 md:px-6">
+    <div className="grid gap-6 md:grid-cols-[1fr_2fr]">
+      <div className="space-y-6">
+        {/* Profile Card Skeleton */}
+        <Card>
+          <CardHeader className="pb-2">
+            <div className="flex justify-center">
+              <Skeleton className="h-24 w-24 rounded-full" />
+            </div>
+          </CardHeader>
+          <CardContent className="text-center">
+            <Skeleton className="h-8 w-[200px] mx-auto mb-2" />
+            <Skeleton className="h-4 w-[120px] mx-auto mb-4" />
+            <div className="flex justify-center">
+              <Skeleton className="h-6 w-[150px]" />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Personal Info Card Skeleton */}
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-6 w-[180px] mb-2" />
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {[1, 2, 3]?.map((i) => (
+              <div key={i} className="flex items-center gap-3">
+                <Skeleton className="h-5 w-5 rounded-full" />
+                <div className="space-y-2 flex-1">
+                  <Skeleton className="h-4 w-[100px]" />
+                  <Skeleton className="h-4 w-full" />
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+
+        {/* Average Score Card Skeleton */}
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-6 w-[150px] mb-2" />
+            <Skeleton className="h-4 w-[200px]" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-center mb-2">
+              <Skeleton className="h-8 w-[80px] mx-auto" />
+            </div>
+            <Skeleton className="h-2 w-full" />
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="space-y-6">
+        {/* Quiz Results Card Skeleton */}
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-6 w-[180px] mb-2" />
+            <Skeleton className="h-4 w-[250px]" />
+          </CardHeader>
+          <CardContent>
+            <div className="flex gap-2 mb-6">
+              {[1, 2, 3]?.map((i) => (
+                <Skeleton key={i} className="h-10 w-[80px]" />
+              ))}
+            </div>
+            <div className="space-y-4">
+              {[1, 2, 3, 4, 5]?.map((i) => (
+                <div key={i} className="border rounded-lg p-4">
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <Skeleton className="h-5 w-[150px] mb-2" />
+                      <Skeleton className="h-4 w-[100px]" />
+                    </div>
+                    <Skeleton className="h-6 w-[60px]" />
+                  </div>
+                  <Skeleton className="h-2 w-full mb-2" />
+                  <Skeleton className="h-3 w-[120px]" />
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Analysis Card Skeleton */}
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-6 w-[150px] mb-2" />
+            <Skeleton className="h-4 w-[200px]" />
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-8">
+              <div>
+                <Skeleton className="h-5 w-[180px] mb-4" />
+                <div className="space-y-4">
+                  {[1, 2, 3, 4, 5]?.map((i) => (
+                    <div
+                      key={i}
+                      className="grid grid-cols-[1fr_auto] gap-2 items-center"
+                    >
+                      <div>
+                        <Skeleton className="h-4 w-[150px] mb-2" />
+                        <Skeleton className="h-2 w-full" />
+                      </div>
+                      <Skeleton className="h-4 w-[40px]" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <Skeleton className="h-5 w-[150px] mb-4" />
+                <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+                  {[1, 2, 3, 4]?.map((i) => (
+                    <div key={i} className="rounded-lg border p-3 text-center">
+                      <Skeleton className="h-3 w-[80px] mx-auto mb-2" />
+                      <Skeleton className="h-8 w-[40px] mx-auto" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  </div>
+);

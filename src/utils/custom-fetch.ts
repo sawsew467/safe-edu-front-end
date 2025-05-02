@@ -18,6 +18,12 @@ export async function customFetch(url: string, options: RequestInit = {}) {
 
   try {
     const response = await fetch(url, config);
+
+    if (response.status === 401) {
+      await refreshToken();
+
+      return await fetch(url, config);
+    }
     const res = await response.json();
 
     return res;
@@ -41,7 +47,23 @@ const refreshToken = async () => {
       Authorization: `Bearer ${refresh_token}`,
     },
   });
-  const { data } = await res.json();
 
-  return data;
+  if (res.ok) {
+    const { data } = await res.json();
+
+    cookie.set(constants.ACCESS_TOKEN, data.access_token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      path: "/",
+    });
+    cookie.set(constants.REFRESH_TOKEN, data.refresh_token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      path: "/",
+    });
+
+    return data;
+  }
 };

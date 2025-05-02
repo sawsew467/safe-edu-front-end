@@ -12,7 +12,6 @@ import constants from "@/settings/constants";
 import { Competitions } from "@/features/competitions/type.competitions";
 import { customFetch } from "@/utils/custom-fetch";
 import { CompetitionArticleCard } from "@/features/competitions/components/competition-artile-card";
-import { formatDate } from "@/utils/format-date";
 
 export const metadata = {
   title: "Trang chủ",
@@ -58,7 +57,6 @@ const fetchLatestCompetitions = async (): Promise<{
       `${constants.API_SERVER}/competitions?pageNumber=${1}&pageSize=10`,
     );
 
-    console.log("data", data);
     const latestCompetitions =
       data
         ?.filter(
@@ -117,8 +115,8 @@ async function AppPage() {
                 Nâng cao nhận thức xã hội
               </h1>
               <p className="text-xl mb-8 text-black dark:text-white">
-                Tài nguyên giáo dục về bình đẳng giới, phòng chống ma túy và bạo
-                lực học đường
+                Tài nguyên giáo dục về phòng chống ma túy, bạo lực học đường và
+                bình đẳng giới
               </p>
             </div>
             <div className="flex justify-center">
@@ -126,7 +124,7 @@ async function AppPage() {
                 alt="Education illustration"
                 className="object-contain w-[400px] h-[400px]"
                 height={1000}
-                src="/images/app/frog.png"
+                src="/images/app/SafeEdu.png"
                 width={1000}
               />
             </div>
@@ -149,11 +147,10 @@ async function AppPage() {
             <CompetitionArticleCard
               key={competition._id}
               description={competition.description}
-              endDate={formatDate(competition.endDate, "dddd, DD/MM HH:mm")}
+              endDate={competition.endDate}
               image={competition.image_url}
               slug={competition.slug}
-              startDate={formatDate(competition.startDate, "dddd, DD/MM HH:mm")}
-              status={competition.status}
+              startDate={competition.startDate}
               title={competition.title}
             />
           ))}

@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Question } from "../../type.competitions";
-import { useAddNewQuestionMutation } from "../../api.question";
+import { useAddNewQuestionMutation } from "../../api.admin.question";
 
 import { formSchema } from "./question-management";
 

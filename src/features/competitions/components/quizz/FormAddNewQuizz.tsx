@@ -16,7 +16,7 @@ const formSchema = z.object({
 import { toast } from "sonner";
 
 import { quizzType } from "../../data.competitions";
-import { useAddNewQuizzMutation } from "../../api.quizz";
+import { useAddNewQuizzMutation } from "../../api.admin.quizz";
 
 import {
   Form,

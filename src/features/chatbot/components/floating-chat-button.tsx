@@ -24,7 +24,7 @@ export function FloatingChatButton() {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
-  console.log("🚀 ~ FloatingChatButton ~ imagePreview:", imagePreview);
+  // console.log("🚀 ~ FloatingChatButton ~ imagePreview:", imagePreview);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const fileButtonRef = useRef<HTMLButtonElement>(null);
@@ -147,7 +147,7 @@ export function FloatingChatButton() {
           isOpen ? "opacity-100" : "opacity-0 pointer-events-none",
           isFullscreen || (isMobile && isOpen)
             ? "inset-4 h-[calc(100vh-32px)]" // Fullscreen mode
-            : "bottom-20 right-4 w-80 sm:w-96 h-[500px]" // Normal mode
+            : "bottom-20 right-4 w-80 sm:w-96 h-[500px]", // Normal mode
         )}
       >
         {/* Chat Header */}
@@ -191,7 +191,7 @@ export function FloatingChatButton() {
                 "max-w-[85%] rounded-lg p-3 shadow-sm",
                 message.role === "user"
                   ? "bg-[#E8F5E9] text-[#2E7D32] ml-auto"
-                  : "bg-white text-[#37474F] border border-[#E0E0E0]"
+                  : "bg-white text-[#37474F] border border-[#E0E0E0]",
               )}
             >
               {message.parts.map((part, i) => {
@@ -292,7 +292,7 @@ export function FloatingChatButton() {
         aria-label="Mở trợ lý ảo"
         className={cn(
           "fixed bottom-4 right-4 rounded-full w-14 h-14 shadow-lg flex items-center justify-center z-50",
-          "bg-[#8BC34A] hover:bg-[#7cb342] text-white"
+          "bg-[#8BC34A] hover:bg-[#7cb342] text-white",
         )}
         onClick={toggleChat}
       >

@@ -57,12 +57,10 @@ export const baseQueryWithReauth: typeof baseQuery = async (
       if (result?.error?.status === 401) {
         deleteClientCookie(constants.ACCESS_TOKEN);
         deleteClientCookie(constants.REFRESH_TOKEN);
-        deleteClientCookie(constants.USER_INFO);
       }
     } else {
       deleteClientCookie(constants.ACCESS_TOKEN);
       deleteClientCookie(constants.REFRESH_TOKEN);
-      deleteClientCookie(constants.USER_INFO);
 
       return { error: { status: 401, data: "Unauthorized" } };
     }
@@ -87,5 +85,7 @@ export const baseApi = createApi({
     "Competitions",
     "Quizz",
     "Question",
+    "Picture",
+    "Comment",
   ],
 });

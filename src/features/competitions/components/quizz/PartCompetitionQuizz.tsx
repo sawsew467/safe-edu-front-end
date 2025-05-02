@@ -14,13 +14,11 @@ import { useSubmissionQuestionMutation } from "../../api.question";
 import OptionsForm from "./OptionsForm";
 
 import { Badge } from "@/components/ui/badge";
-import { PartQuestion } from "@/app/(exam)/phan-thi/[id]/page";
+import { PartQuestion } from "@/app/(exam)/phan-thi-ly-thuyet/[id]/page";
 import { Button } from "@/components/ui/button";
 import { TimerProgress } from "@/components/ui/timer-progress";
 import TimerProgressCircle from "@/components/ui/timer-progress-circle";
 import { Card } from "@/components/ui/card";
-import { deleteClientCookie } from "@/lib/jsCookies";
-import constants from "@/settings/constants";
 interface PropsPartCompetitionQuizz {
   title?: string;
   question?: PartQuestion[];
@@ -34,14 +32,6 @@ const PartCompetitionQuizz = ({
   title,
   question,
 }: PropsPartCompetitionQuizz) => {
-  React.useLayoutEffect(() => {
-    if (question === undefined) {
-      deleteClientCookie(constants.ACCESS_TOKEN);
-      deleteClientCookie(constants.USER_INFO);
-      window.location.reload();
-    }
-  }, [question]);
-
   const router = useRouter();
   const { id } = useParams();
   const [current_time, set_current_time] = React.useState(0);
@@ -69,6 +59,7 @@ const PartCompetitionQuizz = ({
 
     return () => clearInterval(interval);
   }, [open]);
+
   React.useEffect(() => {
     if (current_question?._id) {
       set_current_time(0);
@@ -95,7 +86,7 @@ const PartCompetitionQuizz = ({
         setOpen(false);
       }
     } else {
-      router.replace(`/phan-thi/${id}/ket-qua`);
+      router.replace(`/phan-thi-ly-thuyet/${id}/ket-qua`);
     }
   };
 
@@ -176,7 +167,7 @@ const PartCompetitionQuizz = ({
               maxValue={currentTimeLimit}
               size={150}
               strokeWidth={14}
-              value={current_time ? currentTimeLimit - current_time : 0}
+              value={currentTimeLimit - current_time}
             />
           </div>
         </Card>

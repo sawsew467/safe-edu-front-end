@@ -62,9 +62,21 @@ export default async function PartCompetitions({ params }: { params: Params }) {
   const { id } = await params;
   const data = await isSubmitted(id as string);
 
-  if (data?.isSubmit) redirect(`/phan-thi/${id}/ket-qua`);
+  if (data?.isSubmit) redirect(`/phan-thi-ly-thuyet/${id}/ket-qua`);
   const { question, quizz }: { question?: PartQuestion[]; quizz?: Quizz } =
     await fetchQuestionByQuizzId((id ?? "") as string);
+
+  if (!question)
+    return (
+      <div className="h-screen flex flex-col items-center justify-center px-4">
+        <h1 className="text-center font-semibold md:text-3xl text-lg">
+          Cuộc thi đã kết thúc
+        </h1>
+        <form action={`/cuoc-thi`} method="get">
+          <Button type="submit">Quay lại cuộc thi</Button>
+        </form>
+      </div>
+    );
 
   if (question?.length === 0)
     return (
