@@ -72,8 +72,6 @@ export function AppSidebar({
 
   const rootPath = pathname?.split("/")?.[2];
 
-  console.log("🚀 ~ rootPath:", rootPath);
-
   // const { manager } = useGetManagerQuery(userId, {
   //   skip: isLoading || !isManager,
   //   selectFromResult: ({ data }) => ({

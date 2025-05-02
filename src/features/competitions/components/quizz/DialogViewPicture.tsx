@@ -29,6 +29,7 @@ import { Citizens, Student } from "@/features/users/user.types";
 import { formatDate } from "@/utils/format-date";
 import { deleteClientCookie } from "@/lib/jsCookies";
 import constants from "@/settings/constants";
+import { useAppSelector } from "@/hooks/redux-toolkit";
 
 const getBadge = (isGraded: boolean) => {
   if (isGraded)
@@ -98,19 +99,27 @@ const DialogViewPicture = ({
       }),
     });
 
+  const { user_role } = useAppSelector((state) => state.auth);
+
   const {
     comments,
     isFetchingComment,
   }: { comments: CommentType[]; isFetchingComment: boolean } =
-    useGetAllCommentByPictureIdQuery(
-      picture?._id ? { id: picture?._id } : skipToken,
-      {
-        selectFromResult: ({ data, isFetching }) => ({
-          comments: data?.data,
-          isFetchingComment: isFetching,
-        }),
-      },
-    );
+    useGetAllCommentByPictureIdQuery(id ? { id } : skipToken, {
+      selectFromResult: ({ data, isFetching }) => ({
+        comments: Array.isArray(data?.data)
+          ? [...data?.data]?.sort((a: CommentType, b: CommentType) => {
+              return a.user_id?._id === user_role?.userId
+                ? -1
+                : b.user_id?._id === user_role?.userId
+                  ? 1
+                  : new Date(b.created_at).getTime() -
+                    new Date(a.created_at).getTime();
+            })
+          : [],
+        isFetchingComment: isFetching,
+      }),
+    });
 
   const handleCloseModal = () => {
     router.replace(`/phan-thi-ve-tranh-co-dong/${quiz_id}`);
@@ -119,8 +128,8 @@ const DialogViewPicture = ({
   return (
     <Dialog open={open} onOpenChange={handleCloseModal}>
       <DialogContent className="flex flex-col md:flex-row h-[80vh] min-w-[80vw] rounded-lg p-0 overflow-hidden border-none">
-        {isFetching ? (
-          <SkeletonDetail isFetching={isFetchingComment} />
+        {isFetching || isFetchingComment ? (
+          <SkeletonDetail />
         ) : (
           <>
             <div className="md:block hidden h-full w-full">
@@ -145,9 +154,6 @@ const RightSide = ({
   comments: CommentType[];
 }) => {
   const [comment, { isLoading }] = useCommentPictureMutation();
-
-  const score = picture?.score;
-  const maxScore = 10;
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -222,7 +228,7 @@ const RightSide = ({
             <div className="flex-1">
               <span className="text-sm">
                 <p className="">
-                  Tên bức ảnh là{" "}
+                  Bài dự thi:{" "}
                   <strong className="text-[#75A815] first-letter:capitalize">
                     {picture?.name}
                   </strong>
@@ -271,7 +277,7 @@ const RightSide = ({
                           {comment?.user_id?.first_name}{" "}
                           {comment?.user_id?.last_name}
                           <p className="text-gray-500 font-light">
-                            @{picture?.user_id?.username}
+                            @{comment?.user_id?.username}
                           </p>
                         </Link>
                         <p className="text-sm break-words break-all">
@@ -333,7 +339,7 @@ const RightSide = ({
   );
 };
 
-export function SkeletonDetail({ isFetching }: { isFetching: boolean }) {
+export function SkeletonDetail() {
   return (
     <div className="flex flex-col md:flex-row w-full mx-auto border rounded-lg overflow-hidden bg-white dark:bg-black">
       {/* Left side - Image skeleton */}
@@ -371,7 +377,7 @@ export function SkeletonDetail({ isFetching }: { isFetching: boolean }) {
         </div>
 
         {/* Caption and comments */}
-        {isFetching && <ComentSkeleton />}
+        <ComentSkeleton />
 
         {/* Comment input */}
         <div className="p-4 border-t">

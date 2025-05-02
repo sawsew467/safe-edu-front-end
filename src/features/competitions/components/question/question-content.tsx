@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 import { Question } from "../../type.competitions";
-import { useDeleteQuestionMutation } from "../../api.question";
+import { useDeleteQuestionMutation } from "../../api.admin.question";
 
 import { formSchema } from "./question-management";
 

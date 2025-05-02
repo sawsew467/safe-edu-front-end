@@ -1,8 +1,8 @@
 "use client";
 
-import { baseApi } from "@/redux/baseApi";
+import { baseApiAdmin } from "@/redux/admin/baseApi";
 
-export const competitionsApi = baseApi.injectEndpoints({
+export const competitionsApi = baseApiAdmin.injectEndpoints({
   endpoints: (build) => ({
     getAllCompetitions: build.query({
       query: (params) => ({

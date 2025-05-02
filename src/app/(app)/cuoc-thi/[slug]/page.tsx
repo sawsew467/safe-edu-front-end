@@ -51,18 +51,27 @@ const QuizzPage = async (props: { params: Params }) => {
   const competition: Competitions = await fetchCompetitionsById(
     (slug ?? "") as string,
   );
+
+  const status =
+    new Date(competition?.startDate) > new Date()
+      ? "Upcoming"
+      : new Date(competition?.endDate) < new Date()
+        ? "Outgoing"
+        : "Ongoing";
+
   const tabs = [
     {
       name: "Phần thi",
       value: "phan-thi",
       content: () => (
         <div className="grid mt-6 gap-6">
-          {quizzs.length != 0 ? (
+          {quizzs?.length != 0 ? (
             quizzs?.map((quizz) => (
               <QuizzArticleCard
                 key={quizz?._id}
                 id={quizz?._id}
                 slug={quizz?._id}
+                status={status}
                 title={quizz?.title}
                 type={quizz?.type}
               />
@@ -82,7 +91,7 @@ const QuizzPage = async (props: { params: Params }) => {
       value: "xep-hang",
       content: () => (
         <div className="w-full">
-          {quizzs.length != 0 ? (
+          {quizzs?.length != 0 ? (
             <PremiumLeaderboard slug={slug} />
           ) : (
             <div className="flex mt-6 items-center justify-center w-full h-full">
@@ -95,6 +104,16 @@ const QuizzPage = async (props: { params: Params }) => {
       ),
     },
   ];
+
+  if (!quizzs) {
+    return (
+      <div className="flex items-center justify-center w-full h-screen">
+        <h1 className="text-2xl font-bold text-center text-gray-500">
+          Không tìm thấy cuộc thi nào.
+        </h1>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen relative">

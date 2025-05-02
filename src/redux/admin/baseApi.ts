@@ -11,8 +11,8 @@ import { setAccessToken, setRefreshToken } from "@/features/auth/slice";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: constants.API_SERVER,
-  prepareHeaders: (headers) => {
-    const accessToken = getClientCookie(constants.ACCESS_TOKEN);
+  prepareHeaders: (headers, { getState }) => {
+    const accessToken = getClientCookie(constants.ACCESS_TOKEN_ADMIN);
 
     headers.set("Content-Type", "application/json");
 
@@ -55,12 +55,14 @@ export const baseQueryWithReauth: typeof baseQuery = async (
       // Retry original request with new token
       result = await baseQuery(args, api, extraOptions);
       if (result?.error?.status === 401) {
-        deleteClientCookie(constants.ACCESS_TOKEN);
-        deleteClientCookie(constants.REFRESH_TOKEN);
+        deleteClientCookie(constants.ACCESS_TOKEN_ADMIN);
+        deleteClientCookie(constants.REFRESH_TOKEN_ADMIN);
+        deleteClientCookie(constants.USER_INFO);
       }
     } else {
-      deleteClientCookie(constants.ACCESS_TOKEN);
-      deleteClientCookie(constants.REFRESH_TOKEN);
+      deleteClientCookie(constants.ACCESS_TOKEN_ADMIN);
+      deleteClientCookie(constants.REFRESH_TOKEN_ADMIN);
+      deleteClientCookie(constants.USER_INFO);
 
       return { error: { status: 401, data: "Unauthorized" } };
     }
@@ -69,7 +71,8 @@ export const baseQueryWithReauth: typeof baseQuery = async (
   return result;
 };
 
-export const baseApi = createApi({
+export const baseApiAdmin = createApi({
+  reducerPath: "baseApiAdmin",
   baseQuery: baseQueryWithReauth,
   endpoints: () => ({}),
   tagTypes: [

@@ -196,7 +196,7 @@ export default function RegistrationForm({
             </p>
             <Button
               className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-medium py-5 px-8 rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
-              onClick={() => router.push("/")}
+              onClick={() => window.location.reload()}
             >
               Hoàn tất
             </Button>

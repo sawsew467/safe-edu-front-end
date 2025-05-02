@@ -2,6 +2,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
 
 import { useSignInMutation } from "../../api";
 import { PhoneNumberFormValues, phoneNumberSchema } from "../../validation";
@@ -39,6 +40,8 @@ const LoginFlow = () => {
         (error as any)?.data?.error?.message || "Đã xảy ra lỗi!";
       const details: string =
         (error as any)?.data?.error?.details || "Đã xảy ra lỗi!";
+
+      toast.error(message);
 
       if (details.includes("Username")) {
         form.setError("username", { message });

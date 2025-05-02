@@ -66,6 +66,18 @@ export default async function PartCompetitions({ params }: { params: Params }) {
   const { question, quizz }: { question?: PartQuestion[]; quizz?: Quizz } =
     await fetchQuestionByQuizzId((id ?? "") as string);
 
+  if (!question)
+    return (
+      <div className="h-screen flex flex-col items-center justify-center px-4">
+        <h1 className="text-center font-semibold md:text-3xl text-lg">
+          Cuộc thi đã kết thúc
+        </h1>
+        <form action={`/cuoc-thi`} method="get">
+          <Button type="submit">Quay lại cuộc thi</Button>
+        </form>
+      </div>
+    );
+
   if (question?.length === 0)
     return (
       <div className="h-screen flex flex-col items-center justify-center px-4">

@@ -12,7 +12,6 @@ import constants from "@/settings/constants";
 import { Competitions } from "@/features/competitions/type.competitions";
 import { customFetch } from "@/utils/custom-fetch";
 import { CompetitionArticleCard } from "@/features/competitions/components/competition-artile-card";
-import { formatDate } from "@/utils/format-date";
 
 export const metadata = {
   title: "Trang chủ",
@@ -125,7 +124,7 @@ async function AppPage() {
                 alt="Education illustration"
                 className="object-contain w-[400px] h-[400px]"
                 height={1000}
-                src="/images/app/frog.png"
+                src="/images/app/SafeEdu.png"
                 width={1000}
               />
             </div>
@@ -148,11 +147,10 @@ async function AppPage() {
             <CompetitionArticleCard
               key={competition._id}
               description={competition.description}
-              endDate={formatDate(competition.endDate, "dddd, DD/MM HH:mm")}
+              endDate={competition.endDate}
               image={competition.image_url}
               slug={competition.slug}
-              startDate={formatDate(competition.startDate, "dddd, DD/MM HH:mm")}
-              status={competition.status}
+              startDate={competition.startDate}
               title={competition.title}
             />
           ))}

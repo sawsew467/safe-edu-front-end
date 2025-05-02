@@ -28,10 +28,11 @@ function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
 
-  const { user, isFetching } = useGetUserQuery(undefined, {
-    selectFromResult: ({ data, isFetching }) => ({
+  const { user, isFetching, isSuccess } = useGetUserQuery(undefined, {
+    selectFromResult: ({ data, isFetching, isSuccess }) => ({
       user: data?.data,
       isFetching,
+      isSuccess,
     }),
   });
 
@@ -39,14 +40,13 @@ function UserDropdown() {
     router.push(`/trang-ca-nhan/${user?.username}`);
   };
   const handleSignOut = () => {
-    deleteClientCookie(constants.ACCESS_TOKEN_ADMIN);
-    deleteClientCookie(constants.REFRESH_TOKEN_ADMIN);
     deleteClientCookie(constants.ACCESS_TOKEN);
     deleteClientCookie(constants.REFRESH_TOKEN);
-    deleteClientCookie(constants.USER_INFO);
 
     window.location.reload();
   };
+
+  if (isSuccess && !user) return null;
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>

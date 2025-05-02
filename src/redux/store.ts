@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 
 import { rtkQueryErrorLogger } from "./midleware";
 import { baseApi } from "./baseApi";
+import { baseApiAdmin } from "./admin/baseApi";
 
 import auth from "@/features/auth/slice";
 import { authAPI } from "@/features/auth/api";
@@ -12,14 +13,16 @@ export const store = configureStore({
   reducer: {
     [UploadApi.reducerPath]: UploadApi.reducer,
     [authAPI.reducerPath]: authAPI.reducer,
+    [baseApiAdmin.reducerPath]: baseApiAdmin.reducer,
     auth,
     layout,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
-      .concat(baseApi.middleware)
+      .concat(baseApiAdmin.middleware)
+      .concat(rtkQueryErrorLogger)
       .concat(UploadApi.middleware)
-      .concat(rtkQueryErrorLogger),
+      .concat(baseApi.middleware),
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

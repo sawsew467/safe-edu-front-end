@@ -84,8 +84,6 @@ const DetailCompetitions = () => {
     }
   };
 
-  console.log("competition", competition);
-
   return (
     <Tabs defaultValue={tab || "bang-xep-hang"}>
       <TabsList>

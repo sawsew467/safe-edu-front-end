@@ -73,7 +73,6 @@ export default function AddNewSupervisionModule() {
       toast.error("Tạo tài khoản thất bại", { id: toasID });
     }
   }
-  console.log("fi", form.getValues());
 
   return (
     <>

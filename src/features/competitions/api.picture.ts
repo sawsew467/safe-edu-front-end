@@ -1,18 +1,11 @@
+import { baseApiAdmin } from "@/redux/admin/baseApi";
 import { baseApi } from "@/redux/baseApi";
 
-export const PictureApi = baseApi.injectEndpoints({
+export const PictureApi = baseApiAdmin.injectEndpoints({
   endpoints: (build) => ({
     getAllPictureByQuizId: build.query({
       query: ({ id }) => ({
         url: `/picture/get-all-by-quizId/${id}`,
-        method: "GET",
-        flashError: true,
-      }),
-      providesTags: ["Picture"],
-    }),
-    getMyPicture: build.query({
-      query: ({ id }) => ({
-        url: `/picture/my-picture/${id}`,
         method: "GET",
         flashError: true,
       }),
@@ -26,19 +19,7 @@ export const PictureApi = baseApi.injectEndpoints({
       }),
       providesTags: (result, error, { id }) => [{ type: "Picture", id }],
     }),
-    addNewPicture: build.mutation({
-      query: (data) => ({
-        url: "/picture/submited",
-        method: "POST",
-        body: data,
-        flashError: true,
-      }),
-      invalidatesTags: (result, error) => {
-        if (error) return [];
 
-        return ["Picture", "Quizz"];
-      },
-    }),
     GetAllQuizResultPicture: build.query({
       query: ({ id }) => ({
         url: `/quiz-result/get-all-by-quizId/${id}`,
@@ -69,33 +50,6 @@ export const PictureApi = baseApi.injectEndpoints({
 
         return ["Picture"];
       },
-    }),
-
-    commentPicture: build.mutation({
-      query: (data) => {
-        return {
-          url: `/comments`,
-          method: "Post",
-          body: data,
-          flashError: true,
-        };
-      },
-      invalidatesTags: (result, error) => {
-        if (error) return [];
-
-        return ["Comment"];
-      },
-    }),
-
-    getAllCommentByPictureId: build.query({
-      query: ({ id }) => {
-        return {
-          url: `/comments/get-by-picture_id/${id}`,
-          method: "GET",
-          flashError: true,
-        };
-      },
-      providesTags: ["Comment"],
     }),
 
     deletePicture: build.mutation({
@@ -129,16 +83,70 @@ export const PictureApi = baseApi.injectEndpoints({
   }),
 });
 
+const pictureUserApi = baseApi.injectEndpoints({
+  endpoints: (build) => ({
+    addNewPicture: build.mutation({
+      query: (data) => ({
+        url: "/picture/submited",
+        method: "POST",
+        body: data,
+        flashError: true,
+      }),
+      invalidatesTags: (result, error) => {
+        if (error) return [];
+
+        return ["Picture", "Quizz"];
+      },
+    }),
+    getMyPicture: build.query({
+      query: ({ id }) => ({
+        url: `/picture/my-picture/${id}`,
+        method: "GET",
+        flashError: true,
+      }),
+      providesTags: ["Picture"],
+    }),
+    commentPicture: build.mutation({
+      query: (data) => {
+        return {
+          url: `/comments`,
+          method: "Post",
+          body: data,
+          flashError: true,
+        };
+      },
+      invalidatesTags: (result, error) => {
+        if (error) return [];
+
+        return ["Comment"];
+      },
+    }),
+    getAllCommentByPictureId: build.query({
+      query: ({ id }) => {
+        return {
+          url: `/comments/get-by-picture_id/${id}`,
+          method: "GET",
+          flashError: true,
+        };
+      },
+      providesTags: ["Comment"],
+    }),
+  }),
+});
+
+export const {
+  useAddNewPictureMutation,
+  useGetMyPictureQuery,
+  useCommentPictureMutation,
+  useGetAllCommentByPictureIdQuery,
+} = pictureUserApi;
+
 export const {
   useGetAllPictureByQuizIdQuery,
   useGetPictureQuery,
-  useAddNewPictureMutation,
   useDeletePictureMutation,
   useActivePictureMutation,
   useGetPictureByCompetitionIdQuery,
   useGradePictureMutation,
   useGetAllQuizResultPictureQuery,
-  useCommentPictureMutation,
-  useGetAllCommentByPictureIdQuery,
-  useGetMyPictureQuery,
 } = PictureApi;

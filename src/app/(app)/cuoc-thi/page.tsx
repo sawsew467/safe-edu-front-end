@@ -2,17 +2,8 @@ import React from "react";
 
 import constants from "@/settings/constants";
 import { Competitions } from "@/features/competitions/type.competitions";
-import { CompetitionArticleCard } from "@/features/competitions/components/competition-artile-card";
-import { formatDate } from "@/utils/format-date";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 import { customFetch } from "@/utils/custom-fetch";
+import CompetitionsViewUser from "@/features/competitions/components/competitions-view-user";
 
 export const metadata = {
   title: "Cuộc thi mới nhất",
@@ -34,106 +25,84 @@ export const metadata = {
   },
 };
 
-const fetchLatestCompetitions = async (
-  page: number,
-): Promise<{
-  totalPage: number;
+const fetchLatestCompetitions = async (): Promise<{
   latestCompetitions: Competitions[];
+  doingCompetitions: Competitions[];
+  donedCompetitions: Competitions[];
 }> => {
+  let competitions: Competitions[] = [];
+  const data = await customFetch(
+    `${constants.API_SERVER}/competitions/user?filter={"isActive":"true"}`,
+  );
+
   try {
-    const { data } = await customFetch(
-      `${constants.API_SERVER}/competitions?pageNumber=${page}&pageSize=10&filter={"isActive":"true"}`,
-    );
+    if (!data?.data) {
+      const { data } = await customFetch(
+        `${constants.API_SERVER}/competitions?filter={"isActive":"true"}`,
+      );
+
+      competitions = data;
+    } else {
+      competitions = data?.data;
+    }
 
     const latestCompetitions =
-      data?.filter(
+      competitions?.filter(
         (item: Competitions) =>
           item?.isActive && new Date(item.endDate).getTime() > Date.now(),
       ) ?? [];
 
+    const donedCompetitions =
+      competitions?.filter((item: Competitions) => item?.status === "done") ??
+      [];
+    const doingCompetitions =
+      competitions?.filter(
+        (item: Competitions) =>
+          item?.status === "doing" &&
+          item?.isActive &&
+          new Date(item.endDate).getTime() > Date.now(),
+      ) ?? [];
+
     return {
-      totalPage: data?.totalPages ?? 0,
       latestCompetitions: latestCompetitions?.sort(
         (a: Competitions, b: Competitions) =>
           new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime(),
       ),
+      doingCompetitions,
+      donedCompetitions,
     };
   } catch (error) {
     return {
-      totalPage: 0,
       latestCompetitions: [],
+      doingCompetitions: [],
+      donedCompetitions: [],
     };
   }
 };
 
-type Props = Promise<{
-  trang: string;
-}>;
-
-const CompetitionsPage = async ({ searchParams }: { searchParams: Props }) => {
-  const { trang } = await searchParams;
-
-  const page = trang ? Number(trang) : 1;
-  const { totalPage, latestCompetitions } = await fetchLatestCompetitions(page);
+const CompetitionsPage = async () => {
+  const { latestCompetitions, doingCompetitions, donedCompetitions } =
+    await fetchLatestCompetitions();
 
   return (
     <div className="min-h-screen ">
-      <section className="container mx-auto px-4 py-12 md:py-16 rounded-lg ">
-        <h2 className="text-3xl font-bold text-center mb-10 text-primary">
-          Cuộc thi mới nhất
-        </h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {latestCompetitions?.map((item) => (
-            <CompetitionArticleCard
-              key={item._id}
-              description={item.description}
-              endDate={formatDate(item.endDate, "dddd, DD/MM HH:mm")}
-              image={item.image_url}
-              slug={item.slug}
-              startDate={formatDate(item.startDate, "dddd, DD/MM HH:mm")}
-              status={item.status}
-              title={item.title}
-            />
-          ))}
-        </div>
-        <Pagination className="mt-6">
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                href={page != 1 ? `?trang=${page - 1}` : ""}
-              />
-            </PaginationItem>
-            {page > 1 && (
-              <PaginationItem>
-                <PaginationLink href={`?trang=${page - 1}`}>
-                  {page - 1}
-                </PaginationLink>
-              </PaginationItem>
-            )}
-            <PaginationItem>
-              <PaginationLink isActive href={`?trang=${page}`}>
-                {page}
-              </PaginationLink>
-            </PaginationItem>
-            {page < totalPage && (
-              <PaginationItem>
-                <PaginationLink href={`?trang=${page + 1}`}>
-                  {page + 1}
-                </PaginationLink>
-              </PaginationItem>
-            )}
-            <PaginationItem>
-              <PaginationNext
-                href={
-                  page < totalPage
-                    ? `?trang=${page + 1}`
-                    : `?trang=${totalPage}`
-                }
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+      <section className="container space-y-10 mx-auto px-4 py-12 md:py-16 rounded-lg ">
+        <CompetitionsViewUser
+          competitions={latestCompetitions}
+          label="Cuộc thi mới nhất"
+        />
+        {donedCompetitions?.length !== 0 && (
+          <CompetitionsViewUser
+            competitions={donedCompetitions}
+            label=" Cuộc thi đã tham gia"
+          />
+        )}
+        {doingCompetitions?.length !== 0 && (
+          <CompetitionsViewUser
+            competitions={doingCompetitions}
+            label="Cuộc thi đang tham gia"
+          />
+        )}
       </section>
     </div>
   );

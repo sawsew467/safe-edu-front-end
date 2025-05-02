@@ -30,6 +30,6 @@ export async function POST(req: Request) {
 
     return result.toDataStreamResponse({});
   } catch (error) {
-    console.log("🚀 ~ POST ~ error:", error);
+    // console.log("🚀 ~ POST ~ error:", error);
   }
 }

@@ -2,9 +2,9 @@
 
 import { TypeAddNewAdmin } from "../user.types";
 
-import { baseApi } from "@/redux/baseApi";
+import { baseApiAdmin } from "@/redux/admin/baseApi";
 
-export const authAPI = baseApi.injectEndpoints({
+export const authAPI = baseApiAdmin.injectEndpoints({
   endpoints: (build) => ({
     getAllAdmin: build.query({
       query: (params) => ({

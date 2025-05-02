@@ -33,7 +33,7 @@ interface ApiResponse {
 }
 
 const getMaxScore = (data: UserScore[]) => {
-  if (!data.length) return 0;
+  if (!data?.length) return 0;
 
   return Math.max(...data.map((item) => item.score));
 };
@@ -89,7 +89,7 @@ export default function PremiumLeaderboardAdmin({ slug }: { slug: string }) {
                   Tổng Thí sinh
                 </h3>
                 <p className="text-2xl font-bold text-amber-900">
-                  {data.length}
+                  {data?.length}
                 </p>
               </div>
               <div className="rounded-full bg-amber-200 p-3">

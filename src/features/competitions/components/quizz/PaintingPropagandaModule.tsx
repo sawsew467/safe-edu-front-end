@@ -5,6 +5,7 @@ import { skipToken } from "@reduxjs/toolkit/query";
 import Image from "next/image";
 import { useRouter } from "next-nprogress-bar";
 import Link from "next/link";
+import { useInView } from "framer-motion";
 
 import {
   useGetAllPictureByQuizIdQuery,
@@ -21,9 +22,11 @@ import { Button } from "@/components/ui/button";
 import { deleteClientCookie } from "@/lib/jsCookies";
 import constants from "@/settings/constants";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
 const PaintingPropagandaModule = () => {
   const router = useRouter();
+  const btnRef = React.useRef<HTMLDivElement>(null);
   const [isOpenUploadNewPicture, setOpenUploadNewPicture] =
     React.useState(false);
   const { id: quiz_id } = useParams<{ id: string }>();
@@ -32,6 +35,8 @@ const PaintingPropagandaModule = () => {
   const action = params.get("action");
   const isViewPicture = !!picture_id && !action;
   const isViewScore = !!picture_id && action === "xem-diem";
+  const isTop = useInView(btnRef);
+
   const {
     data,
     isFetching,
@@ -44,19 +49,24 @@ const PaintingPropagandaModule = () => {
             ?.filter((item: Picture) => item?.isActive)
             .sort(
               (a: Picture, b: Picture) =>
-                new Date(a?.created_at) > new Date(b?.created_at),
+                new Date(a?.created_at).getTime() -
+                new Date(b?.created_at).getTime(),
             ) ?? [],
         isFetching,
         isSuccess,
       }),
     });
 
-  const { quiz } = useGetQuizzQuery(quiz_id ? { id: quiz_id } : skipToken, {
-    selectFromResult: ({ data, isFetching }) => ({
-      quiz: data?.data,
-      isFetching,
-    }),
-  });
+  const { quiz, competition } = useGetQuizzQuery(
+    quiz_id ? { id: quiz_id } : skipToken,
+    {
+      selectFromResult: ({ data, isFetching }) => ({
+        quiz: data?.data,
+        competition: data?.data?.competitionId?.at(0),
+        isFetching,
+      }),
+    },
+  );
 
   const { isSubmited } = useIsDoQuizzQuery(
     quiz_id ? { id: quiz_id } : skipToken,
@@ -76,8 +86,60 @@ const PaintingPropagandaModule = () => {
     },
   );
 
+  const statusCompetition =
+    new Date(competition?.startDate) > new Date()
+      ? "Upcoming"
+      : new Date(competition?.endDate) < new Date()
+        ? "Outgoing"
+        : "Ongoing";
+
   return (
-    <div className="p-4">
+    <div className="p-4 relative ">
+      <div
+        ref={btnRef}
+        className={cn(
+          "fixed flex justify-center top-0  duration-500  transition-[transform,opacity] rounded-lg overflow-hidden z-10 md:right-4 right-1/2 md:translate-x-0 translate-x-1/2 backdrop-blur bg-background/50 p-4",
+          isTop
+            ? "translate-y-0 opacity-0"
+            : "md:translate-y-20 translate-y-[70px] opacity-100",
+        )}
+      >
+        {isSubmited === false && statusCompetition === "Ongoing" ? (
+          <Button
+            onClick={() => {
+              if (isSubmited === false) setOpenUploadNewPicture(true);
+              else if (isSubmited === undefined) {
+                deleteClientCookie(constants.ACCESS_TOKEN);
+                deleteClientCookie(constants.REFRESH_TOKEN);
+                deleteClientCookie(constants.USER_INFO);
+              }
+            }}
+          >
+            Nộp tranh
+          </Button>
+        ) : (
+          isSubmited === true && (
+            <div className="flex gap-2">
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  router.replace(`?id=${myPicture?._id}&action=xem-diem`);
+                }}
+              >
+                Xem điểm của bài thi
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  router.replace(`?id=${myPicture?._id}`);
+                }}
+              >
+                Xem bài thi của mình
+              </Button>
+            </div>
+          )
+        )}
+      </div>
       <UploadMyPicture
         isOpen={isOpenUploadNewPicture}
         quiz_id={quiz_id}
@@ -90,11 +152,14 @@ const PaintingPropagandaModule = () => {
       />
       <DialogViewScore open={isViewScore} quiz_id={quiz_id!} />
       <div className="relative">
-        <h2 className="lg:text-3xl md:text-2xl text-xl mx-32 font-bold text-primary text-center">
-          Tranh vẽ {quiz?.title}
+        <h2 className="lg:text-3xl md:text-2xl text-xl md:mr-[350px] md:text-start text-center font-bold text-primary capitalize">
+          {quiz?.title}
         </h2>
-        <div className="absolute top-0 right-4">
-          {isSubmited === false ? (
+        <div
+          ref={btnRef}
+          className="md:absolute flex justify-center md:mt-0 mt-4 top-0 right-4"
+        >
+          {isSubmited === false && statusCompetition === "Ongoing" ? (
             <Button
               onClick={() => {
                 if (isSubmited === false) setOpenUploadNewPicture(true);

@@ -1,14 +1,12 @@
 "use client";
 import Image from "next/image";
-import { useRouter } from "next-nprogress-bar";
 import React from "react";
 
 import { Button } from "@/components/ui/button";
 
 export default function LoginSuccess() {
-  const router = useRouter();
   const RedirectHome = () => {
-    router.push("/");
+    window.location.reload();
   };
 
   return (

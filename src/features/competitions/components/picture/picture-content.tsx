@@ -67,9 +67,6 @@ const PictureContent = ({
     form.setValue("feedback", currentPicture?.feedback ?? "");
   }, [currentPicture]);
 
-  console.log("form", form.getValues());
-  console.log("currentPicture", currentPicture);
-
   return (
     <div className="flex gap-2">
       <Card className="">
