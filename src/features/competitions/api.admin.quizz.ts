@@ -1,6 +1,6 @@
-import { baseApi } from "@/redux/baseApi";
+import { baseApiAdmin } from "@/redux/admin/baseApi";
 
-export const QuizzApi = baseApi.injectEndpoints({
+export const QuizzApi = baseApiAdmin.injectEndpoints({
   endpoints: (build) => ({
     getAllQuizz: build.query({
       query: (params) => ({
