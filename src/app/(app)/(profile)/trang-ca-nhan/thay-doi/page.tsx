@@ -4,8 +4,8 @@ import UpdateProfileModule from "@/features/users/components/student/update-stud
 
 const UpdateProfile = () => {
   return (
-    <div className="p-4">
-      <UpdateProfileModule />;
+    <div className="md:p-4 p-2">
+      <UpdateProfileModule />
     </div>
   );
 };
