@@ -2,6 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next-nprogress-bar";
 
 import { Button } from "@/components/ui/button";
@@ -86,7 +87,15 @@ export default function LoginForm({
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Mật khẩu</FormLabel>
+                  <div className="flex items-center justify-between">
+                    <FormLabel>Mật khẩu</FormLabel>
+                    <Link
+                      className="text-sm text-primary hover:underline"
+                      href="/quen-mat-khau"
+                    >
+                      Forgot password?
+                    </Link>
+                  </div>
                   <FormControl>
                     <PasswordInput
                       {...field}
