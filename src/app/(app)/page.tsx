@@ -7,11 +7,11 @@ import { format } from "date-fns";
 import { TypeNews } from "@/features/news/news.type";
 import { Library } from "@/features/library/library.type";
 import { ArticleCard } from "@/features/news/components/artical-card";
-import { ResourceCard } from "@/features/library/components/resource-card";
 import constants from "@/settings/constants";
 import { Competitions } from "@/features/competitions/type.competitions";
 import { customFetch } from "@/utils/custom-fetch";
 import { CompetitionArticleCard } from "@/features/competitions/components/competition-artile-card";
+import { ResourceCard } from "@/features/library/components/resource-card";
 
 export const metadata = {
   title: "Trang chủ",
@@ -44,7 +44,7 @@ const fetchLatestNews = async () => {
   return latestNews
     ?.sort(
       (a: TypeNews, b: TypeNews) =>
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     )
     .slice(0, 3);
 };
@@ -54,18 +54,18 @@ const fetchLatestCompetitions = async (): Promise<{
 }> => {
   try {
     const { data } = await customFetch(
-      `${constants.API_SERVER}/competitions?pageNumber=${1}&pageSize=10`,
+      `${constants.API_SERVER}/competitions?pageNumber=${1}&pageSize=10`
     );
 
     const latestCompetitions =
       data
         ?.filter(
           (item: Competitions) =>
-            item?.isActive && new Date(item.endDate) > new Date(),
+            item?.isActive && new Date(item.endDate) > new Date()
         )
         ?.sort(
           (a: Competitions, b: Competitions) =>
-            new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime(),
+            new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
         )
         .slice(0, 3) ?? [];
 
@@ -92,7 +92,7 @@ const fetchLatestLibrary = async () => {
   return latestLibraries
     ?.sort(
       (a: Library, b: Library) =>
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     )
     .slice(0, 6);
 };

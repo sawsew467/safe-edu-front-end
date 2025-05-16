@@ -38,7 +38,7 @@ export function LoginForm() {
     try {
       const resFirebase: any = await signInWithPopup(
         auth,
-        provider.providerGoogle,
+        provider.providerGoogle
       );
 
       const res = await signInWithGoogle({

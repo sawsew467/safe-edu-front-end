@@ -3,11 +3,9 @@
 import type React from "react";
 
 import { useState, useRef, useCallback } from "react";
-import { Send, ImageIcon, X } from "lucide-react";
-import { useChat } from "@ai-sdk/react";
+import { Send, ImageIcon, X, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { Attachment } from "ai";
-import Markdown from "react-markdown";
 
 import {
   Dialog,
@@ -26,18 +24,85 @@ interface ChatDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
+interface Message {
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+  images?: string[]; // array URL của ảnh đính kèm
+}
+
 export function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
   const [images, setImages] = useState<File[]>([]);
   const [imageUrls, setImageUrls] = useState<Attachment[]>([]);
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [messages, setMessages] = useState<Message[]>([]);
 
+  console.log("🚀 ~ ChatDialog ~ messages:", messages);
+  const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const [uploadImage, { isLoading: isUploading }] = useUploadImageMutation();
 
-  const { messages, input, handleInputChange, handleSubmit, isLoading } =
-    useChat({
-      api: "/api/chat",
-    });
+  const handleSendMessage = async (userMessage: string) => {
+    if (!userMessage.trim()) return;
+
+    // Add user message to chat
+    const newUserMessage: Message = {
+      id: Date.now().toString(),
+      role: "user",
+      content: userMessage,
+      images: imageUrls.map((img) => img.url),
+    };
+
+    let tempMessages = [...messages, newUserMessage];
+
+    setMessages(tempMessages);
+    setIsLoading(true);
+
+    // Prepare all messages for the API call
+    const chatHistory = [...messages, newUserMessage];
+
+    setImageUrls([]);
+
+    fetch("/api/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ messages: chatHistory, images: imageUrls }),
+    })
+      .then((res) => res.json())
+      .then(async (data) => {
+        const rawContent =
+          data?.choices?.[0]?.message?.content || data?.content || "";
+
+        const assistantMessage: Message = {
+          id: Date.now().toString() + "-assistant",
+          role: "assistant",
+          content: rawContent,
+        };
+
+        tempMessages = [...tempMessages, assistantMessage];
+
+        setMessages(tempMessages);
+      })
+      .catch((err) => {
+        console.log("🚀 ~ handleSendMessage ~ err:", err);
+        const errorMessage: Message = {
+          id: Date.now().toString() + "-error",
+          role: "assistant",
+          content:
+            "Có lỗi xảy ra, vui lòng thử lại sau hoặc tạo sự cố trực tiếp cho bộ phận hỗ trợ",
+        };
+
+        setMessages((prevMessages) => [...prevMessages, errorMessage]);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
 
   const getImageUrl = useCallback(async (file: any) => {
     const formData = new FormData();
@@ -82,15 +147,14 @@ export function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
     setImageUrls((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const userInput = input.trim();
 
-    handleSubmit(e, {
-      experimental_attachments: imageUrls,
-    });
-
-    setImages([]);
-    setImageUrls([]);
+    if (userInput && !isLoading) {
+      handleSendMessage(userInput);
+      setInput("");
+    }
   };
 
   return (
@@ -118,56 +182,47 @@ export function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
                 {messages.map((message) => (
                   <div
                     key={message.id}
-                    className={`flex flex-col gap-2 ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                    className={`flex flex-col ${message.role === "user" ? "items-end" : "items-start"}`}
                   >
                     <div
-                      className={`flex flex-col gap-2 ${message.role === "user" ? "items-end" : "items-start"}`}
+                      className={`max-w-[80%] rounded-2xl px-4 py-3 ${
+                        message.role === "user"
+                          ? "bg-primary text-white"
+                          : "bg-gray-100 text-gray-800"
+                      }`}
                     >
-                      <div className="flex flex-wrap gap-2">
-                        {message.experimental_attachments?.map((attachment) => (
-                          <div key={attachment.url}>
-                            <Image
-                              alt={attachment.name || "Attachment"}
-                              className="rounded-lg aspect-square object-cover"
-                              height={128}
-                              src={attachment.url}
-                              width={128}
-                            />
-                          </div>
-                        ))}
-                      </div>
-                      <div
-                        className={`rounded-lg px-3 py-2 max-w-[80%] ${
-                          message.role === "user"
-                            ? "bg-green-600 text-white"
-                            : "bg-gray-100 text-gray-800"
-                        }`}
-                      >
-                        <Markdown>{message.content}</Markdown>
+                      <div className="whitespace-pre-wrap text-sm">
+                        {message.content}
                       </div>
                     </div>
+                    {message.images && message.images.length > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-2 justify-end">
+                        {message.images.map((url, idx) => (
+                          <Image
+                            key={idx}
+                            alt={`uploaded-${idx}`}
+                            className="rounded object-cover aspect-video "
+                            height={200}
+                            src={url}
+                            width={200}
+                          />
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
+
                 {isLoading && (
                   <div className="flex justify-start">
-                    <div className="rounded-lg px-3 py-2 bg-gray-100 text-gray-800">
-                      <div className="flex space-x-1">
-                        <div
-                          className="w-2 h-2 rounded-full bg-gray-400 animate-bounce"
-                          style={{ animationDelay: "0ms" }}
-                        />
-                        <div
-                          className="w-2 h-2 rounded-full bg-gray-400 animate-bounce"
-                          style={{ animationDelay: "150ms" }}
-                        />
-                        <div
-                          className="w-2 h-2 rounded-full bg-gray-400 animate-bounce"
-                          style={{ animationDelay: "300ms" }}
-                        />
+                    <div className="max-w-[80%] rounded-2xl bg-gray-100 px-4 py-3 text-gray-800">
+                      <div className="flex items-center space-x-2 text-sm font-light italic">
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        <span>Đang xử lý</span>
                       </div>
                     </div>
                   </div>
                 )}
+                <div ref={messagesEndRef} />
               </div>
             )}
           </ScrollArea>
@@ -196,7 +251,7 @@ export function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
 
           <form
             className="p-4 border-t flex gap-2 items-end"
-            onSubmit={handleFormSubmit}
+            onSubmit={handleSubmit}
           >
             <Input
               ref={fileInputRef}
@@ -220,7 +275,7 @@ export function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
               className="w-full"
               placeholder="Nhập câu hỏi của bạn..."
               value={input}
-              onChange={handleInputChange}
+              onChange={(e) => setInput(e.target.value)}
             />
             <Button
               className="flex-shrink-0"

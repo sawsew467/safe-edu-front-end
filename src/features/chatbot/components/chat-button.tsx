@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { MessageCircle } from "lucide-react";
+import Image from "next/image";
 
 import { ChatDialog } from "./chat-dialog";
 
@@ -14,10 +14,16 @@ export function ChatButton() {
     <>
       <Button
         aria-label="Mở chatbot"
-        className="fixed bottom-6 right-6 rounded-full w-16 h-16 shadow-lg bg-primary transition-all hover:bg-primary/60 p-0 flex items-center justify-center"
+        className="fixed bottom-6 right-6 rounded-full  z-10 w-fit h-fit shadow-none transition-all bg-transparent hover:bg-transparent p-0 flex items-center justify-center"
         onClick={() => setIsOpen(true)}
       >
-        <MessageCircle className="h-8 w-8" />
+        <Image
+          alt="chatbot"
+          className="hover:scale-105 transition-all duration-300 drop-shadow-lg "
+          height={128}
+          src="/images/chatbot/chatbot.png"
+          width={128}
+        />
       </Button>
       <ChatDialog open={isOpen} onOpenChange={setIsOpen} />
     </>
