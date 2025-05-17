@@ -3,7 +3,7 @@ import { useRouter } from "next-nprogress-bar";
 import { useSearchParams } from "next/navigation";
 
 import { Quizz } from "../../type.competitions";
-import { useGetQuizzByCompetitionIdQuery } from "../../api.quizz";
+import { useGetQuizzByCompetitionIdQuery } from "../../api.admin.quizz";
 
 import FormAddNewQuizz from "./FormAddNewQuizz";
 import FormUpdateQuizz from "./FormUpdateQuizz";

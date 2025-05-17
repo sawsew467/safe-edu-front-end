@@ -1,5 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
+import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -15,6 +15,8 @@ export function ResourceCard({
   description: string;
   icon: string;
 }) {
+  console.log("🚀 ~ icon:", icon);
+
   return (
     <Card className={`overflow-hidden `}>
       <CardContent className="p-6">

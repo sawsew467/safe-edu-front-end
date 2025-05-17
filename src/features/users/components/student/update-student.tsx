@@ -289,7 +289,7 @@ export default function UpdateProfileModule() {
               value={activeTab}
               onValueChange={setActiveTab}
             >
-              <CardContent className="p-6">
+              <CardContent className="md:p-6 p-2">
                 <TabsContent className="mt-0 pt-4 space-y-4" value="personal">
                   <div className="flex flex-col md:flex-row gap-8 items-start">
                     <div className="flex flex-col items-center space-y-4 w-full md:w-auto">

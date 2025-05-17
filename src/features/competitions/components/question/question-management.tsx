@@ -20,36 +20,21 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 
 export const formSchema = z.object({
-  question: z
-    .string({ message: "Câu hỏi không được để trống" })
-    .min(1, "Câu hỏi không được để trống"),
+  question: z.string({ message: "Câu hỏi không được để trống" }).optional(),
   image: z.string().optional(),
   correct_answer: z
     .string({ message: "Chưa chọn đáp án đúng" })
     .min(1, "Chưa chọn đáp án đúng"),
-  answer: z
-    .array(
-      z
-        .string()
-        .min(1, "Câu trả lời không được để trống")
-        .max(75, "Độ dài câu trả lời không được quá 75 kí tự")
-        .optional(),
-      {
-        message: "Danh sách câu trả lời không hợp lệ",
-      },
-    )
-    .refine(
-      (arr) =>
-        arr.filter((item) => item !== undefined && item.trim() !== "").length >=
-        2,
-      { message: "Ít nhất phải có 2 câu trả lời hợp lệ" },
-    )
-    .refine(
-      (arr) =>
-        arr.filter((item) => item !== undefined && item.trim() !== "").length <=
-        4,
-      { message: "Câu trả lời không được quá 4 câu hợp lệ" },
-    ),
+  answer: z.array(
+    z
+      .string()
+      .min(1, "Câu trả lời không được để trống")
+      .max(75, "Độ dài câu trả lời không được quá 75 kí tự")
+      .optional(),
+    {
+      message: "Danh sách câu trả lời không hợp lệ",
+    },
+  ),
   time_limit: z.string(),
   current_question: z.number(),
   point: z.string(),

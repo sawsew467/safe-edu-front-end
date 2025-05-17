@@ -7,11 +7,11 @@ import { format } from "date-fns";
 import { TypeNews } from "@/features/news/news.type";
 import { Library } from "@/features/library/library.type";
 import { ArticleCard } from "@/features/news/components/artical-card";
-import { ResourceCard } from "@/features/library/components/resource-card";
 import constants from "@/settings/constants";
 import { Competitions } from "@/features/competitions/type.competitions";
 import { customFetch } from "@/utils/custom-fetch";
 import { CompetitionArticleCard } from "@/features/competitions/components/competition-artile-card";
+import { ResourceCard } from "@/features/library/components/resource-card";
 
 export const metadata = {
   title: "Trang chủ",

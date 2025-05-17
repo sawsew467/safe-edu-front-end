@@ -109,7 +109,7 @@ class ImageResize {
         button.style.opacity = "1"; // Màu nền khi hover
       });
       button.addEventListener("click", () =>
-        this.alignImage(alignment as "left" | "center" | "right"),
+        this.alignImage(alignment as "left" | "center" | "right")
       );
       alignmentContainer.appendChild(button);
     });
@@ -148,7 +148,7 @@ class ImageResize {
     if (!this.handle) return;
     this.handle.removeEventListener(
       "mousedown",
-      this.handleMousedown.bind(this),
+      this.handleMousedown.bind(this)
     );
     this.handle.parentNode?.removeChild(this.handle);
     this.handle = null;
@@ -189,7 +189,7 @@ class ImageResize {
   hide() {
     if (this.overlay) {
       const alignmentContainer = this.overlay.querySelector(
-        ".image-alignment-container",
+        ".image-alignment-container"
       );
 
       if (alignmentContainer) {
@@ -244,7 +244,7 @@ class ImageResize {
     this.currentImg.parentElement?.classList.remove(
       "ql-align-left",
       "ql-align-center",
-      "ql-align-right",
+      "ql-align-right"
     );
 
     // Add new alignment class

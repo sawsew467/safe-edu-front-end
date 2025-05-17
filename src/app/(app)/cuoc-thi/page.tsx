@@ -45,6 +45,7 @@ const fetchLatestCompetitions = async (): Promise<{
     } else {
       competitions = data?.data;
     }
+    console.log("competitions", competitions);
 
     const latestCompetitions =
       competitions?.filter(
@@ -88,10 +89,12 @@ const CompetitionsPage = async () => {
   return (
     <div className="min-h-screen ">
       <section className="container space-y-10 mx-auto px-4 py-12 md:py-16 rounded-lg ">
-        <CompetitionsViewUser
-          competitions={latestCompetitions}
-          label="Cuộc thi mới nhất"
-        />
+        {latestCompetitions?.length !== 0 && (
+          <CompetitionsViewUser
+            competitions={latestCompetitions}
+            label="Cuộc thi mới nhất"
+          />
+        )}
         {donedCompetitions?.length !== 0 && (
           <CompetitionsViewUser
             competitions={donedCompetitions}
