@@ -53,8 +53,9 @@ const fetchLatestCompetitions = async (): Promise<{
       ) ?? [];
 
     const donedCompetitions =
-      competitions?.filter((item: Competitions) => item?.status === "done") ??
-      [];
+      competitions?.filter(
+        (item: Competitions) => item?.status === "done" && item?.isActive,
+      ) ?? [];
     const doingCompetitions =
       competitions?.filter(
         (item: Competitions) =>

@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import {
+  BookOpen,
   ChartPie,
   LibraryBig,
   Newspaper,
@@ -56,6 +57,11 @@ const sideBarItems = [
     name: "Thư viện",
     url: "/thu-vien",
     icon: LibraryBig,
+  },
+  {
+    name: "Tài nguyên",
+    url: "/tai-nguyen",
+    icon: BookOpen,
   },
 ];
 

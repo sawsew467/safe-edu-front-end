@@ -58,7 +58,7 @@ const FormAddNewLibrary = () => {
   const { dataTopic, isTopicLoading } = useGetAllTopicQuery(undefined, {
     selectFromResult: ({ data: topic, isFetching }) => {
       const data =
-        topic?.data?.filter((topic: DataTopic) => topic.isActive) ?? [];
+        topic?.data?.data?.filter((topic: DataTopic) => topic?.isActive) ?? [];
 
       return {
         dataTopic: data?.map((topic: DataTopic) => ({
