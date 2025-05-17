@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { signInWithPopup } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -20,8 +19,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { auth, provider } from "@/services/firebase/config";
 import { setClientCookie } from "@/lib/jsCookies";
 import { useAppDispatch } from "@/hooks/redux-toolkit";
@@ -69,7 +66,7 @@ export function LoginForm() {
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-4">
-          <div className="grid gap-2">
+          {/* <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
             <Input
               required
@@ -89,7 +86,7 @@ export function LoginForm() {
           </div>
           <Button disabled className="w-full cursor-pointer" type="submit">
             Đăng nhập
-          </Button>
+          </Button> */}
           <Button
             className="w-full"
             variant="outline"
