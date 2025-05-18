@@ -173,7 +173,7 @@ export default function UpdateProfileModule() {
   }, [provinces?.length, organizations?.length, selectedProvince]);
 
   const handleBack = () => {
-    router.back();
+    router.replace("/quan-tri/nguoi-dung?tab=student");
   };
 
   React.useEffect(() => {

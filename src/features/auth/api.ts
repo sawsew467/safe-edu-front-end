@@ -35,7 +35,7 @@ export const authAPI = baseApi.injectEndpoints({
     }),
     getProvinces: build.query({
       query: () => ({
-        url: "/provinces/provinces",
+        url: "/provinces/all",
         method: "GET",
       }),
     }),

@@ -23,11 +23,11 @@ export const UploadApi = createApi({
   baseQuery: baseQuery,
   endpoints: (build) => ({
     uploadImage: build.mutation({
-      query: (body: FormData) => {
+      query: (file: FormData) => {
         return {
           url: `/categories/upload-image`,
           method: "POST",
-          body: body,
+          body: file,
           flashError: true,
           formData: true,
         };

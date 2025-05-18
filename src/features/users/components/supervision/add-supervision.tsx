@@ -59,7 +59,7 @@ export default function AddNewSupervisionModule() {
     defaultValues: initialForm,
   });
   const handleBack = () => {
-    router.replace("/nguoi-dung?tab=supervision");
+    router.replace("/quan-tri/nguoi-dung?tab=supervision");
   };
 
   async function onSubmit(data: z.infer<typeof formSupervisionSchema>) {

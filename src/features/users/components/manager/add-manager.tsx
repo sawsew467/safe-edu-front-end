@@ -67,7 +67,7 @@ export default function AddNewManagerModule() {
     defaultValues: initialForm,
   });
   const handleBack = () => {
-    router.replace("/nguoi-dung?tab=manager");
+    router.replace("/quan-tri/nguoi-dung?tab=manager");
   };
 
   async function onSubmit(data: z.infer<typeof formManagerSchema>) {
