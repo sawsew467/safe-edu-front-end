@@ -81,7 +81,7 @@ export function CompetitionArticleCard({
             viewport={{ once: true }}
             whileInView={{ opacity: 1, scale: 1 }}
           >
-            <Badge className="absolute top-2 right-2 z-10 shadow-md bg-primary/10 dark:bg-primary/20 hover:bg-primary/10 text-primary rounded-full">
+            <Badge className="absolute backdrop-blur-lg top-2 right-2 z-10 shadow-md bg-white/60 dark:bg-black/60 hover:bg-white/60 text-primary rounded-full">
               <div className="h-1.5 w-1.5 rounded-full bg-primary mr-2" /> Đang
               diễn ra
             </Badge>
@@ -103,7 +103,7 @@ export function CompetitionArticleCard({
           </motion.div>
           <div className="flex flex-col flex-1 p-4">
             <motion.h3
-              className="font-semibold text-lg mb-2 line-clamp-2"
+              className="font-semibold text-lg mb-2 min-h-14 line-clamp-2"
               initial={{ opacity: 0, x: -10 }}
               transition={{ duration: 0.4, delay: 0.2 }}
               viewport={{ once: true }}

@@ -76,16 +76,16 @@ export default function VerifyOtpForm() {
     <main className="flex min-h-screen flex-col items-center justify-center p-4 md:p-8 bg-gradient-to-b from-primary/80  to-primary/20 dark:from-[#3a5a0e]/40 dark:to-[#3a5a0e]/50 relative overflow-hidden">
       <Card className="w-full max-w-md bg-white/95 dark:bg-black/30 backdrop-blur-md shadow-xl rounded-xl overflow-hidden border-0">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center text-primary">Xác minh Email</CardTitle>
+          <CardTitle className="text-2xl font-bold text-center text-primary">
+            Xác minh Email
+          </CardTitle>
           <CardDescription className="text-center text-gray-600 dark:text-gray-100">
             Nhập mã xác minh đã gửi đến <strong>{email}</strong>
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form
-              className="space-y-6"
-            >
+            <form className="space-y-6">
               <FormField
                 control={form.control}
                 name="otp"
@@ -94,19 +94,37 @@ export default function VerifyOtpForm() {
                     <FormLabel>Mã xác minh</FormLabel>
                     <FormControl>
                       <div className="flex justify-center">
-                      <InputOTP maxLength={6} {...field}>
-                        <InputOTPGroup>
-                          <InputOTPSlot index={0} className="w-14 h-14 text-xl" />
-                          <InputOTPSlot index={1} className="w-14 h-14 text-xl" />
-                          <InputOTPSlot index={2} className="w-14 h-14 text-xl" />
-                        </InputOTPGroup>
-                        <InputOTPSeparator />
-                        <InputOTPGroup>
-                          <InputOTPSlot index={3} className="w-14 h-14 text-xl" />
-                          <InputOTPSlot index={4} className="w-14 h-14 text-xl" />
-                          <InputOTPSlot index={5} className="w-14 h-14 text-xl" />
-                        </InputOTPGroup>
-                      </InputOTP>
+                        <InputOTP maxLength={6} {...field}>
+                          <InputOTPGroup>
+                            <InputOTPSlot
+                              className="w-14 h-14 text-xl"
+                              index={0}
+                            />
+                            <InputOTPSlot
+                              className="w-14 h-14 text-xl"
+                              index={1}
+                            />
+                            <InputOTPSlot
+                              className="w-14 h-14 text-xl"
+                              index={2}
+                            />
+                          </InputOTPGroup>
+                          <InputOTPSeparator />
+                          <InputOTPGroup>
+                            <InputOTPSlot
+                              className="w-14 h-14 text-xl"
+                              index={3}
+                            />
+                            <InputOTPSlot
+                              className="w-14 h-14 text-xl"
+                              index={4}
+                            />
+                            <InputOTPSlot
+                              className="w-14 h-14 text-xl"
+                              index={5}
+                            />
+                          </InputOTPGroup>
+                        </InputOTP>
                       </div>
                     </FormControl>
                     <FormDescription>
@@ -134,7 +152,9 @@ export default function VerifyOtpForm() {
                     router.replace("dat-lai-mat-khau");
                   }}
                 >
-                  {form.formState.isSubmitting ? "Đang xác minh..." : "Xác minh mã"}
+                  {form.formState.isSubmitting
+                    ? "Đang xác minh..."
+                    : "Xác minh mã"}
                 </Button>
 
                 <div className="text-center">
