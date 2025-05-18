@@ -1,6 +1,4 @@
-import { use } from 'react';
 import { baseApi } from "@/redux/baseApi";
-import { verify } from "crypto";
 
 export const authAPI = baseApi.injectEndpoints({
   endpoints: (build) => ({
@@ -79,7 +77,7 @@ export const authAPI = baseApi.injectEndpoints({
         method: "POST",
         body: data,
       }),
-    })
+    }),
   }),
 });
 
@@ -94,5 +92,5 @@ export const {
   useSignInMutation,
   useForgotPasswordMutation,
   useVerifyOtpForgotPasswordMutation,
-  useResetPasswordMutation
+  useResetPasswordMutation,
 } = authAPI;
