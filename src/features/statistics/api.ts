@@ -76,6 +76,14 @@ export const newsAPI = baseApiAdmin.injectEndpoints({
         flashError: true,
       }),
     }),
+    visit: build.mutation({
+      query: (data) => ({
+        url: "/visit",
+        method: "POST",
+        body: data,
+        flashError: true,
+      }),
+    })
   }),
 });
 
@@ -89,4 +97,5 @@ export const {
   useGetCompetitionMonthlyStatsQuery,
   useGetQuizResultMonthlyStatsQuery,
   useGetProvinceStatsQuery,
+  useVisitMutation
 } = newsAPI;
