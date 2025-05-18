@@ -28,7 +28,7 @@ export const ChangePasswordShema = z
       message:
         "Mật khẩu phải có ít nhất 1 chữ in hoa, 1 chữ thường, 1 số và 1 ký tự đặc biệt",
       path: ["password"],
-    },
+    }
   )
   .refine((data) => data.old_password !== data.password, {
     message: "Mật khẩu mới không được giống mật khẩu cũ",
@@ -37,6 +37,20 @@ export const ChangePasswordShema = z
 
 export type PhoneNumberFormValues = z.infer<typeof phoneNumberSchema>;
 // Base schema without refinement
+
+export const forgotPasswordSchema = z.object({
+  email: z
+    .string()
+    .min(1, { message: "Vui lòng nhập email" })
+    .email({ message: "Email không hợp lệ" }),
+});
+
+export type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>;
+
+export const verifyOTPSchema = z.object({
+  otp: z
+    
+})
 
 // Validation schema for OTP step
 export const otpSchema = z.object({
@@ -119,7 +133,7 @@ export const studentRegistrationSchema = z
       message:
         "Mật khẩu phải có ít nhất 1 chữ in hoa, 1 chữ thường, 1 số và 1 ký tự đặc biệt",
       path: ["password"],
-    },
+    }
   );
 
 export type SignUpFormValues = z.infer<typeof studentRegistrationSchema>;
@@ -181,7 +195,7 @@ export const citizenRegistrationSchema = z
       message:
         "Mật khẩu phải có ít nhất 1 chữ in hoa, 1 chữ thường, 1 số và 1 ký tự đặc biệt",
       path: ["password"],
-    },
+    }
   );
 
 export type StudentRegistrationFormValues = z.infer<
