@@ -82,10 +82,18 @@ export const authAPI = baseApi.injectEndpoints({
         return ["Organizations"];
       },
     }),
+    getOrganizationById: build.query({
+      query: ({ id }) => ({
+        url: `/organizations/${id}`,
+        method: "GET",
+        flashError: true,
+      }),
+    }),
   }),
 });
 
 export const {
+  useGetOrganizationByIdQuery,
   useGetAllOrganizationQuery,
   useGetOrganizationQuery,
   useAddNewOrganizationMutation,
