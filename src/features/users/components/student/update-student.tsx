@@ -214,7 +214,7 @@ export default function UpdateProfileModule() {
       if (file.type.startsWith("image/")) {
         const formData = new FormData();
 
-        formData.append("image", file);
+        formData.append("file", file);
         const { data } = await uploadImage(formData);
 
         form.setValue("avatar", data?.data?.data);

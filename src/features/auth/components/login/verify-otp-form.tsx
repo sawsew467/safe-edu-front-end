@@ -93,7 +93,9 @@ export default function VerifyOtpForm() {
     <main className="flex min-h-screen flex-col items-center justify-center p-4 md:p-8 bg-gradient-to-b from-primary/80  to-primary/20 dark:from-[#3a5a0e]/40 dark:to-[#3a5a0e]/50 relative overflow-hidden">
       <Card className="w-full max-w-md bg-white/95 dark:bg-black/30 backdrop-blur-md shadow-xl rounded-xl overflow-hidden border-0">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center text-primary">Xác minh Email</CardTitle>
+          <CardTitle className="text-2xl font-bold text-center text-primary">
+            Xác minh Email
+          </CardTitle>
           <CardDescription className="text-center text-gray-600 dark:text-gray-100">
             Nhập mã xác minh đã gửi đến <strong>vana.dev@gmail.com</strong>
           </CardDescription>

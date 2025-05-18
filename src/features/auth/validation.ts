@@ -36,7 +36,6 @@ export const ChangePasswordShema = z
   });
 
 export type PhoneNumberFormValues = z.infer<typeof phoneNumberSchema>;
-// Base schema without refinement
 
 export const forgotPasswordSchema = z.object({
   email: z

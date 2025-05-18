@@ -21,9 +21,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useGetAllProvinceQuery } from "@/features/users/api/province.api";
 import { Combobox } from "@/components/ui/comboBox";
 import { Spinner } from "@/components/ui/spinner";
+import { useGetProvincesQuery } from "@/features/auth/api";
 type Props = {};
 
 const formSchema = z.object({
@@ -71,7 +71,7 @@ function FormEditOrganizations({
     },
   );
 
-  const { pronvinces } = useGetAllProvinceQuery(undefined, {
+  const { pronvinces } = useGetProvincesQuery(undefined, {
     selectFromResult: ({ data }) => ({
       pronvinces:
         data?.data?.items?.map((item: { name: string; _id: string }) => ({
