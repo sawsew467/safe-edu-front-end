@@ -68,7 +68,7 @@ export default function AddNewStudentModule() {
     defaultValues: initialForm,
   });
   const handleBack = () => {
-    router.replace("/nguoi-dung?tab=student");
+    router.replace("/quan-tri/nguoi-dung?tab=student");
   };
 
   async function onSubmit(data: z.infer<typeof formStudentSchema>) {

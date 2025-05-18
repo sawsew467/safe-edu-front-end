@@ -114,7 +114,7 @@ function DragZone({
         setFile(selectedFile);
         const formData = new FormData();
 
-        formData.append("image", selectedFile);
+        formData.append("file", selectedFile);
         await setFormData(formData);
       } else {
         toast.error("Chỉ thêm được ảnh!");
