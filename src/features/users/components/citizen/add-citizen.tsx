@@ -50,7 +50,7 @@ export default function AddNewCitizenModule() {
     defaultValues: initialForm,
   });
   const handleBack = () => {
-    router.replace("/nguoi-dung?tab=Citizen");
+    router.replace("/quan-tri/nguoi-dung?tab=Citizen");
   };
 
   async function onSubmit(data: z.infer<typeof formCitizenSchema>) {

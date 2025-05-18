@@ -5,7 +5,6 @@ import { useRouter } from "next-nprogress-bar";
 
 import ThemeSwitcher from "./theme-switcher";
 import UserDropdown from "./user-dropdown";
-// import NotificationDropdown from "./notification-dropdown";
 import { HeaderBreadcrumb } from "./header-breadcrumb";
 
 import { AppSidebar } from "@/components/layouts/dashboard/app-sidebar";
@@ -66,7 +65,7 @@ export default function DashboardLayout({
       <SidebarInset>
         <header
           className={cn(
-            "flex  dark:bg-sidebar/60 z-10 backdrop-blur-md h-16 shrink-0 items-center px-4 gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 shadow-sm fixed right-0 bg-white/60",
+            "flex  dark:bg-sidebar/60 z-10 backdrop-blur-md h-16 shrink-0 items-center px-4 gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 shadow-sm fixed right-0 bg-white/60"
           )}
           style={
             isMobile
@@ -96,7 +95,7 @@ export default function DashboardLayout({
         <div
           className={cn(
             "flex flex-1 flex-col gap-4 p-4 dark:bg-foreground/30  bg-[#e2e6dc] transition-all overflow-auto",
-            open ? "mt-16" : "mt-12",
+            open ? "mt-16" : "mt-12"
           )}
         >
           {children}
