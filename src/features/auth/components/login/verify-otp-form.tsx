@@ -4,10 +4,8 @@ import { useState, useEffect } from "react";
 // import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { AlertCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -33,24 +31,33 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { useForgotPasswordMutation, useVerifyOtpForgotPasswordMutation } from "@/features/auth/api";
-import { verifyOtpFormSchema, VerifyOtpFormValues } from "@/features/auth/validation";
+import {
+  useForgotPasswordMutation,
+  useVerifyOtpForgotPasswordMutation,
+} from "@/features/auth/api";
+import {
+  verifyOtpFormSchema,
+  VerifyOtpFormValues,
+} from "@/features/auth/validation";
 
 export default function VerifyOtpForm() {
   const [resendDisabled, setResendDisabled] = useState(false);
   const [countdown, setCountdown] = useState(60);
-  const [verifyOtpForgotPassword, { isLoading }] = useVerifyOtpForgotPasswordMutation();
-  const [forgotPassword, { isLoading: isResending }] = useForgotPasswordMutation();
+  const [verifyOtpForgotPassword, { isLoading }] =
+    useVerifyOtpForgotPasswordMutation();
+  const [forgotPassword, { isLoading: isResending }] =
+    useForgotPasswordMutation();
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
+
     if (resendDisabled && countdown > 0) {
       timer = setTimeout(() => setCountdown((c) => c - 1), 1000);
     } else if (countdown === 0) {
       setResendDisabled(false);
       setCountdown(60);
     }
+
     return () => clearTimeout(timer);
   }, [resendDisabled, countdown]);
 
@@ -65,14 +72,13 @@ export default function VerifyOtpForm() {
     },
   });
 
-  const handleSubmit = async (data: {
-    otp: string;
-  }) => {
+  const handleSubmit = async (data: { otp: string }) => {
     try {
       const res = await verifyOtpForgotPassword({
         email: email,
         otp: data.otp,
       }).unwrap();
+
       router.replace("/dat-lai-mat-khau?otp=" + data.otp);
     } catch (error: any) {
     } finally {
@@ -85,8 +91,7 @@ export default function VerifyOtpForm() {
       await forgotPassword({ email }).unwrap();
       setResendDisabled(true);
       setCountdown(60);
-    } catch (error) {
-    }
+    } catch (error) {}
   };
 
   return (
@@ -116,15 +121,33 @@ export default function VerifyOtpForm() {
                       <div className="flex justify-center">
                         <InputOTP maxLength={6} {...field}>
                           <InputOTPGroup>
-                            <InputOTPSlot index={0} className="w-14 h-14 text-xl" />
-                            <InputOTPSlot index={1} className="w-14 h-14 text-xl" />
-                            <InputOTPSlot index={2} className="w-14 h-14 text-xl" />
+                            <InputOTPSlot
+                              className="w-14 h-14 text-xl"
+                              index={0}
+                            />
+                            <InputOTPSlot
+                              className="w-14 h-14 text-xl"
+                              index={1}
+                            />
+                            <InputOTPSlot
+                              className="w-14 h-14 text-xl"
+                              index={2}
+                            />
                           </InputOTPGroup>
                           <InputOTPSeparator />
                           <InputOTPGroup>
-                            <InputOTPSlot index={3} className="w-14 h-14 text-xl" />
-                            <InputOTPSlot index={4} className="w-14 h-14 text-xl" />
-                            <InputOTPSlot index={5} className="w-14 h-14 text-xl" />
+                            <InputOTPSlot
+                              className="w-14 h-14 text-xl"
+                              index={3}
+                            />
+                            <InputOTPSlot
+                              className="w-14 h-14 text-xl"
+                              index={4}
+                            />
+                            <InputOTPSlot
+                              className="w-14 h-14 text-xl"
+                              index={5}
+                            />
                           </InputOTPGroup>
                         </InputOTP>
                       </div>

@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next-nprogress-bar";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
 import Image from "next/image";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -25,8 +25,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ForgotPasswordFormValues, forgotPasswordSchema } from "@/features/auth/validation";
-import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  ForgotPasswordFormValues,
+  forgotPasswordSchema,
+} from "@/features/auth/validation";
 import { useForgotPasswordMutation } from "@/features/auth/api";
 
 export default function ForgotPasswordForm() {
@@ -40,11 +42,10 @@ export default function ForgotPasswordForm() {
     },
   });
 
-  const handleSubmit = async (data: {
-    email: string;
-  }) => {
+  const handleSubmit = async (data: { email: string }) => {
     try {
       const res = await forgotPassword(data).unwrap();
+
       router.replace("/xac-thuc-otp?email=" + data.email);
     } catch {
     } finally {
