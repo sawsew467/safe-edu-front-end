@@ -3,11 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next-nprogress-bar";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import Link from "next/link";
 import Image from "next/image";
-import { CheckCircle, AlertCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -28,26 +25,31 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-
-const formSchema = z.object({
-  email: z.string().email({ message: "Vui lòng nhập email hợp lệ." }),
-});
-
-type FormValues = z.infer<typeof formSchema>;
+import { ForgotPasswordFormValues, forgotPasswordSchema } from "@/features/auth/validation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForgotPasswordMutation } from "@/features/auth/api";
 
 export default function ForgotPasswordForm() {
   const router = useRouter();
+  const [forgotPassword, { isLoading }] = useForgotPasswordMutation();
 
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<ForgotPasswordFormValues>({
+    resolver: zodResolver(forgotPasswordSchema),
     defaultValues: {
       email: "",
     },
   });
+
+  const handleSubmit = async (data: {
+    email: string;
+  }) => {
+    try {
+      const res = await forgotPassword(data).unwrap();
+      router.replace("/xac-thuc-otp?email=" + data.email);
+    } catch {
+    } finally {
+    }
+  };
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-4 md:p-8 bg-gradient-to-b from-primary/80  to-primary/20 dark:from-[#3a5a0e]/40 dark:to-[#3a5a0e]/50 relative overflow-hidden">
@@ -71,61 +73,42 @@ export default function ForgotPasswordForm() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {isSuccess ? (
-            <Alert className="bg-green-50 border-green-200">
-              <CheckCircle className="h-4 w-4 text-green-600" />
-              <AlertDescription className="text-green-700">
-                Kiểm tra email để đặt lại mật khẩu. Nếu không thấy, hãy kiểm tra
-                thư mục spam.
-              </AlertDescription>
-            </Alert>
-          ) : (
-            <Form {...form}>
-              <form className="space-y-6">
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          className="border-primary focus:border-green-500 focus:ring-green-500"
-                          placeholder="your.email@example.com"
-                        />
-                      </FormControl>
-                      <FormDescription>
-                        Chúng tôi sẽ gửi mã xác minh qua email.
-                      </FormDescription>
-                      <FormMessage className="text-red-500 text-sm" />
-                    </FormItem>
-                  )}
-                />
-
-                {error && (
-                  <Alert variant="destructive">
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertDescription>{error}</AlertDescription>
-                  </Alert>
+          <Form {...form}>
+            <form
+              className="space-y-6"
+              onSubmit={form.handleSubmit(handleSubmit)}
+            >
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        className="border-primary focus:border-green-500 focus:ring-green-500"
+                        placeholder="your.email@example.com"
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Chúng tôi sẽ gửi mã xác minh qua email.
+                    </FormDescription>
+                    <FormMessage className="text-red-500 text-sm" />
+                  </FormItem>
                 )}
+              />
 
-                <Button
-                  className="w-full"
-                  disabled={form.formState.isSubmitting}
-                  type="submit"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    router.replace("/xac-thuc-otp");
-                  }}
-                >
-                  {form.formState.isSubmitting
-                    ? "Đang gửi..."
-                    : "Gửi mã xác minh"}
-                </Button>
-              </form>
-            </Form>
-          )}
+              <Button
+                className="w-full"
+                disabled={isLoading}
+                isLoading={isLoading}
+                type="submit"
+              >
+                Gửi mã xác minh
+              </Button>
+            </form>
+          </Form>
         </CardContent>
         <CardFooter className="flex justify-center">
           <div className="text-sm text-muted-foreground">
