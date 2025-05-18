@@ -34,29 +34,60 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-
-// Define the form schema with Zod
-const formSchema = z.object({
-  otp: z.string().min(6, {
-    message: "Please enter the complete 6-digit verification code.",
-  }),
-});
-
-type FormValues = z.infer<typeof formSchema>;
+import { useForgotPasswordMutation, useVerifyOtpForgotPasswordMutation } from "@/features/auth/api";
+import { verifyOtpFormSchema, VerifyOtpFormValues } from "@/features/auth/validation";
 
 export default function VerifyOtpForm() {
   const [resendDisabled, setResendDisabled] = useState(false);
   const [countdown, setCountdown] = useState(60);
+  const [verifyOtpForgotPassword, { isLoading }] = useVerifyOtpForgotPasswordMutation();
+  const [forgotPassword, { isLoading: isResending }] = useForgotPasswordMutation();
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (resendDisabled && countdown > 0) {
+      timer = setTimeout(() => setCountdown((c) => c - 1), 1000);
+    } else if (countdown === 0) {
+      setResendDisabled(false);
+      setCountdown(60);
+    }
+    return () => clearTimeout(timer);
+  }, [resendDisabled, countdown]);
 
   const router = useRouter();
   const searchParams = useSearchParams();
+  const email = searchParams.get("email");
 
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<VerifyOtpFormValues>({
+    resolver: zodResolver(verifyOtpFormSchema),
     defaultValues: {
       otp: "",
     },
   });
+
+  const handleSubmit = async (data: {
+    otp: string;
+  }) => {
+    try {
+      const res = await verifyOtpForgotPassword({
+        email: email,
+        otp: data.otp,
+      }).unwrap();
+      router.replace("/dat-lai-mat-khau?otp=" + data.otp);
+    } catch (error: any) {
+    } finally {
+    }
+  };
+
+  const handleResend = async () => {
+    if (!email) return;
+    try {
+      await forgotPassword({ email }).unwrap();
+      setResendDisabled(true);
+      setCountdown(60);
+    } catch (error) {
+    }
+  };
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-4 md:p-8 bg-gradient-to-b from-primary/80  to-primary/20 dark:from-[#3a5a0e]/40 dark:to-[#3a5a0e]/50 relative overflow-hidden">
@@ -71,6 +102,7 @@ export default function VerifyOtpForm() {
           <Form {...form}>
             <form
               className="space-y-6"
+              onSubmit={form.handleSubmit(handleSubmit)}
             >
               <FormField
                 control={form.control}
@@ -80,19 +112,19 @@ export default function VerifyOtpForm() {
                     <FormLabel>Mã xác minh</FormLabel>
                     <FormControl>
                       <div className="flex justify-center">
-                      <InputOTP maxLength={6} {...field}>
-                        <InputOTPGroup>
-                          <InputOTPSlot index={0} className="w-14 h-14 text-xl" />
-                          <InputOTPSlot index={1} className="w-14 h-14 text-xl" />
-                          <InputOTPSlot index={2} className="w-14 h-14 text-xl" />
-                        </InputOTPGroup>
-                        <InputOTPSeparator />
-                        <InputOTPGroup>
-                          <InputOTPSlot index={3} className="w-14 h-14 text-xl" />
-                          <InputOTPSlot index={4} className="w-14 h-14 text-xl" />
-                          <InputOTPSlot index={5} className="w-14 h-14 text-xl" />
-                        </InputOTPGroup>
-                      </InputOTP>
+                        <InputOTP maxLength={6} {...field}>
+                          <InputOTPGroup>
+                            <InputOTPSlot index={0} className="w-14 h-14 text-xl" />
+                            <InputOTPSlot index={1} className="w-14 h-14 text-xl" />
+                            <InputOTPSlot index={2} className="w-14 h-14 text-xl" />
+                          </InputOTPGroup>
+                          <InputOTPSeparator />
+                          <InputOTPGroup>
+                            <InputOTPSlot index={3} className="w-14 h-14 text-xl" />
+                            <InputOTPSlot index={4} className="w-14 h-14 text-xl" />
+                            <InputOTPSlot index={5} className="w-14 h-14 text-xl" />
+                          </InputOTPGroup>
+                        </InputOTP>
                       </div>
                     </FormControl>
                     <FormDescription>
@@ -106,26 +138,26 @@ export default function VerifyOtpForm() {
               <div className="space-y-4">
                 <Button
                   className="w-full"
-                  disabled={form.formState.isSubmitting}
+                  disabled={isLoading}
+                  isLoading={isLoading}
                   type="submit"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    router.replace("dat-lai-mat-khau");
-                  }}
                 >
-                  {form.formState.isSubmitting ? "Đang xác minh..." : "Xác minh mã"}
+                  Xác minh mã
                 </Button>
 
                 <div className="text-center">
                   <Button
                     className="text-sm"
-                    disabled={resendDisabled}
+                    disabled={resendDisabled || isResending}
                     type="button"
                     variant="ghost"
+                    onClick={handleResend}
                   >
                     {resendDisabled
                       ? `Gửi lại mã sau ${countdown}s`
-                      : "Không nhận được mã? Gửi lại"}
+                      : isResending
+                        ? "Đang gửi lại..."
+                        : "Không nhận được mã? Gửi lại"}
                   </Button>
                 </div>
               </div>

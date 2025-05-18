@@ -27,15 +27,11 @@ import {
 } from "@/components/ui/card";
 import { ForgotPasswordFormValues, forgotPasswordSchema } from "@/features/auth/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-interface ForgotPasswordStepProps {
-  onSubmit: (data: { email: string }) => void;
-  form: ReturnType<typeof useForm<ForgotPasswordFormValues>>;
-  isLoading: boolean;
-}
+import { useForgotPasswordMutation } from "@/features/auth/api";
 
 export default function ForgotPasswordForm() {
   const router = useRouter();
+  const [forgotPassword, { isLoading }] = useForgotPasswordMutation();
 
   const form = useForm<ForgotPasswordFormValues>({
     resolver: zodResolver(forgotPasswordSchema),
@@ -44,14 +40,12 @@ export default function ForgotPasswordForm() {
     },
   });
 
-  const onSubmit = (data: ForgotPasswordFormValues) => {
-    console.log("Dữ liệu hợp lệ:", data);
-  };
-
-  const handleSubmit = async (data: ForgotPasswordFormValues) => {
+  const handleSubmit = async (data: {
+    email: string;
+  }) => {
     try {
-      onSubmit(data);
-      router.replace("/xac-thuc-otp");
+      const res = await forgotPassword(data).unwrap();
+      router.replace("/xac-thuc-otp?email=" + data.email);
     } catch {
     } finally {
     }
@@ -107,12 +101,11 @@ export default function ForgotPasswordForm() {
 
               <Button
                 className="w-full"
-                disabled={form.formState.isSubmitting}
+                disabled={isLoading}
+                isLoading={isLoading}
                 type="submit"
               >
-                {form.formState.isSubmitting
-                  ? "Đang gửi..."
-                  : "Gửi mã xác minh"}
+                Gửi mã xác minh
               </Button>
             </form>
           </Form>
