@@ -11,12 +11,10 @@ import { Student } from "@/features/users/user.types";
 const StudentManagement = () => {
   const { id: organizationId } = useParams<{ id: string }>();
 
-
   const { students, isFetching } = useGetAllStudentsQuery(
     {},
     {
       selectFromResult: ({ data, isFetching }) => {
-
         return {
           students:
             data?.data?.items
@@ -33,8 +31,6 @@ const StudentManagement = () => {
       },
     }
   );
-
-  console.log("🚀 ~ StudentManagement ~ students:", students);
 
   return (
     <>

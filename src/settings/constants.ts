@@ -5,6 +5,8 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 const SITE_URL = "/";
 
 const USER_INFO = "_user_info";
+const ORGANIZATION_LIST = "_organization_list";
+const CURRENT_ORGANIZATION = "_current_organization";
 const ACCESS_TOKEN = "_access_token";
 const ACCESS_TOKEN_ADMIN = "_access_token_admin";
 const REFRESH_TOKEN = "_refresh_token";
@@ -31,6 +33,8 @@ const constants = {
   ASSETS_URL,
   SITE_URL,
   USER_INFO,
+  ORGANIZATION_LIST,
+  CURRENT_ORGANIZATION,
   ACCESS_TOKEN,
   REFRESH_TOKEN,
   IS_AUTH,

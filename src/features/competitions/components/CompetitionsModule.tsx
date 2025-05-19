@@ -10,6 +10,7 @@ import { columns } from "@/app/quan-tri/(dashboard)/cuoc-thi/columns.competition
 import { StatusCompetition } from "@/settings/enums";
 import TitlePage from "@/components/ui/title-page";
 import useBreadcrumb from "@/hooks/useBreadcrumb";
+import { useAppSelector } from "@/hooks/redux-toolkit";
 
 const sortByStatus = (a: Competitions, b: Competitions) => {
   if (
@@ -41,6 +42,8 @@ const CompetitionsModule = () => {
     },
   ]);
 
+  const { current_organization } = useAppSelector((state) => state.auth);
+
   const router = useRouter();
   const { competitions, isFetching } = useGetAllCompetitionsQuery(undefined, {
     selectFromResult: ({ data, isFetching }) => {
@@ -49,6 +52,10 @@ const CompetitionsModule = () => {
       return {
         competitions:
           data?.data
+            ?.filter(
+              (item: Competitions) =>
+                item.organizationId === current_organization?.id
+            )
             ?.map((item: Competitions) => ({
               ...item,
               status: !item?.isActive
