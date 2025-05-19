@@ -29,8 +29,6 @@ const ManagerManagement = () => {
     }
   );
 
-  console.log("🚀 ~ ManagerManagement ~ managers:", managers);
-
   return (
     <>
       <TitlePage
