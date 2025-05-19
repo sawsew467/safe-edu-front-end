@@ -13,16 +13,28 @@ import {
 
 interface BreadcrumbProps {
   items: BreadcrumbItemInterface[];
+  user_role: {
+    userId: string;
+    role: string;
+  } | null;
+  current_organization: {
+    id: string;
+    name: string;
+  } | null;
 }
 
-export function HeaderBreadcrumb({ items }: BreadcrumbProps) {
+export function HeaderBreadcrumb({
+  items,
+  user_role,
+  current_organization,
+}: BreadcrumbProps) {
   return (
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem>
           <BreadcrumbLink className="flex items-center" href="/quan-tri">
             <Home className="h-4 w-4 mr-2" />
-            Trang chủ
+            {current_organization?.name ?? "Trang chủ"}
           </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator>

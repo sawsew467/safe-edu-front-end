@@ -20,6 +20,7 @@ export interface Competitions {
   updated_at: string;
   slug: string;
   id: string;
+  organizationId: string;
 }
 
 export interface Question {

@@ -13,7 +13,7 @@ import PremiumLeaderboard from "@/features/competitions/components/quizz/leaderB
 type Params = Promise<{ slug: string }>;
 const fetchQuizzByIdCompetition = async (slug: string) => {
   const { data } = await customFetch(
-    `${constants.API_SERVER}/competitions/get-all-quiz-by-slug/${slug}`,
+    `${constants.API_SERVER}/competitions/get-all-quiz-by-slug/${slug}`
   );
 
   return data?.data;
@@ -21,7 +21,7 @@ const fetchQuizzByIdCompetition = async (slug: string) => {
 
 const fetchCompetitionsById = async (slug: string) => {
   const { data } = await customFetch(
-    `${constants.API_SERVER}/competitions/slug/${slug}`,
+    `${constants.API_SERVER}/competitions/slug/${slug}`
   );
 
   return data;
@@ -30,14 +30,14 @@ const fetchCompetitionsById = async (slug: string) => {
 export async function generateMetadata({ params }: { params: Params }) {
   const { slug } = await params;
   const competition: Competitions = await fetchCompetitionsById(
-    (slug ?? "") as string,
+    (slug ?? "") as string
   );
 
   return {
     title: competition?.title,
     description: competition?.description,
     date: `${new Date(competition?.startDate).toLocaleDateString()} - ${new Date(
-      competition?.endDate,
+      competition?.endDate
     ).toLocaleDateString()}`,
   };
 }
@@ -45,11 +45,11 @@ export async function generateMetadata({ params }: { params: Params }) {
 const QuizzPage = async (props: { params: Params }) => {
   const { slug } = await props.params;
   const quizzs: Quizz[] = await fetchQuizzByIdCompetition(
-    (slug ?? "") as string,
+    (slug ?? "") as string
   );
 
   const competition: Competitions = await fetchCompetitionsById(
-    (slug ?? "") as string,
+    (slug ?? "") as string
   );
 
   const status =
@@ -139,12 +139,12 @@ const QuizzPage = async (props: { params: Params }) => {
                 <div className="flex flex-col items-start">
                   <div className="flex items-center text-[#4a6b0e]">
                     <Calendar className="w-4 h-4 mr-1" />
-                    <span className="font-medium">
+                    <span className="font-medium capitalize">
                       {formatDate(competition?.startDate, "dddd, DD/MM")}
                     </span>
                   </div>
-                  <div className="flex items-center text-[#4a6b0e] text-sm">
-                    <Clock className="w-3 h-3 mr-1" />
+                  <div className="flex items-center text-[#4a6b0e] ">
+                    <Clock className="w-4 h-4 mr-1" />
                     <span className="font-medium">
                       {formatDate(competition?.startDate, "HH [giờ] mm [phút]")}
                     </span>
@@ -163,12 +163,12 @@ const QuizzPage = async (props: { params: Params }) => {
                 <div className="flex flex-col items-start">
                   <div className="flex items-center text-red-800 ">
                     <Calendar className="w-4 h-4 mr-1" />
-                    <span className="font-medium">
+                    <span className="font-medium capitalize">
                       {formatDate(competition?.endDate, "dddd, DD/MM")}
                     </span>
                   </div>
-                  <div className="flex items-center text-red-800 text-sm">
-                    <Clock className="w-3 h-3 mr-1" />
+                  <div className="flex items-center text-red-800 ">
+                    <Clock className="w-4 h-4 mr-1" />
                     <span>
                       {formatDate(competition?.endDate, "HH [giờ] mm [phút]")}
                     </span>

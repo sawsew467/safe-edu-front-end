@@ -65,6 +65,7 @@ export type Manager = {
   province_id: string[];
   update_by: string;
   updated_at: string;
+  organizationId: Organization[];
 };
 export type TypeAddNewAdmin = {
   first_name: string;
@@ -129,7 +130,7 @@ export type Student = {
   full_name: string;
   username: string;
   phone_number: string;
-  organizationId: Organization[];
+  organizationId: Organization;
   avatar: string;
   date_of_birth: string;
   gender: "Male" | "Female" | "Other";

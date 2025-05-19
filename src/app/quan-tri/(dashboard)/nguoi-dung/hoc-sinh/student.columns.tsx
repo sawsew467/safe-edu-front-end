@@ -43,7 +43,7 @@ export const columns: ColumnDef<Student>[] = [
           width={100}
         />
       ) : (
-        <p className="text-red-500">*không tìm thấy ảnh đại diện</p>
+        <p className="text-red-500">*Chưa có ảnh đại diện</p>
       );
     },
   },
@@ -58,16 +58,14 @@ export const columns: ColumnDef<Student>[] = [
     accessorKey: "organizationId",
     header: "Tổ chức",
     cell: ({ row }) => {
-      const organization: Organization = (
-        row.getValue("organizationId") as Organization[]
-      )?.[0];
+      const organization: Organization = row.getValue("organizationId");
 
       return organization?.isActive ? (
         <div className="">
           <div className="font-medium">{organization?.name}</div>
         </div>
       ) : (
-        <p className="text-red-500">*Học sinh này không thuộc tổ chức nào</p>
+        <p className="text-red-500">*Chưa thuộc tổ chức nào</p>
       );
     },
   },
@@ -80,7 +78,7 @@ export const columns: ColumnDef<Student>[] = [
       return phoneNumber ? (
         <p>{phoneNumber}</p>
       ) : (
-        <p className="text-red-500">*Học sinh này không có sđt</p>
+        <p className="text-red-500">*Chưa có SĐT</p>
       );
     },
   },
