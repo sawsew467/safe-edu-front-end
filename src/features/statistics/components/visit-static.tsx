@@ -2,7 +2,7 @@
 
 import { useProvinceVisitMutation, useVisitMutation } from '@/features/statistics/api';
 import { useGetUserQuery } from '@/features/users/api/student.api';
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 function VisitStatic() {
     const [visit] = useVisitMutation();
