@@ -15,17 +15,13 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/custom-tabs";
-import { ManagerRole, UserRole } from "@/settings/enums";
+import { UserRole } from "@/settings/enums";
 import useBreadcrumb from "@/hooks/useBreadcrumb";
-import { useAppSelector } from "@/hooks/redux-toolkit";
 
 const UserManagementModule = () => {
   const router = useRouter();
   const params = useSearchParams();
   const tab = params.get("tab") ?? "";
-  const { role } = useAppSelector((state) => state.auth.user_role) ?? {
-    role: "unkown",
-  };
 
   useBreadcrumb([
     {
@@ -45,29 +41,19 @@ const UserManagementModule = () => {
     <>
       <Tabs value={tab in UserRole ? tab : "admin"}>
         <TabsList className="flex justify-start rounded-none overflow-hidden">
-          {role === ManagerRole.admin && (
-            <TabsTrigger id="admin" value="admin" onClick={handleChangeTabs}>
-              Quản trị viên
-            </TabsTrigger>
-          )}
-          {(role === ManagerRole.admin || role === ManagerRole.supervision) && (
-            <TabsTrigger
-              id="supervision"
-              value="supervision"
-              onClick={handleChangeTabs}
-            >
-              Quan sát viên
-            </TabsTrigger>
-          )}
-          {(role === ManagerRole.admin || role === ManagerRole.manager) && (
-            <TabsTrigger
-              id="manager"
-              value="manager"
-              onClick={handleChangeTabs}
-            >
-              Quản lí viên
-            </TabsTrigger>
-          )}
+          <TabsTrigger id="admin" value="admin" onClick={handleChangeTabs}>
+            Quản trị viên
+          </TabsTrigger>
+          <TabsTrigger
+            id="supervision"
+            value="supervision"
+            onClick={handleChangeTabs}
+          >
+            Quan sát viên
+          </TabsTrigger>
+          <TabsTrigger id="manager" value="manager" onClick={handleChangeTabs}>
+            Quản lí viên
+          </TabsTrigger>
           <TabsTrigger id="student" value="student" onClick={handleChangeTabs}>
             Học sinh
           </TabsTrigger>

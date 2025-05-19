@@ -20,8 +20,6 @@ const baseQuery = fetchBaseQuery({
       ? JSON.parse(currentOrganizationRaw)
       : null;
 
-    console.log("🚀 ~ currentOrganization:", currentOrganization);
-
     headers.set("Content-Type", "application/json");
 
     if (accessToken) {

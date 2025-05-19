@@ -54,7 +54,7 @@ const CompetitionsModule = () => {
           data?.data
             ?.filter(
               (item: Competitions) =>
-                item.organizationId === current_organization?.id
+                item.organizationId?._id === current_organization?.id
             )
             ?.map((item: Competitions) => ({
               ...item,

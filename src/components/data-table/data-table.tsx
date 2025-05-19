@@ -147,7 +147,7 @@ export default function DataTable<TData, TValue>({
                   className="h-24 text-center"
                   colSpan={columns.length}
                 >
-                  {"No data results"}
+                  {"Chưa có dữ liệu"}
                 </TableCell>
               </TableRow>
             )}
