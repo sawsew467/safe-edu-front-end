@@ -35,7 +35,7 @@ function UserDropdown() {
       isSuccess,
     }),
   });
-
+  
   const handleGetProfile = () => {
     router.push(`/trang-ca-nhan/${user?.username}`);
   };
