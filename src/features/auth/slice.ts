@@ -32,7 +32,7 @@ interface AuthSliceInterface {
 const initialState: AuthSliceInterface = {
   userInfo: (() => {
     try {
-      const userInfo = getClientCookie(constants.USER_INFO);
+      const userInfo = getClientCookie(constants.USER_INFO) || null;
 
       return userInfo ? JSON.parse(userInfo) : null;
     } catch {
@@ -44,12 +44,8 @@ const initialState: AuthSliceInterface = {
   user_role: (() => {
     const access_token = getClientCookie(constants.ACCESS_TOKEN) || null;
 
-    console.log("🚀 ~ access_token:", access_token);
-
     if (!access_token) return null;
     const decode_token = decodeToken(access_token);
-
-    console.log("🚀 ~ decode_token:", decode_token);
 
     if (!decode_token) return null;
 
@@ -59,14 +55,14 @@ const initialState: AuthSliceInterface = {
     };
   })(),
   organization_list: (() => {
-    const organization_list = getClientCookie(constants.ORGANIZATION_LIST);
+    const organization_list =
+      getClientCookie(constants.ORGANIZATION_LIST) || null;
 
     return organization_list ? JSON.parse(organization_list) : null;
   })(),
   current_organization: (() => {
-    const current_organization = getClientCookie(
-      constants.CURRENT_ORGANIZATION
-    );
+    const current_organization =
+      getClientCookie(constants.CURRENT_ORGANIZATION) || null;
 
     return current_organization ? JSON.parse(current_organization) : null;
   })(),
@@ -80,6 +76,8 @@ export const authSlice = createSlice({
       state.userInfo = action.payload;
     },
     setOrganizationList: (state, action) => {
+      if (!action.payload?.length) return;
+
       state.organization_list = action.payload;
       state.current_organization = action.payload[0];
       setClientCookie(
