@@ -132,9 +132,9 @@ export default function UpdateProfileModule() {
           return {
             provinces: data?.data
               ? data?.data?.items?.map((province: Province) => ({
-                  label: province?.name,
-                  value: province?._id,
-                }))
+                label: province?.name,
+                value: province?._id,
+              }))
               : [],
           };
         },
@@ -147,10 +147,10 @@ export default function UpdateProfileModule() {
       return {
         organizations: data?.data
           ? data?.data?.items?.map((org: Organization) => ({
-              label: org?.name,
-              value: org?._id,
-              province_id: org?.province_id?._id,
-            }))
+            label: org?.name,
+            value: org?._id,
+            province_id: org?.province_id?._id,
+          }))
           : [],
       };
     },
@@ -188,16 +188,14 @@ export default function UpdateProfileModule() {
       );
       form.setValue("avatar", user?.avatar);
 
-      form.setValue("organizationId", user?.organizationId?.[0]?._id);
+      form.setValue("organizationId", user?.organizationId?._id);
 
-      const province_id = user?.organizationId?.[0]?.province_id;
+      const province_id = user?.organizationId?.province_id;
 
       if (province_id) {
         form.setValue("provinceId", province_id);
         setSelectedProvince(province_id);
       }
-
-      // Set avatar preview if available
     }
   }, [user]);
 
