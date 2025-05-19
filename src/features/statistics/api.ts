@@ -83,7 +83,13 @@ export const newsAPI = baseApiAdmin.injectEndpoints({
         body: data,
         flashError: true,
       }),
-    })
+    }),
+    provinceVisit: build.mutation({
+      query: (provinceId: number) => ({
+        url: `/province-vist/${provinceId}`,
+        method: "POST",
+      }),
+    }),
   }),
 });
 
@@ -97,5 +103,6 @@ export const {
   useGetCompetitionMonthlyStatsQuery,
   useGetQuizResultMonthlyStatsQuery,
   useGetProvinceStatsQuery,
-  useVisitMutation
+  useVisitMutation,
+  useProvinceVisitMutation,
 } = newsAPI;

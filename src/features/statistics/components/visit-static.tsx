@@ -1,53 +1,37 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
-import { useVisitMutation } from "@/features/statistics/api";
+import { useProvinceVisitMutation, useVisitMutation } from '@/features/statistics/api';
+import { useGetUserQuery } from '@/features/users/api/student.api';
+import { useEffect, useState } from 'react'
 
 function VisitStatic() {
-  const [visit] = useVisitMutation();
-  const [ip, setIp] = useState<string>("");
+    const [visit] = useVisitMutation();
+    const [ip, setIp] = useState<string>("");
+    const { user } = useGetUserQuery(undefined, {
+        selectFromResult: ({ data }) => ({
+            user: data?.data,
+        }),
+    });
+    const provinceId = user?.organizationId?.province_id;
+    const [provinceVisit] = useProvinceVisitMutation();
 
-  const getCurrentLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-        },
-        (error) => {}
-      );
-    } else {
-    }
-  };
-
-  useEffect(() => {
-    const fetchIpAndVisit = async () => {
-      try {
-        getCurrentLocation();
-        const response = await fetch("https://api4.ipify.org/?format=json", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-        });
-
-        const data = await response.json();
-
-        console.log(data);
-
-        setIp(data.IPv4);
-        visit({ ipAddress: data.IPv4 });
-        console.log("[VisitStatic] User IP address:", data.IPv4);
-      } catch (error) {
-        console.error("Error fetching IP address:", error);
-      }
-    };
-
-    fetchIpAndVisit();
-  }, [visit]);
-
-  return null;
+    useEffect(() => {
+        const fetchIpAndVisit = async () => {
+            try {
+                const response = await fetch('https://api.ipify.org/?format=json');
+                const data = await response.json();
+                setIp(data.ip);
+                visit({ ipAddress: data.ip });
+                if (provinceId) {
+                    provinceVisit(provinceId);
+                }
+            } catch (error) {
+                console.error("Error fetching IP address:", error);
+            }
+        };
+        fetchIpAndVisit();
+    }, [visit, provinceId]);
+    return null
 }
 
-export default VisitStatic;
+export default VisitStatic
