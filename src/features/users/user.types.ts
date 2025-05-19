@@ -65,7 +65,7 @@ export type Manager = {
   province_id: string[];
   update_by: string;
   updated_at: string;
-  organizationId: Organization;
+  organizationId: Organization[];
 };
 export type TypeAddNewAdmin = {
   first_name: string;
