@@ -57,8 +57,8 @@ export const columns: ColumnDef<Student>[] = [
     header: "Tổ chức",
     cell: ({ row }) => {
       const organization: Organization = (
-        row.getValue("organizationId") as Organization[]
-      )?.[0];
+        row.getValue("organizationId") as Organization
+      );
 
       return organization?.isActive ? (
         <div className="">
