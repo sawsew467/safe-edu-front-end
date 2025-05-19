@@ -16,14 +16,20 @@ const ManagerManagement = () => {
     {
       selectFromResult: ({ data, isFetching }) => ({
         managers:
-          data?.data?.items?.map((item: Manager) => ({
-            ...item,
-            full_name: `${item?.first_name} ${item?.last_name}`,
-          })) ?? [],
+          data?.data?.items
+            ?.filter((item: Manager) =>
+              item?.organizationId?.some((item) => item?.id === organizationId)
+            )
+            ?.map((item: Manager) => ({
+              ...item,
+              full_name: `${item?.first_name} ${item?.last_name}`,
+            })) ?? [],
         isFetching,
       }),
     }
   );
+
+  console.log("🚀 ~ ManagerManagement ~ managers:", managers);
 
   return (
     <>

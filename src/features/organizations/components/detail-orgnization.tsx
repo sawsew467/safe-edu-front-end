@@ -18,6 +18,7 @@ import {
   TabsTrigger,
 } from "@/components/ui/custom-tabs";
 import useBreadcrumb from "@/hooks/useBreadcrumb";
+import { useAppSelector } from "@/hooks/redux-toolkit";
 
 function DetailOrgnization() {
   const router = useRouter();
@@ -38,15 +39,26 @@ function DetailOrgnization() {
       }
     );
 
-  useBreadcrumb([
-    {
-      label: `Quản lý tổ chức`,
-      href: "/quan-tri/to-chuc",
-    },
-    {
-      label: organization?.name ?? "",
-    },
-  ]);
+  const { current_organization } = useAppSelector((state) => state.auth);
+
+  useBreadcrumb(
+    current_organization
+      ? [
+          {
+            label: `Quản lý tổ chức`,
+            href: "/quan-tri/to-chuc",
+          },
+        ]
+      : [
+          {
+            label: `Quản lý tổ chức`,
+            href: "/quan-tri/to-chuc",
+          },
+          {
+            label: organization?.name ?? "",
+          },
+        ]
+  );
 
   const handleChangeTabs = ({
     target: { id },

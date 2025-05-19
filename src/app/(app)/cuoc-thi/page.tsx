@@ -32,25 +32,24 @@ const fetchLatestCompetitions = async (): Promise<{
 }> => {
   let competitions: Competitions[] = [];
   const data = await customFetch(
-    `${constants.API_SERVER}/competitions/user?filter={"isActive":"true"}`,
+    `${constants.API_SERVER}/competitions/user?filter={"isActive":"true"}`
   );
 
   try {
     if (!data?.data) {
       const { data } = await customFetch(
-        `${constants.API_SERVER}/competitions?filter={"isActive":"true"}`,
+        `${constants.API_SERVER}/competitions?filter={"isActive":"true"}`
       );
 
       competitions = data;
     } else {
       competitions = data?.data;
     }
-    console.log("competitions", competitions);
 
     const latestCompetitions =
       competitions?.filter(
         (item: Competitions) =>
-          item?.isActive && new Date(item.endDate).getTime() > Date.now(),
+          item?.isActive && new Date(item.endDate).getTime() > Date.now()
       ) ?? [];
 
     const donedCompetitions =
@@ -61,13 +60,13 @@ const fetchLatestCompetitions = async (): Promise<{
         (item: Competitions) =>
           item?.status === "doing" &&
           item?.isActive &&
-          new Date(item.endDate).getTime() > Date.now(),
+          new Date(item.endDate).getTime() > Date.now()
       ) ?? [];
 
     return {
       latestCompetitions: latestCompetitions?.sort(
         (a: Competitions, b: Competitions) =>
-          new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime(),
+          new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
       ),
       doingCompetitions,
       donedCompetitions,
@@ -88,6 +87,12 @@ const CompetitionsPage = async () => {
   return (
     <div className="min-h-screen ">
       <section className="container space-y-10 mx-auto px-4 py-12 md:py-16 rounded-lg ">
+        {doingCompetitions?.length !== 0 && (
+          <CompetitionsViewUser
+            competitions={doingCompetitions}
+            label="Cuộc thi đang tham gia"
+          />
+        )}
         {latestCompetitions?.length !== 0 && (
           <CompetitionsViewUser
             competitions={latestCompetitions}
@@ -97,13 +102,7 @@ const CompetitionsPage = async () => {
         {donedCompetitions?.length !== 0 && (
           <CompetitionsViewUser
             competitions={donedCompetitions}
-            label=" Cuộc thi đã tham gia"
-          />
-        )}
-        {doingCompetitions?.length !== 0 && (
-          <CompetitionsViewUser
-            competitions={doingCompetitions}
-            label="Cuộc thi đang tham gia"
+            label="Cuộc thi đã tham gia"
           />
         )}
       </section>

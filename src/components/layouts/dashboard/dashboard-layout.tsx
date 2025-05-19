@@ -34,6 +34,9 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const [open, setIsOpen] = useState(true);
+  const { user_role, current_organization } = useAppSelector(
+    (state) => state.auth
+  );
 
   const [scrollbarWidth, setScrollbarWidth] = useState(0);
 
@@ -82,7 +85,11 @@ export default function DashboardLayout({
               <SidebarTrigger className="-ml-1" />
               <Separator className="mr-2 h-4" orientation="vertical" />
               {breadcrumbs?.length > 0 && (
-                <HeaderBreadcrumb items={breadcrumbs} />
+                <HeaderBreadcrumb
+                  current_organization={current_organization}
+                  items={breadcrumbs}
+                  user_role={user_role}
+                />
               )}
             </div>
           </div>

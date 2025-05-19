@@ -62,7 +62,7 @@ export const columns: ColumnDef<Citizens>[] = [
       return phoneNumber ? (
         <p>{phoneNumber}</p>
       ) : (
-        <p className="text-red-500">*Học sinh này không có sđt</p>
+        <p className="text-red-500">*Chưa có SĐT</p>
       );
     },
   },

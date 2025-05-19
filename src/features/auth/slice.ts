@@ -17,6 +17,16 @@ interface AuthSliceInterface {
     userId: string;
     role: keyof typeof UserRoleBE;
   } | null;
+  organization_list:
+    | {
+        id: string;
+        name: string;
+      }[]
+    | null;
+  current_organization: {
+    id: string;
+    name: string;
+  } | null;
 }
 
 const initialState: AuthSliceInterface = {
@@ -34,8 +44,12 @@ const initialState: AuthSliceInterface = {
   user_role: (() => {
     const access_token = getClientCookie(constants.ACCESS_TOKEN) || null;
 
+    console.log("🚀 ~ access_token:", access_token);
+
     if (!access_token) return null;
     const decode_token = decodeToken(access_token);
+
+    console.log("🚀 ~ decode_token:", decode_token);
 
     if (!decode_token) return null;
 
@@ -43,6 +57,18 @@ const initialState: AuthSliceInterface = {
       role: decode_token?.role as keyof typeof UserRoleBE,
       userId: decode_token?.userId,
     };
+  })(),
+  organization_list: (() => {
+    const organization_list = getClientCookie(constants.ORGANIZATION_LIST);
+
+    return organization_list ? JSON.parse(organization_list) : null;
+  })(),
+  current_organization: (() => {
+    const current_organization = getClientCookie(
+      constants.CURRENT_ORGANIZATION
+    );
+
+    return current_organization ? JSON.parse(current_organization) : null;
   })(),
 };
 
@@ -53,6 +79,25 @@ export const authSlice = createSlice({
     setUserInfo: (state, action) => {
       state.userInfo = action.payload;
     },
+    setOrganizationList: (state, action) => {
+      state.organization_list = action.payload;
+      state.current_organization = action.payload[0];
+      setClientCookie(
+        constants.ORGANIZATION_LIST,
+        JSON.stringify(action.payload)
+      );
+      setClientCookie(
+        constants.CURRENT_ORGANIZATION,
+        JSON.stringify(action.payload[0])
+      );
+    },
+    setCurrentOrganization: (state, action) => {
+      state.current_organization = action.payload;
+      setClientCookie(
+        constants.CURRENT_ORGANIZATION,
+        JSON.stringify(action.payload)
+      );
+    },
     setAccessToken: (state, action) => {
       state.access_token = action.payload;
       if (
@@ -60,7 +105,11 @@ export const authSlice = createSlice({
         state.user_role?.role === "Citizen"
       )
         setClientCookie(constants.ACCESS_TOKEN, action.payload);
-      else setClientCookie(constants.ACCESS_TOKEN_ADMIN, action.payload);
+      else {
+        console.log("🚀 ~ setAccessToken: ~ action.payload:", action.payload);
+
+        setClientCookie(constants.ACCESS_TOKEN_ADMIN, action.payload);
+      }
     },
     setRefreshToken: (state, action) => {
       state.refresh_token = action.payload;
@@ -88,7 +137,13 @@ export const authSlice = createSlice({
   extraReducers: (builder) => {},
 });
 
-export const { setUserInfo, setAccessToken, setRefreshToken, setUserRole } =
-  authSlice.actions;
+export const {
+  setUserInfo,
+  setAccessToken,
+  setRefreshToken,
+  setUserRole,
+  setOrganizationList,
+  setCurrentOrganization,
+} = authSlice.actions;
 
 export default authSlice.reducer;
