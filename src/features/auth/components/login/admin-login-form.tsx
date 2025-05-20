@@ -44,8 +44,6 @@ export function LoginForm() {
         avatar: resFirebase.user.photoURL,
       }).unwrap();
 
-      console.log("res", res);
-
       const firebaseUser = {
         email: resFirebase.user.email,
         displayName: resFirebase.user.displayName,
@@ -53,7 +51,10 @@ export function LoginForm() {
       };
 
       setClientCookie(constants.USER_INFO, JSON.stringify(firebaseUser));
-      dispatch(setUserInfo(firebaseUser));
+      dispatch(setUserInfo({
+        ...firebaseUser,
+        displayName: res?.data?.fullName
+      }));
       dispatch(setUserRole(res?.data?.accessToken));
       dispatch(setAccessToken(res?.data?.accessToken));
       dispatch(setRefreshToken(res?.data?.refreshToken));
