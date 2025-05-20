@@ -38,12 +38,13 @@ export function LoginForm() {
         auth,
         provider.providerGoogle
       );
-
+      
       const res = await signInWithGoogle({
         token: resFirebase.user.accessToken,
+        avatar: resFirebase.user.photoURL,
       }).unwrap();
 
-      console.log("🚀 ~ handleGoogleLogin ~ res:", res);
+      console.log("res", res);
 
       const firebaseUser = {
         email: resFirebase.user.email,
