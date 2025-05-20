@@ -49,11 +49,13 @@ const fetchLatestCompetitions = async (): Promise<{
     const latestCompetitions =
       competitions?.filter(
         (item: Competitions) =>
-          item?.isActive && new Date(item.endDate).getTime() > Date.now()
+          item?.isActive 
       ) ?? [];
 
     const donedCompetitions =
-      competitions?.filter((item: Competitions) => item?.status === "done") ??
+      competitions?.filter((item: Competitions) => 
+        item?.status === "done"
+    ) ??
       [];
     const doingCompetitions =
       competitions?.filter(
@@ -63,11 +65,21 @@ const fetchLatestCompetitions = async (): Promise<{
           new Date(item.endDate).getTime() > Date.now()
       ) ?? [];
 
+    const sortedLatestCompetitions = latestCompetitions.sort((a, b) => {
+      const getStatusPriority = (item: Competitions) => {
+      if (new Date(item.startDate) > new Date()) return 0;
+      if (new Date(item.endDate) < new Date()) return 2;
+      return 1;
+      };
+
+      const statusDiff = getStatusPriority(a) - getStatusPriority(b);
+      if (statusDiff !== 0) return statusDiff;
+
+      return new Date(b.startDate).getTime() - new Date(a.startDate).getTime();
+    });
+
     return {
-      latestCompetitions: latestCompetitions?.sort(
-        (a: Competitions, b: Competitions) =>
-          new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
-      ),
+      latestCompetitions: sortedLatestCompetitions,
       doingCompetitions,
       donedCompetitions,
     };
