@@ -38,9 +38,9 @@ export const columns: ColumnDef<Student>[] = [
         <Image
           alt={`Ảnh đại diện của ${row.original?.full_name}`}
           className="rounded-full aspect-square object-cover"
-          height={100}
+          height={48}
           src={image}
-          width={100}
+          width={48}
         />
       ) : (
         <p className="text-red-500">*Chưa có ảnh đại diện</p>

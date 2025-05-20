@@ -4,9 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useRouter } from "next-nprogress-bar";
-
-import { formManagerSchema } from "../../user.schema";
-import { useAddNewManagerMutation } from "../../api/manager.api";
+import { useParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -20,17 +18,16 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import TitlePage from "@/components/ui/title-page";
-import useBreadcrumb from "@/hooks/useBreadcrumb";
 import { PhoneInput } from "@/components/ui/phone-input";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useGetAllOrganizationQuery } from "@/features/organizations/organization.api";
+  useGetAllOrganizationQuery,
+  useGetOrganizationByIdQuery,
+} from "@/features/organizations/organization.api";
 import { Organization } from "@/features/organizations/types";
+import { useAddNewManagerMutation } from "@/features/users/api/manager.api";
+import { formManagerSchema } from "@/features/users/user.schema";
+import { useAppSelector } from "@/hooks/redux-toolkit";
+import useBreadcrumb from "@/hooks/useBreadcrumb";
 const initialForm = {
   first_name: "",
   last_name: "",
@@ -40,16 +37,45 @@ const initialForm = {
 
 export default function AddNewManagerModule() {
   const router = useRouter();
+  const { id: organizationId } = useParams<{ id: string }>();
 
-  useBreadcrumb([
-    {
-      label: "Quản lí viên",
-      href: "/nguoi-dung?tab=manager",
-    },
-    {
-      label: "Thêm quản lí viên mới",
-    },
-  ]);
+  const { organization }: { organization: Organization } =
+    useGetOrganizationByIdQuery(
+      { id: organizationId },
+      {
+        skip: !organizationId,
+        selectFromResult: ({ data }) => {
+          return {
+            organization: data?.data,
+          };
+        },
+      }
+    );
+  const { current_organization } = useAppSelector((state) => state.auth);
+
+  useBreadcrumb(
+    current_organization
+      ? [
+          {
+            label: `Quản lý tổ chức`,
+            href: "/quan-tri/to-chuc",
+          },
+        ]
+      : [
+          {
+            label: `Quản lý tổ chức`,
+            href: "/quan-tri/to-chuc",
+          },
+          {
+            label: organization?.name ?? "",
+            href: `/quan-tri/to-chuc/${organizationId}`,
+          },
+          {
+            label: "Thêm quản lí viên mới",
+          },
+        ]
+  );
+
   const [createManagerAccount] = useAddNewManagerMutation();
   const { organizations } = useGetAllOrganizationQuery(undefined, {
     selectFromResult: ({ data }) => ({
@@ -67,24 +93,27 @@ export default function AddNewManagerModule() {
     defaultValues: initialForm,
   });
   const handleBack = () => {
-    router.replace("/quan-tri/nguoi-dung?tab=manager");
+    router.replace(`/quan-tri/to-chuc/${organizationId}`);
   };
 
   async function onSubmit(data: z.infer<typeof formManagerSchema>) {
     const toasID = toast.loading("đang tạo tài khoản...");
 
     try {
-      await createManagerAccount(data).unwrap();
+      await createManagerAccount({
+        ...data,
+        organizationId,
+      }).unwrap();
       toast.success("Tạo tài khoản thành công", { id: toasID });
-      handleBack();
+      router.replace(`/quan-tri/to-chuc/${organizationId}`);
     } catch (error) {
       toast.error("Tạo tài khoản thất bại", { id: toasID });
     }
   }
 
   return (
-    <>
-      <TitlePage title="Thêm Quản trị viên" />
+    <div className="bg-white dark:bg-background p-4 rounded-xl border-[1px] border-stone-50 dark:border-stone-800">
+      <TitlePage title="Thêm quản lý viên" />
       <Form {...form}>
         <form
           className="space-y-8 flex flex-col"
@@ -168,7 +197,7 @@ export default function AddNewManagerModule() {
               />
             </div>
           </div>
-          <FormField
+          {/* <FormField
             control={form.control}
             name="organizationId"
             render={({ field }) => (
@@ -208,7 +237,7 @@ export default function AddNewManagerModule() {
                 <FormMessage />
               </FormItem>
             )}
-          />
+          /> */}
           <div className="flex gap-2 justify-center">
             <Button
               className="font-medium"
@@ -224,6 +253,6 @@ export default function AddNewManagerModule() {
           </div>
         </form>
       </Form>
-    </>
+    </div>
   );
 }

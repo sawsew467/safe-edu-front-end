@@ -69,21 +69,21 @@ function DetailOrgnization() {
   };
 
   return (
-    <Tabs defaultValue={tab || "danh-sach-hoc-sinh"}>
+    <Tabs defaultValue={tab || "danh-sach-quan-li-vien"}>
       <TabsList>
-        <TabsTrigger
-          id="danh-sach-hoc-sinh"
-          value="danh-sach-hoc-sinh"
-          onClick={handleChangeTabs}
-        >
-          Danh sách học sinh
-        </TabsTrigger>
         <TabsTrigger
           id="danh-sach-quan-li-vien"
           value="danh-sach-quan-li-vien"
           onClick={handleChangeTabs}
         >
           Danh sách quản lý
+        </TabsTrigger>
+        <TabsTrigger
+          id="danh-sach-hoc-sinh"
+          value="danh-sach-hoc-sinh"
+          onClick={handleChangeTabs}
+        >
+          Danh sách học sinh
         </TabsTrigger>
         <TabsTrigger id="cai-dat" value="cai-dat" onClick={handleChangeTabs}>
           Cài đặt

@@ -28,11 +28,7 @@ const CitizenManagement = () => {
 
   return (
     <>
-      <TitlePage
-        contentHref="Thêm công dân"
-        href="nguoi-dung/cong-dan/them"
-        title="Quản lí công dân"
-      />
+      <TitlePage href="nguoi-dung/cong-dan/them" title="Quản lí công dân" />
       <DataTable columns={columns} data={citizens} isLoading={isFetching} />
     </>
   );

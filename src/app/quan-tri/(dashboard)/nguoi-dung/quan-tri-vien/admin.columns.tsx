@@ -16,7 +16,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { isImageLink } from "@/utils/checkimage";
 import { Admin } from "@/features/users/user.types";
 import {
   useActiveAdminMutation,
@@ -28,17 +27,15 @@ export const columns: ColumnDef<Admin>[] = [
     accessorKey: "avatar_url",
     header: "Ảnh đại diện",
     cell: ({ row }) => {
-      const image: string | null = isImageLink(row.getValue("avatar_url"))
-        ? row.getValue("avatar_url")
-        : null;
+      const image: string | null = row.getValue("avatar_url");
 
       return image ? (
         <Image
           alt={`Ảnh đại diện của ${row.original?.full_name}`}
           className="rounded-full"
-          height={100}
+          height={48}
           src={image}
-          width={100}
+          width={48}
         />
       ) : (
         <p className="text-red-500">*không tìm thấy ảnh đại diện</p>

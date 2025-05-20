@@ -29,13 +29,11 @@ const ManagerManagement = () => {
     }
   );
 
-  console.log("🚀 ~ ManagerManagement ~ managers:", managers);
-
   return (
     <>
       <TitlePage
-        contentHref="Thêm Quản lí viên"
-        href="nguoi-dung/quan-li-vien/them"
+        contentHref={"Thêm Quản lí viên"}
+        href={`/quan-tri/to-chuc/${id}/them-quan-li`}
         title="Quản lí Quản lí viên"
       />
       <DataTable columns={columns} data={managers} isLoading={isFetching} />
