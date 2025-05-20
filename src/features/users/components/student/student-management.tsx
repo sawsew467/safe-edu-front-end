@@ -20,13 +20,13 @@ const StudentManagement = () => {
           })) ?? [],
         isFetching,
       }),
-    },
+    }
   );
 
   return (
     <>
       <TitlePage
-        contentHref="Thêm học sinh viên"
+        contentHref="Thêm học sinh"
         href="nguoi-dung/hoc-sinh/them"
         title="Quản lí học sinh"
       />

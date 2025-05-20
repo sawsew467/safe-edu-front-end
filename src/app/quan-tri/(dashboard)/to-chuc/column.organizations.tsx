@@ -172,7 +172,7 @@ const ActionRow = ({ row }: { row: Row<OrganizationColumn> }) => {
                 href={`to-chuc/${row.original._id}`}
               >
                 <Eye className="h-4 w-4 text-blue-500" />
-                {<span className="">{"Xem"}</span>}
+                {<span className="">{"Xem thông tin"}</span>}
               </Link>
             </DialogTrigger>
             <DialogContent>

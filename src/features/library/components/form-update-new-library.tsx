@@ -55,7 +55,7 @@ const FormUpdateLibrary = () => {
       selectFromResult: ({ data }) => ({
         library: data?.data,
       }),
-    },
+    }
   );
   const [addTopic, { isLoading: isAddTopicLoading }] = useAddNewTopicMutation();
   const [updateLibrary, { isLoading: isUpdateLibraryLoading }] =
@@ -159,7 +159,7 @@ const FormUpdateLibrary = () => {
                 <FormItem>
                   <FormLabel>Tiêu đề</FormLabel>
                   <FormControl>
-                    <Input placeholder="nhập tiêu đề" {...field} />
+                    <Input placeholder="Nhập tiêu đề" {...field} />
                   </FormControl>
                   <FormDescription>
                     Đây là tiêu đề được hiển thị ở bên ngoài thư viện
@@ -209,7 +209,7 @@ const FormUpdateLibrary = () => {
                           >
                             {label}
                           </SelectItem>
-                        ),
+                        )
                       )}
                     </SelectContent>
                   </Select>

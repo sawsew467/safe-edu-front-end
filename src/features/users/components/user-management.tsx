@@ -4,8 +4,6 @@ import { useSearchParams } from "next/navigation";
 import { useRouter } from "next-nprogress-bar";
 
 import AdminManagement from "./admin/admin-management";
-import SuperVisionManagement from "./supervision/supervision-management";
-import ManagerManagement from "./manager/manager-management";
 import StudentManagement from "./student/student-management";
 import CitizenManagement from "./citizen/citizen-management";
 
@@ -44,16 +42,16 @@ const UserManagementModule = () => {
           <TabsTrigger id="admin" value="admin" onClick={handleChangeTabs}>
             Quản trị viên
           </TabsTrigger>
-          <TabsTrigger
+          {/* <TabsTrigger
             id="supervision"
             value="supervision"
             onClick={handleChangeTabs}
           >
             Quan sát viên
-          </TabsTrigger>
-          <TabsTrigger id="manager" value="manager" onClick={handleChangeTabs}>
+          </TabsTrigger> */}
+          {/* <TabsTrigger id="manager" value="manager" onClick={handleChangeTabs}>
             Quản lí viên
-          </TabsTrigger>
+          </TabsTrigger> */}
           <TabsTrigger id="student" value="student" onClick={handleChangeTabs}>
             Học sinh
           </TabsTrigger>
@@ -65,12 +63,12 @@ const UserManagementModule = () => {
           <TabsContent value="admin">
             <AdminManagement />
           </TabsContent>
-          <TabsContent value="supervision">
+          {/* <TabsContent value="supervision">
             <SuperVisionManagement />
-          </TabsContent>
-          <TabsContent value="manager">
+          </TabsContent> */}
+          {/* <TabsContent value="manager">
             <ManagerManagement />
-          </TabsContent>
+          </TabsContent> */}
           <TabsContent value="student">
             <StudentManagement />
           </TabsContent>

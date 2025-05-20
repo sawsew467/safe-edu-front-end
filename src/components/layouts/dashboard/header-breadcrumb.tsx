@@ -34,7 +34,7 @@ export function HeaderBreadcrumb({ items }: BreadcrumbProps) {
 
   const handleChangeOrganization = (organization: any) => {
     dispatch(setCurrentOrganization(organization));
-    window.location.reload();
+    window.location.href = `/quan-tri/to-chuc/${organization.id}`;
   };
 
   return (

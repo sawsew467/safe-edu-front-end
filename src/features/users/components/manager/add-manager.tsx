@@ -99,7 +99,7 @@ export default function AddNewManagerModule() {
                   <FormItem>
                     <FormLabel>Họ</FormLabel>
                     <FormControl>
-                      <Input placeholder="nhập họ..." type="text" {...field} />
+                      <Input placeholder="Nhập họ..." type="text" {...field} />
                     </FormControl>
                     <FormDescription>Nhập họ và tên của bạn</FormDescription>
                     <FormMessage />
@@ -115,7 +115,7 @@ export default function AddNewManagerModule() {
                   <FormItem>
                     <FormLabel>Tên</FormLabel>
                     <FormControl>
-                      <Input placeholder="nhập tên..." type="" {...field} />
+                      <Input placeholder="Nhập tên..." type="" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -133,7 +133,7 @@ export default function AddNewManagerModule() {
                     <FormLabel>Email</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="nhập email..."
+                        placeholder="Nhập email..."
                         type="email"
                         {...field}
                       />
@@ -154,7 +154,7 @@ export default function AddNewManagerModule() {
                     <FormLabel>Số điện thoại</FormLabel>
                     <FormControl className="w-full">
                       <PhoneInput
-                        placeholder="nhập sdt..."
+                        placeholder="Nhập sdt..."
                         {...field}
                         defaultCountry="VN"
                       />
@@ -197,7 +197,7 @@ export default function AddNewManagerModule() {
                           <SelectItem key={value} value={value}>
                             {label}
                           </SelectItem>
-                        ),
+                        )
                       )}
                     </SelectContent>
                   </Select>

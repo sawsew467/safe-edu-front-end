@@ -10,7 +10,10 @@ import TitlePage from "@/components/ui/title-page";
 
 const CitizenManagement = () => {
   const { citizens, isFetching } = useGetAllCitizensQuery(
-    {},
+    {
+      pageNumber: 1,
+      pageSize: 999,
+    },
     {
       selectFromResult: ({ data, isFetching }) => ({
         citizens:
@@ -20,7 +23,7 @@ const CitizenManagement = () => {
           })) ?? [],
         isFetching,
       }),
-    },
+    }
   );
 
   return (

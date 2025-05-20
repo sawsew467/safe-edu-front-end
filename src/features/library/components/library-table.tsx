@@ -24,14 +24,14 @@ const LibraryTable = () => {
               ?.map((item: Library) => ({
                 ...item,
                 topic_name: topics?.data?.data?.find(
-                  (topic: DataTopic) => topic._id === item.topic_id,
+                  (topic: DataTopic) => topic._id === item.topic_id._id
                 )?.topic_name,
               })) ?? [],
           isFetching,
         };
       },
       refetchOnMountOrArgChange: true,
-    },
+    }
   );
 
   useBreadcrumb([{ label: "Thư viện" }]);

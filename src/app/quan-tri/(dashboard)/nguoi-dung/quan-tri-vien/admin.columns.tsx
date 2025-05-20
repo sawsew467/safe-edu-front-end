@@ -79,7 +79,7 @@ export const columns: ColumnDef<Admin>[] = [
     cell: ({ row }) => {
       const status = row.getValue("isActive")
         ? { value: "active", label: "Hoạt động" }
-        : { value: "inactive", label: "Tạm dừng" };
+        : { value: "inactive", label: "Đã khoá" };
 
       return (
         <div
@@ -158,16 +158,16 @@ const Action = ({ row }: { row: Row<Admin> }) => {
       <DropdownMenuContent align="end">
         <DropdownMenuItem>
           <Link
-            className="flex gap-2 w-full"
+            className="flex gap-2 w-full items-center"
             href={`nguoi-dung/quan-tri-vien/${row.original?.id}`}
           >
             <Eye className="w-4 h-4 text-blue-500" />
-            {<span className="">{"Xem"}</span>}
+            {<span className="">{"Xem thông tin"}</span>}
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
           <button
-            className="flex gap-2 w-full"
+            className="flex gap-2 w-full items-center"
             onClick={() => handleAdmin(row.original?.id)}
           >
             {row.original?.isActive ? (
@@ -177,7 +177,7 @@ const Action = ({ row }: { row: Row<Admin> }) => {
             )}
             {
               <span className="">
-                {row.original?.isActive ? "Tạm dừng" : "Hoạt động"}
+                {row.original?.isActive ? "Khoá tài khoản" : "Mở lại tài khoản"}
               </span>
             }
           </button>
