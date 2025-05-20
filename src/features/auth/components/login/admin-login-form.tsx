@@ -38,12 +38,11 @@ export function LoginForm() {
         auth,
         provider.providerGoogle
       );
-
+      
       const res = await signInWithGoogle({
         token: resFirebase.user.accessToken,
+        avatar: resFirebase.user.photoURL,
       }).unwrap();
-
-      console.log("🚀 ~ handleGoogleLogin ~ res:", res);
 
       const firebaseUser = {
         email: resFirebase.user.email,
@@ -52,7 +51,10 @@ export function LoginForm() {
       };
 
       setClientCookie(constants.USER_INFO, JSON.stringify(firebaseUser));
-      dispatch(setUserInfo(firebaseUser));
+      dispatch(setUserInfo({
+        ...firebaseUser,
+        displayName: res?.data?.fullName
+      }));
       dispatch(setUserRole(res?.data?.accessToken));
       dispatch(setAccessToken(res?.data?.accessToken));
       dispatch(setRefreshToken(res?.data?.refreshToken));

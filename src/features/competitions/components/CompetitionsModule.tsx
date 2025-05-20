@@ -45,7 +45,10 @@ const CompetitionsModule = () => {
   const { current_organization } = useAppSelector((state) => state.auth);
 
   const router = useRouter();
-  const { competitions, isFetching } = useGetAllCompetitionsQuery(undefined, {
+  const { competitions, isFetching } = useGetAllCompetitionsQuery({
+    pageNumber: 1,
+    pageSize: 999,
+  }, {
     selectFromResult: ({ data, isFetching }) => {
       const now = new Date();
 
