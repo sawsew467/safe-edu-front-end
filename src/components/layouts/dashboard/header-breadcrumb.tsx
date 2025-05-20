@@ -10,33 +10,64 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useAppDispatch, useAppSelector } from "@/hooks/redux-toolkit";
+import { setCurrentOrganization } from "@/features/auth/slice";
 
 interface BreadcrumbProps {
   items: BreadcrumbItemInterface[];
-  user_role: {
-    userId: string;
-    role: string;
-  } | null;
-  current_organization: {
-    id: string;
-    name: string;
-  } | null;
 }
 
-export function HeaderBreadcrumb({
-  items,
-  user_role,
-  current_organization,
-}: BreadcrumbProps) {
+export function HeaderBreadcrumb({ items }: BreadcrumbProps) {
+  const { current_organization, organization_list } = useAppSelector(
+    (state) => state.auth
+  );
+
+  const dispatch = useAppDispatch();
+
+  const handleChangeOrganization = (organization: any) => {
+    dispatch(setCurrentOrganization(organization));
+    window.location.reload();
+  };
+
   return (
     <Breadcrumb>
       <BreadcrumbList>
-        <BreadcrumbItem>
-          <BreadcrumbLink className="flex items-center" href="/quan-tri">
-            <Home className="h-4 w-4 mr-2" />
-            {current_organization?.name ?? "Trang chủ"}
-          </BreadcrumbLink>
-        </BreadcrumbItem>
+        {!current_organization?.name && (
+          <BreadcrumbItem>
+            <BreadcrumbLink className="flex items-center" href="/quan-tri">
+              <Home className="h-4 w-4 mr-2" />
+              {"Trang chủ"}
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+        )}
+        {current_organization?.name && (
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              {current_organization?.name}
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel>Tổ chức đang quản lý</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {organization_list?.map((organization) => (
+                <DropdownMenuItem
+                  key={organization.id}
+                  onClick={() => handleChangeOrganization(organization)}
+                >
+                  {organization.name}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
+
         <BreadcrumbSeparator>
           <ChevronRight className="h-4 w-4" />
         </BreadcrumbSeparator>

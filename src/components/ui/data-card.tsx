@@ -42,7 +42,7 @@ export default function CardList<TData, TValue>({
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = React.useState("");
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    [],
+    []
   );
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
@@ -134,7 +134,7 @@ export default function CardList<TData, TValue>({
                         <div className="flex flex-1 justify-end text-end text-base">
                           {flexRender(
                             cell?.column?.columnDef?.cell,
-                            cell?.getContext(),
+                            cell?.getContext()
                           )}
                         </div>
                       </div>
@@ -147,7 +147,7 @@ export default function CardList<TData, TValue>({
         </div>
       ) : (
         <p className="text-center text-muted-foreground mt-4">
-          Không tìm thấy dữ liệu
+          {"Chưa có dữ liệu"}
         </p>
       )}
       {!isLoading && table?.getRowModel()?.rows?.length !== 0 && (

@@ -1,15 +1,15 @@
 "use client";
 import React from "react";
-import { useParams } from "next/navigation";
 
 import { columns } from "@/app/quan-tri/(dashboard)/nguoi-dung/quan-li-vien/manager.columns";
 import DataTable from "@/components/data-table/data-table";
 import TitlePage from "@/components/ui/title-page";
 import { useGetAllManagerQuery } from "@/features/users/api/manager.api";
 import { Manager } from "@/features/users/user.types";
+import { useAppSelector } from "@/hooks/redux-toolkit";
 
 const ManagerManagement = () => {
-  const { id: organizationId } = useParams<{ id: string }>();
+  const { current_organization } = useAppSelector((state) => state.auth);
 
   const { managers, isFetching } = useGetAllManagerQuery(
     {},
@@ -18,7 +18,9 @@ const ManagerManagement = () => {
         managers:
           data?.data?.items
             ?.filter((item: Manager) =>
-              item?.organizationId?.some((item) => item?.id === organizationId)
+              item?.organizationId?.some(
+                (item) => item?.id === current_organization?.id
+              )
             )
             ?.map((item: Manager) => ({
               ...item,
@@ -28,6 +30,8 @@ const ManagerManagement = () => {
       }),
     }
   );
+
+  console.log("🚀 ~ ManagerManagement ~ managers:", managers);
 
   return (
     <>

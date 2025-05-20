@@ -55,19 +55,21 @@ export const columns: ColumnDef<Manager>[] = [
   },
   {
     accessorKey: "organizationId",
-    header: "Tỉnh / thành phố",
+    header: "Thuộc tổ chức",
     cell: ({ row }) => {
-      const organization: Organization = (
-        row.getValue("organizationId") as Organization[]
-      )?.[0];
+      const organizations: Organization[] = row.getValue("organizationId");
 
-      return organization?.isActive ? (
-        <div className="">
+      if (!organizations?.length) {
+        return (
+          <p className="text-red-500">*Quản lí viên này quản lí tổ chức nào</p>
+        );
+      }
+
+      return organizations.map((organization) => (
+        <div key={organization.id} className="">
           <div className="font-medium">{organization?.name}</div>
         </div>
-      ) : (
-        <p className="text-red-500">*Quản lí viên này quản lí tổ chức nào</p>
-      );
+      ));
     },
   },
   {
