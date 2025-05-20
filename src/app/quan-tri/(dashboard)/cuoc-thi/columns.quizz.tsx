@@ -4,7 +4,7 @@ import {
   CrossCircledIcon,
   DotsHorizontalIcon,
 } from "@radix-ui/react-icons";
-import { Pencil } from "lucide-react";
+import { Pencil, Trash } from "lucide-react";
 import { toast } from "sonner";
 import React from "react";
 import Link from "next/link";
@@ -18,8 +18,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { useDeleteCompetitionsMutation } from "@/features/competitions/api.competitions";
 import { Badge } from "@/components/ui/badge";
+import { useDeleteQuizzMutation } from "@/features/competitions/api.admin.quizz";
 
 export const columns: ColumnDef<Quizz>[] = [
   {
@@ -81,17 +81,17 @@ const getStatus = (row: Row<Quizz>) => {
 };
 
 const Action = (row: Row<Quizz>) => {
-  const [deleteNews] = useDeleteCompetitionsMutation();
+  const [deleteQuizz] = useDeleteQuizzMutation();
   const { id: competitionId } = useParams();
-  const handleDeleteCompetitions = async (id: string) => {
-    const toastID = toast.loading("đang xóa bài báo...");
+  const handleDeleteQuizz = async (id: string) => {
+    const toastID = toast.loading("đang xóa phần thi...");
 
     try {
-      await deleteNews({ id }).unwrap();
+      await deleteQuizz({ id }).unwrap();
 
-      toast.success("Xóa bài báo thành công", { id: toastID });
+      toast.success("Xóa phần thi thành công", { id: toastID });
     } catch (err) {
-      toast.error("Xóa bài báo thất bại", { id: toastID });
+      toast.error("Xóa phần thi thất bại", { id: toastID });
     }
   };
 
@@ -115,6 +115,15 @@ const Action = (row: Row<Quizz>) => {
             <Pencil className="h-4 w-4 text-green-500" />
             {<span className="">{"Thay đổi"}</span>}
           </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <button
+            className="cursor-pointer flex gap-2 px-2 py-1 justify-start w-full"
+            onClick={() => handleDeleteQuizz(row.original._id)}
+          >
+            <Trash className="h-4 w-4 text-red-500" />
+            {<span className="">{"Xóa"}</span>}
+          </button>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

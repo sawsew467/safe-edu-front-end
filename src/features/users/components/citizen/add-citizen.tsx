@@ -85,7 +85,7 @@ export default function AddNewCitizenModule() {
                   <FormItem>
                     <FormLabel>Họ</FormLabel>
                     <FormControl>
-                      <Input placeholder="nhập họ..." type="text" {...field} />
+                      <Input placeholder="Nhập họ..." type="text" {...field} />
                     </FormControl>
                     <FormDescription>Nhập họ và tên của bạn</FormDescription>
                     <FormMessage />
@@ -101,7 +101,7 @@ export default function AddNewCitizenModule() {
                   <FormItem>
                     <FormLabel>Tên</FormLabel>
                     <FormControl>
-                      <Input placeholder="nhập tên..." type="" {...field} />
+                      <Input placeholder="Nhập tên..." type="" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -136,7 +136,7 @@ export default function AddNewCitizenModule() {
                     <FormLabel>Số điện thoại</FormLabel>
                     <FormControl className="w-full">
                       <PhoneInput
-                        placeholder="nhập sdt..."
+                        placeholder="Nhập sdt..."
                         {...field}
                         defaultCountry="VN"
                         value={field.value ?? ""}

@@ -35,6 +35,7 @@ import {
   useGetAllTopicQuery,
 } from "@/features/topic/api";
 import { DataTopic } from "@/features/topic/topic.type";
+import useBreadcrumb from "@/hooks/useBreadcrumb";
 const initialNews = {
   title: undefined,
   thumbnail: undefined,
@@ -43,6 +44,11 @@ const initialNews = {
 };
 const FormAddNews = () => {
   const router = useRouter();
+
+  useBreadcrumb([
+    { label: "Tin tức", href: "/quan-tri/tin-tuc" },
+    { label: "Thêm bài báo mới" },
+  ]);
 
   const { dataTopic, isTopicLoading } = useGetAllTopicQuery(undefined, {
     selectFromResult: ({ data: topic, isFetching }) => {
@@ -118,7 +124,7 @@ const FormAddNews = () => {
               <FormItem>
                 <FormLabel>Tiêu đề</FormLabel>
                 <FormControl>
-                  <Input placeholder="nhập tiêu đề" {...field} />
+                  <Input placeholder="Nhập tiêu đề" {...field} />
                 </FormControl>
                 <FormDescription>
                   Đây là tiêu đề được hiển thị ở bên ngoài tin tức
@@ -158,7 +164,7 @@ const FormAddNews = () => {
                       >
                         {label}
                       </SelectItem>
-                    ),
+                    )
                   )}
                 </SelectContent>
               </Select>

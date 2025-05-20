@@ -24,7 +24,7 @@ export default function ManagerProfileModule() {
         ManagerProfile: data?.data,
         isFetching,
       }),
-    },
+    }
   );
 
   useBreadcrumb([
@@ -40,7 +40,6 @@ export default function ManagerProfileModule() {
   return (
     <>
       <TitlePage
-        contentHref="Chỉnh sửa thông tin"
         href={`/nguoi-dung/quan-li-vien/${id}/chinh-sua`}
         startIcon={<Edit />}
         title="Trang cá nhân"
@@ -52,6 +51,7 @@ export default function ManagerProfileModule() {
           <div className="flex items-center py-4 gap-4">
             <Avatar className="size-20">
               <AvatarImage
+                className="object-cover"
                 alt={`Ảnh đại diện của ${ManagerProfile?.full_name}`}
                 src={ManagerProfile?.avatar}
               />

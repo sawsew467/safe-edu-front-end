@@ -3,7 +3,11 @@ export type Library = {
   category_name: string;
   image: string;
   description: string;
-  topic_id: string;
+  topic_id: {
+    _id: string;
+    id: string;
+    topic_name: string;
+  };
   isActive: boolean;
   created_at: string;
 };

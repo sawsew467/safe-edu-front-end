@@ -22,13 +22,13 @@ export default function UserProfileModule() {
         adminProfile: data?.data,
         isFetching,
       }),
-    },
+    }
   );
 
   useBreadcrumb([
     {
       label: "Quản trị viên",
-      href: "/nguoi-dung?tab=admin",
+      href: "/quan-tri/nguoi-dung?tab=admin",
     },
     {
       label: adminProfile?.full_name,
@@ -38,8 +38,7 @@ export default function UserProfileModule() {
   return (
     <>
       <TitlePage
-        contentHref="Chỉnh sửa thông tin"
-        href={`/nguoi-dung/quan-tri-vien/${id}/chinh-sua`}
+        href={`/quan-tri/nguoi-dung/quan-tri-vien/${id}/chinh-sua`}
         startIcon={<Edit />}
         title="Trang cá nhân"
       />
@@ -48,9 +47,10 @@ export default function UserProfileModule() {
       ) : (
         <div className="ml-4">
           <div className="flex items-center py-4 gap-4">
-            <Avatar className="size-20">
+            <Avatar className="size-20 ">
               <AvatarImage
                 alt={`Ảnh đại diện của ${adminProfile?.full_name}`}
+                className="object-cover"
                 src={adminProfile?.avatar}
               />
               <AvatarFallback>{adminProfile?.avatar}</AvatarFallback>
@@ -74,10 +74,8 @@ export default function UserProfileModule() {
                   )}
                 </span>
               </span>
-              <p className="font-medium text-lg text-primary/80">
-                {adminProfile?.email}
-              </p>
-              <p className="font-normal text-md text-primary/50">
+              <p className="font-medium text-lg ">{adminProfile?.email}</p>
+              <p className="font-normal text-md ">
                 {adminProfile?.phone_number}
               </p>
             </div>
@@ -88,15 +86,11 @@ export default function UserProfileModule() {
             <div className="space-y-2">
               <span className="flex gap-2 text-sm">
                 <h4>Tài khoản được tạo vào:</h4>
-                <p className="text-primary/40">
-                  {formatDate(adminProfile?.created_at)}
-                </p>
+                <p className="">{formatDate(adminProfile?.created_at)}</p>
               </span>
               <span className="flex gap-2 text-sm">
                 <h4>Chỉnh sửa gần nhất vào:</h4>
-                <p className="text-primary/40">
-                  {formatDate(adminProfile?.updated_at)}
-                </p>
+                <p className="">{formatDate(adminProfile?.updated_at)}</p>
               </span>
             </div>
           </div>

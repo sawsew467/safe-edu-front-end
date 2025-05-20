@@ -60,9 +60,7 @@ export const columns: ColumnDef<Manager>[] = [
       const organizations: Organization[] = row.getValue("organizationId");
 
       if (!organizations?.length) {
-        return (
-          <p className="text-red-500">*Quản lí viên này quản lí tổ chức nào</p>
-        );
+        return <p className="text-red-500">*Không thuộc tổ chức nào</p>;
       }
 
       return organizations.map((organization) => (
@@ -164,16 +162,16 @@ const Action = ({ row }: { row: Row<Manager> }) => {
       <DropdownMenuContent align="end">
         <DropdownMenuItem>
           <Link
-            className="flex gap-2 w-full"
+            className="flex gap-2 w-full items-center"
             href={`nguoi-dung/quan-li-vien/${row.original?.id}`}
           >
             <Eye className="w-4 h-4 text-blue-500" />
-            {<span className="">{"Xem"}</span>}
+            {<span className="">{"Xem thông tin"}</span>}
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
           <button
-            className="flex gap-2 w-full"
+            className="flex gap-2 w-full items-center items-center"
             onClick={() => handleManager(row.original?.id)}
           >
             {row.original?.isActive ? (
@@ -183,7 +181,7 @@ const Action = ({ row }: { row: Row<Manager> }) => {
             )}
             {
               <span className="">
-                {row.original?.isActive ? "Tạm dừng" : "Hoạt động"}
+                {row.original?.isActive ? "Khoá tài khoản" : "Mở lại tài khoản"}
               </span>
             }
           </button>
