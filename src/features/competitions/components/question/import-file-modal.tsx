@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { Upload } from "lucide-react";
+import { Download, Upload } from "lucide-react";
 import { useDropzone } from "react-dropzone";
 import { toast } from "sonner";
 import { useSearchParams } from "next/navigation";
@@ -67,6 +67,28 @@ function ImportFileModal() {
     }
   };
 
+  const handleDownloadTemplate = async () => {
+    try {
+      const response = await fetch(
+        "https://firebasestorage.googleapis.com/v0/b/next-exam-fpt.appspot.com/o/template%2Fquizz_template.zip?alt=media&token=9a0deebf-e224-43ea-9e39-6d36644583ce"
+      );
+      const blob = await response.blob();
+
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+
+      a.href = url;
+      a.download = `quizz_template.zip`;
+      document.body.appendChild(a);
+      a.click();
+
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      toast.error("Không thể tải mẫu. Vui lòng thử lại sau.");
+    }
+  };
+
   return (
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>
       <DialogTrigger asChild>
@@ -131,17 +153,27 @@ function ImportFileModal() {
           )}
         </DialogDescription>
         <DialogFooter>
-          <DialogClose asChild>
-            <Button variant="outline">Hủy bỏ</Button>
-          </DialogClose>
-          <Button
-            disabled={!file}
-            isLoading={isLoading}
-            variant="default"
-            onClick={handleImport}
-          >
-            Xác nhận
-          </Button>
+          <div className="w-full justify-between items-center flex">
+            <button
+              className="hover:underline flex gap-2 items-center hover:text-blue-500 transition-all"
+              onClick={handleDownloadTemplate}
+            >
+              <Download size={14} /> Tải mẫu
+            </button>
+            <div className="flex gap-2">
+              <DialogClose asChild>
+                <Button variant="outline">Hủy bỏ</Button>
+              </DialogClose>
+              <Button
+                disabled={!file}
+                isLoading={isLoading}
+                variant="default"
+                onClick={handleImport}
+              >
+                Xác nhận
+              </Button>
+            </div>
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>
