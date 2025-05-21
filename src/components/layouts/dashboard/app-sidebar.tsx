@@ -3,6 +3,7 @@
 import * as React from "react";
 import {
   ChartPie,
+  File,
   LibraryBig,
   Newspaper,
   Pyramid,
@@ -57,6 +58,11 @@ const adminSideBarItems = [
     name: "Thư viện",
     url: "/thu-vien",
     icon: LibraryBig,
+  },
+  {
+    name: "Tài liệu",
+    url: "/tai-lieu",
+    icon: File,
   },
 ];
 

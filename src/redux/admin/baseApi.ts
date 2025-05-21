@@ -99,5 +99,6 @@ export const baseApiAdmin = createApi({
     "Question",
     "Picture",
     "Comment",
+    "Documents",
   ],
 });
