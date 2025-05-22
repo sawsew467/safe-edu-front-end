@@ -51,7 +51,7 @@ export default function AddNewAdminModule() {
     defaultValues: initialForm,
   });
   const handleBack = () => {
-    router.replace("/nguoi-dung");
+    router.replace("/quan-tri/nguoi-dung");
   };
 
   useEffect(() => {

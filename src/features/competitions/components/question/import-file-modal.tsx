@@ -31,8 +31,6 @@ function ImportFileModal() {
     acceptedFiles.forEach((file: File) => {
       const reader = new FileReader();
 
-      reader.onabort = () => console.log("file reading was aborted");
-      reader.onerror = () => console.log("file reading has failed");
       reader.onload = () => {
         setFile(file);
       };
@@ -70,7 +68,7 @@ function ImportFileModal() {
   const handleDownloadTemplate = async () => {
     try {
       const response = await fetch(
-        "https://firebasestorage.googleapis.com/v0/b/next-exam-fpt.appspot.com/o/template%2Fquizz_template.zip?alt=media&token=9a0deebf-e224-43ea-9e39-6d36644583ce"
+        "https://firebasestorage.googleapis.com/v0/b/next-exam-fpt.appspot.com/o/template%2Fquizz_template.zip?alt=media&token=9a0deebf-e224-43ea-9e39-6d36644583ce",
       );
       const blob = await response.blob();
 

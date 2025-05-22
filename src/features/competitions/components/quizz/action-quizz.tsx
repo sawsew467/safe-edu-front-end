@@ -5,26 +5,28 @@ import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { QuizzType } from "@/settings/enums";
 type SubmitType = {
-  isSubmit: boolean;
+  statusSubmit: "done" | "not-started" | "cant-start";
   type: string;
 };
 
 const getConentBtn = (
   type: string,
-  isSubmit: boolean,
+  statusSubmit: "done" | "not-started" | "cant-start",
   status: "Upcoming" | "Outgoing" | "Ongoing",
 ) => {
   switch (type) {
     case QuizzType.SingleChoice:
-      return isSubmit
+      return statusSubmit === "done"
         ? "Xem kết quả"
-        : status === "Ongoing"
+        : statusSubmit === "not-started" && status === "Ongoing"
           ? "Bắt đầu"
           : status === "Upcoming"
             ? "Chưa bắt đầu"
             : "Đã kết thúc";
     case QuizzType.PaintingPropaganda:
-      return isSubmit || status !== "Ongoing" ? "Xem tranh" : "Tham gia";
+      return statusSubmit === "done" || status !== "Ongoing"
+        ? "Xem tranh"
+        : "Tham gia";
   }
 };
 
@@ -37,7 +39,6 @@ const ActionQuizz = ({
   data: SubmitType;
   status: "Upcoming" | "Outgoing" | "Ongoing";
 }) => {
-  "use client";
   const router = useRouter();
 
   return (
@@ -47,13 +48,13 @@ const ActionQuizz = ({
         disabled={
           status !== "Ongoing" &&
           data?.type === QuizzType.SingleChoice &&
-          !data?.isSubmit
+          data?.statusSubmit === "cant-start"
         }
-        variant={!data?.isSubmit ? "default" : "outline"}
+        variant={data?.statusSubmit === "not-started" ? "default" : "outline"}
         onClick={() => {
           switch (data?.type) {
             case QuizzType.SingleChoice:
-              if (data?.isSubmit)
+              if (data?.statusSubmit === "done")
                 router.push(`/phan-thi-ly-thuyet/${slug}/ket-qua`);
               else router.push(`/phan-thi-ly-thuyet/${slug}`);
               break;
@@ -63,7 +64,7 @@ const ActionQuizz = ({
           }
         }}
       >
-        {getConentBtn(data?.type, data?.isSubmit, status)}
+        {getConentBtn(data?.type, data?.statusSubmit, status)}
         <ArrowRight className="size-24" />
       </Button>
     </div>

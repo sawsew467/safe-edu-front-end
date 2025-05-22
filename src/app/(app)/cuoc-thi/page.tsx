@@ -32,13 +32,13 @@ const fetchLatestCompetitions = async (): Promise<{
 }> => {
   let competitions: Competitions[] = [];
   const data = await customFetch(
-    `${constants.API_SERVER}/competitions/user?filter={"isActive":"true"}`
+    `${constants.API_SERVER}/competitions/user?filter={"isActive":"true"}`,
   );
 
   try {
     if (!data?.data) {
       const { data } = await customFetch(
-        `${constants.API_SERVER}/competitions?filter={"isActive":"true"}`
+        `${constants.API_SERVER}/competitions?filter={"isActive":"true"}`,
       );
 
       competitions = data;
@@ -47,32 +47,29 @@ const fetchLatestCompetitions = async (): Promise<{
     }
 
     const latestCompetitions =
-      competitions?.filter(
-        (item: Competitions) =>
-          item?.isActive 
-      ) ?? [];
+      competitions?.filter((item: Competitions) => item?.isActive) ?? [];
 
     const donedCompetitions =
-      competitions?.filter((item: Competitions) => 
-        item?.status === "done"
-    ) ??
+      competitions?.filter((item: Competitions) => item?.status === "done") ??
       [];
     const doingCompetitions =
       competitions?.filter(
         (item: Competitions) =>
           item?.status === "doing" &&
           item?.isActive &&
-          new Date(item.endDate).getTime() > Date.now()
+          new Date(item.endDate).getTime() > Date.now(),
       ) ?? [];
 
     const sortedLatestCompetitions = latestCompetitions.sort((a, b) => {
       const getStatusPriority = (item: Competitions) => {
-      if (new Date(item.startDate) > new Date()) return 0;
-      if (new Date(item.endDate) < new Date()) return 2;
-      return 1;
+        if (new Date(item.startDate) > new Date()) return 0;
+        if (new Date(item.endDate) < new Date()) return 2;
+
+        return 1;
       };
 
       const statusDiff = getStatusPriority(a) - getStatusPriority(b);
+
       if (statusDiff !== 0) return statusDiff;
 
       return new Date(b.startDate).getTime() - new Date(a.startDate).getTime();

@@ -51,11 +51,11 @@ export function Content() {
       selectFromResult({ data }) {
         return {
           libraryArticles: data?.data?.items?.filter(
-            (item: any) => item?.isActive
+            (item: any) => item?.isActive,
           ),
         };
       },
-    }
+    },
   );
 
   const { newsArticles } = useGetAllNewsQuery(
@@ -64,29 +64,25 @@ export function Content() {
       selectFromResult({ data }) {
         return {
           newsArticles: data?.data?.items?.filter(
-            (item: any) => item?.isActive
+            (item: any) => item?.isActive,
           ),
         };
       },
-    }
+    },
   );
 
   const { topicsRawData } = useGetAllTopicQuery(
     {},
     {
       selectFromResult({ data }) {
-        console.log("🚀 ~ selectFromResult ~ data:", data);
-
         return {
           topicsRawData: data?.data?.data?.filter(
-            (item: any) => item?.isActive
+            (item: any) => item?.isActive,
           ),
         };
       },
-    }
+    },
   );
-
-  console.log("🚀 ~ Content ~ topicData:", topicsRawData);
 
   const displayedLibraryArticles = showAllLibrary
     ? libraryArticles

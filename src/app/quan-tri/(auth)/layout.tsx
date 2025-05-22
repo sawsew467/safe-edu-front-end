@@ -14,8 +14,6 @@ function AuthLayout({ children }: { children: React.ReactNode }) {
 
   const data = useAppSelector((state) => state.auth);
 
-  console.log("🚀 ~ AuthLayout ~ data:", data);
-
   useLayoutEffect(() => {
     if (accessToken) {
       router.replace("/quan-tri/nguoi-dung");

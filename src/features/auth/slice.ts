@@ -82,18 +82,18 @@ export const authSlice = createSlice({
       state.current_organization = action.payload[0];
       setClientCookie(
         constants.ORGANIZATION_LIST,
-        JSON.stringify(action.payload)
+        JSON.stringify(action.payload),
       );
       setClientCookie(
         constants.CURRENT_ORGANIZATION,
-        JSON.stringify(action.payload[0])
+        JSON.stringify(action.payload[0]),
       );
     },
     setCurrentOrganization: (state, action) => {
       state.current_organization = action.payload;
       setClientCookie(
         constants.CURRENT_ORGANIZATION,
-        JSON.stringify(action.payload)
+        JSON.stringify(action.payload),
       );
     },
     setAccessToken: (state, action) => {
@@ -104,8 +104,6 @@ export const authSlice = createSlice({
       )
         setClientCookie(constants.ACCESS_TOKEN, action.payload);
       else {
-        console.log("🚀 ~ setAccessToken: ~ action.payload:", action.payload);
-
         setClientCookie(constants.ACCESS_TOKEN_ADMIN, action.payload);
       }
     },

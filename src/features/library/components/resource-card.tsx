@@ -15,8 +15,6 @@ export function ResourceCard({
   description: string;
   icon: string;
 }) {
-  console.log("🚀 ~ icon:", icon);
-
   return (
     <Card className={`overflow-hidden `}>
       <CardContent className="p-6">

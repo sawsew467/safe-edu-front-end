@@ -68,17 +68,14 @@ const PaintingPropagandaModule = () => {
     },
   );
 
-  const { isSubmited } = useIsDoQuizzQuery(
-    quiz_id ? { id: quiz_id } : skipToken,
-    {
-      selectFromResult: ({ data }) => ({
-        isSubmited: data?.data?.isSubmit,
-      }),
-    },
-  );
+  const { status } = useIsDoQuizzQuery(quiz_id ? { id: quiz_id } : skipToken, {
+    selectFromResult: ({ data }) => ({
+      status: data?.data?.status,
+    }),
+  });
 
   const { myPicture }: { myPicture: Picture } = useGetMyPictureQuery(
-    isSubmited ? { id: quiz_id } : skipToken,
+    status === "done" ? { id: quiz_id } : skipToken,
     {
       selectFromResult: ({ data }) => ({
         myPicture: data?.data,
@@ -104,11 +101,11 @@ const PaintingPropagandaModule = () => {
             : "md:translate-y-20 translate-y-[70px] opacity-100",
         )}
       >
-        {isSubmited === false && statusCompetition === "Ongoing" ? (
+        {status === "not-started" && statusCompetition === "Ongoing" ? (
           <Button
             onClick={() => {
-              if (isSubmited === false) setOpenUploadNewPicture(true);
-              else if (isSubmited === undefined) {
+              if (status === "not-started") setOpenUploadNewPicture(true);
+              else if (status === undefined) {
                 deleteClientCookie(constants.ACCESS_TOKEN);
                 deleteClientCookie(constants.REFRESH_TOKEN);
                 deleteClientCookie(constants.USER_INFO);
@@ -118,7 +115,7 @@ const PaintingPropagandaModule = () => {
             Nộp tranh
           </Button>
         ) : (
-          isSubmited === true && (
+          status === "done" && (
             <div className="flex gap-2">
               <Button
                 variant="ghost"
@@ -159,11 +156,11 @@ const PaintingPropagandaModule = () => {
           ref={btnRef}
           className="md:absolute flex justify-center md:mt-0 mt-4 top-0 right-4"
         >
-          {isSubmited === false && statusCompetition === "Ongoing" ? (
+          {status === "not-started" && statusCompetition === "Ongoing" ? (
             <Button
               onClick={() => {
-                if (isSubmited === false) setOpenUploadNewPicture(true);
-                else if (isSubmited === undefined) {
+                if (status === "not-started") setOpenUploadNewPicture(true);
+                else if (status === undefined) {
                   deleteClientCookie(constants.ACCESS_TOKEN);
                   deleteClientCookie(constants.REFRESH_TOKEN);
                   deleteClientCookie(constants.USER_INFO);
@@ -173,7 +170,7 @@ const PaintingPropagandaModule = () => {
               Nộp tranh
             </Button>
           ) : (
-            isSubmited === true && (
+            status === "done" && (
               <div className="flex gap-2">
                 <Button
                   variant="ghost"
