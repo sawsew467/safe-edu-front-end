@@ -5,20 +5,20 @@ import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { QuizzType } from "@/settings/enums";
 type SubmitType = {
-  statusSubmit: "done" | "not-start" | "cant-start";
+  statusSubmit: "done" | "not-started" | "cant-start";
   type: string;
 };
 
 const getConentBtn = (
   type: string,
-  statusSubmit: "done" | "not-start" | "cant-start",
+  statusSubmit: "done" | "not-started" | "cant-start",
   status: "Upcoming" | "Outgoing" | "Ongoing",
 ) => {
   switch (type) {
     case QuizzType.SingleChoice:
       return statusSubmit === "done"
         ? "Xem kết quả"
-        : statusSubmit === "not-start" && status === "Ongoing"
+        : statusSubmit === "not-started" && status === "Ongoing"
           ? "Bắt đầu"
           : status === "Upcoming"
             ? "Chưa bắt đầu"
@@ -50,7 +50,7 @@ const ActionQuizz = ({
           data?.type === QuizzType.SingleChoice &&
           data?.statusSubmit === "cant-start"
         }
-        variant={data?.statusSubmit === "not-start" ? "default" : "outline"}
+        variant={data?.statusSubmit === "not-started" ? "default" : "outline"}
         onClick={() => {
           switch (data?.type) {
             case QuizzType.SingleChoice:

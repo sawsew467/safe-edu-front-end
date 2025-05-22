@@ -86,7 +86,7 @@ const PartCompetitionQuizz = ({
         setOpen(false);
       }
     } else {
-      router.replace(`/phan-thi-ly-thuyet/${id}/ket-qua`);
+      window.location.reload();
     }
   };
 
