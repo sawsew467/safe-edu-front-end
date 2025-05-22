@@ -29,7 +29,7 @@ const CompetitionsViewUser = ({
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-10">
+      <div className="flex items-center justify-start mb-10">
         <motion.h2
           className="text-3xl font-bold text-primary"
           initial={{ opacity: 0, x: -10 }}
@@ -39,8 +39,25 @@ const CompetitionsViewUser = ({
         >
           {label}
         </motion.h2>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {data?.map((item) => (
+          <CompetitionArticleCard
+            key={item?._id}
+            description={item?.description}
+            endDate={item?.endDate}
+            image={item?.image_url}
+            slug={item?.slug}
+            startDate={item?.startDate}
+            statusCompetitions={item?.status as "doing" | "done" | "not-start"}
+            title={item?.title}
+          />
+        ))}
+      </div>
+      <div className="flex justify-center">
         <Button
-          className="flex items-center gap-2 text-primary hover:text-primary"
+          className="flex items-center gap-2 text-primary hover:text-primary mt-6"
           variant="ghost"
           onClick={() => {
             setViewMore(!viewMore);
@@ -58,20 +75,6 @@ const CompetitionsViewUser = ({
             </>
           )}
         </Button>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {data?.map((item) => (
-          <CompetitionArticleCard
-            key={item._id}
-            description={item.description}
-            endDate={item.endDate}
-            image={item.image_url}
-            slug={item.slug}
-            startDate={item.startDate}
-            title={item.title}
-          />
-        ))}
       </div>
     </div>
   );

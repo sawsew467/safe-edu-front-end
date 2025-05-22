@@ -32,19 +32,19 @@ export const columns: ColumnDef<TypeNews>[] = [
     accessorKey: "author",
     header: "Tác giả",
   },
-  {
-    accessorKey: "created_by",
-    header: "Người đăng",
-    cell: ({ row }) => {
-      const value = row.getValue("created_by");
+  // {
+  //   accessorKey: "created_by",
+  //   header: "Người đăng",
+  //   cell: ({ row }) => {
+  //     const value = row.getValue("created_by");
 
-      return value ? (
-        <div className="font-medium">{row.getValue("title")}</div>
-      ) : (
-        <p className="text-red-500">*không tìm thấy người đăng</p>
-      );
-    },
-  },
+  //     return value ? (
+  //       <div className="font-medium">{row.getValue("title")}</div>
+  //     ) : (
+  //       <p className="text-red-500">*không tìm thấy người đăng</p>
+  //     );
+  //   },
+  // },
   {
     accessorKey: "topic_id",
     header: "Chủ đề",
@@ -118,16 +118,16 @@ const ActionRow = ({ row }: { row: Row<TypeNews> }) => {
       <DropdownMenuContent align="end">
         <DropdownMenuItem>
           <Link
-            className="flex gap-2 w-full"
+            className="flex gap-2 w-full items-center"
             href={`tin-tuc/${row.original._id}`}
           >
             <Eye className="w-4 h-4 text-blue-500" />
-            {<span className="">{"Xem"}</span>}
+            {<span className="">{"Xem thông tin"}</span>}
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
           <Link
-            className="flex gap-2 w-full"
+            className="flex gap-2 w-full items-center"
             href={`tin-tuc/${row.original._id}/chinh-sua`}
           >
             <Pencil className="h-4 w-4 text-green-500" />
@@ -137,7 +137,7 @@ const ActionRow = ({ row }: { row: Row<TypeNews> }) => {
 
         <DropdownMenuItem>
           <button
-            className="flex gap-2 w-full"
+            className="flex gap-2 w-full items-center"
             onClick={() => handleDeleteNews(row.original._id)}
           >
             <Trash2 className="h-4 w-4 text-red-500" />

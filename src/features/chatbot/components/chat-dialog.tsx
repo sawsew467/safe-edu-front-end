@@ -37,7 +37,6 @@ export function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
 
   const [messages, setMessages] = useState<Message[]>([]);
 
-  console.log("🚀 ~ ChatDialog ~ messages:", messages);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -89,7 +88,6 @@ export function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
         setMessages(tempMessages);
       })
       .catch((err) => {
-        console.log("🚀 ~ handleSendMessage ~ err:", err);
         const errorMessage: Message = {
           id: Date.now().toString() + "-error",
           role: "assistant",

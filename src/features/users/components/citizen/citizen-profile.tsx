@@ -24,13 +24,13 @@ export default function CitizenProfileModule() {
         citizenProfile: data?.data,
         isFetching,
       }),
-    },
+    }
   );
 
   useBreadcrumb([
     {
       label: "Công dân",
-      href: "/nguoi-dung?tab=citizen",
+      href: "/quan-tri/nguoi-dung?tab=citizen",
     },
     {
       label: `${citizenProfile?.first_name} ${citizenProfile?.last_name}`,
@@ -40,8 +40,7 @@ export default function CitizenProfileModule() {
   return (
     <>
       <TitlePage
-        contentHref="Chỉnh sửa thông tin"
-        href={`/nguoi-dung/cong-dan/${id}/chinh-sua`}
+        href={`/quan-tri/nguoi-dung/cong-dan/${id}/chinh-sua`}
         startIcon={<Edit />}
         title="Trang cá nhân"
       />
@@ -53,6 +52,7 @@ export default function CitizenProfileModule() {
             <Avatar className="size-20">
               <AvatarImage
                 alt={`Ảnh đại diện của ${citizenProfile?.first_name} ${citizenProfile?.last_name}`}
+                className="object-cover"
                 src={citizenProfile?.avatar}
               />
               <AvatarFallback>{citizenProfile?.avatar}</AvatarFallback>
@@ -90,15 +90,11 @@ export default function CitizenProfileModule() {
             <div className="space-y-2">
               <span className="flex gap-2 text-sm">
                 <h4>Tài khoản được tạo vào:</h4>
-                <p className="text-primary/40">
-                  {formatDate(citizenProfile?.created_at)}
-                </p>
+                <p className="">{formatDate(citizenProfile?.created_at)}</p>
               </span>
               <span className="flex gap-2 text-sm">
                 <h4>Chỉnh sửa gần nhất vào:</h4>
-                <p className="text-primary/40">
-                  {formatDate(citizenProfile?.updated_at)}
-                </p>
+                <p className="">{formatDate(citizenProfile?.updated_at)}</p>
               </span>
             </div>
           </div>

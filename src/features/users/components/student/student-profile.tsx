@@ -25,7 +25,7 @@ export default function StudentProfileModule() {
         StudentProfile: data?.data,
         isFetching,
       }),
-    },
+    }
   );
   const { userId } = useAppSelector((state) => state.auth.user_role) ?? {
     userId: null,
@@ -34,7 +34,7 @@ export default function StudentProfileModule() {
   useBreadcrumb([
     {
       label: "Học sinh",
-      href: "/nguoi-dung?tab=student",
+      href: "/quan-tri/nguoi-dung?tab=student",
     },
     {
       label: `${StudentProfile?.first_name} ${StudentProfile?.last_name}`,
@@ -44,9 +44,10 @@ export default function StudentProfileModule() {
   return (
     <>
       <TitlePage
-        contentHref={userId === id ? "Chỉnh sửa thông tin" : undefined}
         href={
-          userId === id ? `/nguoi-dung/hoc-sinh/${id}/chinh-sua` : undefined
+          userId === id
+            ? `/quan-tri/nguoi-dung/hoc-sinh/${id}/chinh-sua`
+            : undefined
         }
         startIcon={userId === id ? <Edit /> : undefined}
         title="Trang cá nhân"
@@ -59,6 +60,7 @@ export default function StudentProfileModule() {
             <Avatar className="size-20">
               <AvatarImage
                 alt={`Ảnh đại diện của ${StudentProfile?.first_name} ${StudentProfile?.last_name}`}
+                className="object-cover"
                 src={StudentProfile?.avatar}
               />
               <AvatarFallback>{StudentProfile?.avatar}</AvatarFallback>
@@ -82,10 +84,8 @@ export default function StudentProfileModule() {
                   )}
                 </span>
               </span>
-              <p className="font-medium text-lg text-primary/80">
-                {StudentProfile?.email}
-              </p>
-              <p className="font-normal text-md text-primary/50">
+              <p className="font-medium text-lg ">{StudentProfile?.email}</p>
+              <p className="font-normal text-md ">
                 {StudentProfile?.phone_number}
               </p>
             </div>
@@ -96,15 +96,11 @@ export default function StudentProfileModule() {
             <div className="space-y-2">
               <span className="flex gap-2 text-sm">
                 <h4>Tài khoản được tạo vào:</h4>
-                <p className="text-primary/40">
-                  {formatDate(StudentProfile?.created_at)}
-                </p>
+                <p className="">{formatDate(StudentProfile?.created_at)}</p>
               </span>
               <span className="flex gap-2 text-sm">
                 <h4>Chỉnh sửa gần nhất vào:</h4>
-                <p className="text-primary/40">
-                  {formatDate(StudentProfile?.updated_at)}
-                </p>
+                <p className="">{formatDate(StudentProfile?.updated_at)}</p>
               </span>
             </div>
           </div>

@@ -91,7 +91,7 @@ export default function AddNewSupervisionModule() {
                   <FormItem>
                     <FormLabel>Họ</FormLabel>
                     <FormControl>
-                      <Input placeholder="nhập họ..." type="text" {...field} />
+                      <Input placeholder="Nhập họ..." type="text" {...field} />
                     </FormControl>
                     <FormDescription>Nhập họ và tên của bạn</FormDescription>
                     <FormMessage />
@@ -107,7 +107,7 @@ export default function AddNewSupervisionModule() {
                   <FormItem>
                     <FormLabel>Tên</FormLabel>
                     <FormControl>
-                      <Input placeholder="nhập tên..." type="" {...field} />
+                      <Input placeholder="Nhập tên..." type="" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -122,7 +122,7 @@ export default function AddNewSupervisionModule() {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input placeholder="nhập email..." type="email" {...field} />
+                  <Input placeholder="Nhập email..." type="email" {...field} />
                 </FormControl>
                 <FormDescription>Email làm việc của bạn.</FormDescription>
                 <FormMessage />

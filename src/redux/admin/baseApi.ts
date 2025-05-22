@@ -13,11 +13,20 @@ const baseQuery = fetchBaseQuery({
   baseUrl: constants.API_SERVER,
   prepareHeaders: (headers, { getState }) => {
     const accessToken = getClientCookie(constants.ACCESS_TOKEN_ADMIN);
+    const currentOrganizationRaw = getClientCookie(
+      constants.CURRENT_ORGANIZATION
+    );
+    const currentOrganization = currentOrganizationRaw
+      ? JSON.parse(currentOrganizationRaw)
+      : null;
 
     headers.set("Content-Type", "application/json");
 
     if (accessToken) {
       headers.set("Authorization", `Bearer ${accessToken}`);
+    }
+    if (currentOrganization) {
+      headers.set("OrganizationId", `${currentOrganization.id}`);
     }
 
     return headers;
@@ -27,7 +36,7 @@ const baseQuery = fetchBaseQuery({
 export const baseQueryWithReauth: typeof baseQuery = async (
   args: string | FetchArgs,
   api: BaseQueryApi,
-  extraOptions: {},
+  extraOptions: {}
 ) => {
   let result = await baseQuery(args, api, extraOptions);
 
@@ -42,7 +51,7 @@ export const baseQueryWithReauth: typeof baseQuery = async (
           Authorization: `Bearer ${refresh_token}`,
           "Content-Type": "application/json",
         },
-      },
+      }
     ).then((res) => res.json());
 
     const newAccessToken = refreshResult?.data?.access_token;

@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { useLoginWithGoogleMutation } from "@/features/auth/api";
 import {
   setAccessToken,
+  setOrganizationList,
   setRefreshToken,
   setUserInfo,
   setUserRole,
@@ -37,16 +38,33 @@ export function LoginForm() {
         auth,
         provider.providerGoogle
       );
-
+      
       const res = await signInWithGoogle({
         token: resFirebase.user.accessToken,
+        avatar: resFirebase.user.photoURL,
       }).unwrap();
 
-      setClientCookie(constants.USER_INFO, JSON.stringify(resFirebase.user));
-      dispatch(setUserInfo(resFirebase.user));
+      const firebaseUser = {
+        email: resFirebase.user.email,
+        displayName: resFirebase.user.displayName,
+        photoURL: resFirebase.user.photoURL,
+      };
+
+      setClientCookie(constants.USER_INFO, JSON.stringify(firebaseUser));
+      dispatch(setUserInfo({
+        ...firebaseUser,
+        displayName: res?.data?.fullName
+      }));
       dispatch(setUserRole(res?.data?.accessToken));
       dispatch(setAccessToken(res?.data?.accessToken));
       dispatch(setRefreshToken(res?.data?.refreshToken));
+      dispatch(setOrganizationList(res?.data?.organizations || []));
+
+      if (res?.data?.role === "Manager") {
+        router.push("/quan-tri/to-chuc/" + res?.data?.organizations?.[0]?.id);
+        return;
+      }
+
       router.push("/quan-tri");
     } catch (error: any) {
       if (error?.status === 404) {

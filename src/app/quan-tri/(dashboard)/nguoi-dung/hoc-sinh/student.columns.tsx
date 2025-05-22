@@ -37,13 +37,13 @@ export const columns: ColumnDef<Student>[] = [
       return image ? (
         <Image
           alt={`Ảnh đại diện của ${row.original?.full_name}`}
-          className="rounded-full"
-          height={100}
+          className="rounded-full aspect-square object-cover"
+          height={48}
           src={image}
-          width={100}
+          width={48}
         />
       ) : (
-        <p className="text-red-500">*không tìm thấy ảnh đại diện</p>
+        <p className="text-red-500">*Chưa có ảnh đại diện</p>
       );
     },
   },
@@ -58,16 +58,14 @@ export const columns: ColumnDef<Student>[] = [
     accessorKey: "organizationId",
     header: "Tổ chức",
     cell: ({ row }) => {
-      const organization: Organization = (
-        row.getValue("organizationId") as Organization[]
-      )?.[0];
+      const organization: Organization = row.getValue("organizationId");
 
       return organization?.isActive ? (
         <div className="">
           <div className="font-medium">{organization?.name}</div>
         </div>
       ) : (
-        <p className="text-red-500">*Học sinh này không thuộc tổ chức nào</p>
+        <p className="text-red-500">*Chưa thuộc tổ chức nào</p>
       );
     },
   },
@@ -80,7 +78,20 @@ export const columns: ColumnDef<Student>[] = [
       return phoneNumber ? (
         <p>{phoneNumber}</p>
       ) : (
-        <p className="text-red-500">*Học sinh này không có sđt</p>
+        <p className="text-red-500">*Chưa có SĐT</p>
+      );
+    },
+  },
+  {
+    accessorKey: "email",
+    header: "Email",
+    cell: ({ row }) => {
+      const email: string = row.getValue("email");
+
+      return email ? (
+        <p>{email}</p>
+      ) : (
+        <p className="text-red-500">*Chưa có email</p>
       );
     },
   },
@@ -181,16 +192,16 @@ const Action = ({ row }: { row: Row<Student> }) => {
       <DropdownMenuContent align="end">
         <DropdownMenuItem>
           <Link
-            className="flex gap-2 w-full"
+            className="flex gap-2 w-full items-center"
             href={`/quan-tri/nguoi-dung/hoc-sinh/${row.original?.id}`}
           >
             <Eye className="w-4 h-4 text-blue-500" />
-            {<span className="">{"Xem"}</span>}
+            {<span className="">{"Xem thông tin"}</span>}
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
           <button
-            className="flex gap-2 w-full"
+            className="flex gap-2 w-full items-center"
             onClick={() => handleStudent(row.original?.id)}
           >
             {row.original?.isActive ? (
@@ -200,7 +211,7 @@ const Action = ({ row }: { row: Row<Student> }) => {
             )}
             {
               <span className="">
-                {row.original?.isActive ? "Tạm dừng" : "Hoạt động"}
+                {row.original?.isActive ? "Khoá tài khoản" : "Mở lại tài khoản"}
               </span>
             }
           </button>

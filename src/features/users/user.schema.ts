@@ -1,6 +1,6 @@
 import * as z from "zod";
 const phoneRegex = new RegExp(
-  /^\+?[1-9]\d{0,2}[-\s]?(\(\d{2,4}\)|\d{2,4})[-\s]?\d{3}[-\s]?\d{3,4}$/,
+  /^\+?[1-9]\d{0,2}[-\s]?(\(\d{2,4}\)|\d{2,4})[-\s]?\d{3}[-\s]?\d{3,4}$/
 );
 
 export const formAdminSchema = z.object({
@@ -71,7 +71,7 @@ export const formManagerSchema = z.object({
     .string()
     .min(1, { message: "Đây là trường bắt buộc." })
     .regex(phoneRegex, "SDT không đúng định dạng"),
-  organizationId: z.string().min(1, { message: "Đây là trường bắt buộc." }),
+  // organizationId: z.string().min(1, { message: "Đây là trường bắt buộc." }),
 });
 export const formStudentSchema = z.object({
   first_name: z

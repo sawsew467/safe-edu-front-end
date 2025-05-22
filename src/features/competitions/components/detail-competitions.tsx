@@ -42,7 +42,7 @@ const DetailCompetitions = () => {
         selectFromResult: ({ data }) => ({
           competition: data?.data,
         }),
-      },
+      }
     );
 
   const handleChangeTabs = ({
@@ -95,7 +95,7 @@ const DetailCompetitions = () => {
           Bảng xếp hạng
         </TabsTrigger>
         <TabsTrigger id="phan-thi" value="phan-thi" onClick={handleChangeTabs}>
-          Phần thi
+          Nội dung thi
         </TabsTrigger>
         <TabsTrigger id="cai-dat" value="cai-dat" onClick={handleChangeTabs}>
           Cài đặt

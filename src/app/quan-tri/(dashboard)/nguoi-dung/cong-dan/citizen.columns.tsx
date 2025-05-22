@@ -36,10 +36,10 @@ export const columns: ColumnDef<Citizens>[] = [
       return image ? (
         <Image
           alt={`Ảnh đại diện của ${row.original?.full_name}`}
-          className="rounded-full"
-          height={100}
+          className="rounded-full aspect-square object-cover"
+          height={48}
           src={image}
-          width={100}
+          width={48}
         />
       ) : (
         <p className="text-red-500">*không tìm thấy ảnh đại diện</p>
@@ -62,7 +62,7 @@ export const columns: ColumnDef<Citizens>[] = [
       return phoneNumber ? (
         <p>{phoneNumber}</p>
       ) : (
-        <p className="text-red-500">*Học sinh này không có sđt</p>
+        <p className="text-red-500">*Chưa có SĐT</p>
       );
     },
   },
@@ -163,16 +163,16 @@ const Action = ({ row }: { row: Row<Citizens> }) => {
       <DropdownMenuContent align="end">
         <DropdownMenuItem>
           <Link
-            className="flex gap-2 w-full"
-            href={`nguoi-dung/hoc-sinh/${row.original?.id}`}
+            className="flex gap-2 w-full items-center"
+            href={`nguoi-dung/cong-dan/${row.original?.id}`}
           >
             <Eye className="w-4 h-4 text-blue-500" />
-            {<span className="">{"Xem"}</span>}
+            {<span className="">{"Xem thông tin"}</span>}
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
           <button
-            className="flex gap-2 w-full"
+            className="flex gap-2 w-full items-center"
             onClick={() => handleCitizen(row.original?.id)}
           >
             {row.original?.isActive ? (
@@ -182,7 +182,7 @@ const Action = ({ row }: { row: Row<Citizens> }) => {
             )}
             {
               <span className="">
-                {row.original?.isActive ? "Tạm dừng" : "Hoạt động"}
+                {row.original?.isActive ? "Khoá tài khoản" : "Mở lại tài khoản"}
               </span>
             }
           </button>

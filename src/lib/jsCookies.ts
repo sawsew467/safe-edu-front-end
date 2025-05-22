@@ -33,3 +33,9 @@ export const getAllClientCookies = (): { [key: string]: string } => {
 export const deleteClientCookie = (name: string): void => {
   Cookies.remove(name);
 };
+
+export const deleteAllClientCookie = (): void => {
+  Object.keys(Cookies.get()).forEach((key) => {
+    Cookies.remove(key);
+  });
+};

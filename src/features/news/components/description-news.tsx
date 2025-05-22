@@ -14,9 +14,9 @@ import {
   SelectValue,
 } from "@/components/ui/topic-select";
 import UploadImage from "@/components/ui/upload-image";
-import { useGetTopicQuery } from "@/features/topic/api";
 import CustomEditor from "@/components/ui/custom-editor";
 import TitlePage from "@/components/ui/title-page";
+import useBreadcrumb from "@/hooks/useBreadcrumb";
 
 const DescriptionNewsModule = () => {
   const { id } = useParams<{ id: string }>();
@@ -29,13 +29,13 @@ const DescriptionNewsModule = () => {
         isFetching,
         isSuccess,
       }),
-    },
+    }
   );
 
-  const { data: topic } = useGetTopicQuery(
-    { id: data?.data?.topic_id },
-    { skip: !isSuccess },
-  );
+  useBreadcrumb([
+    { label: "Tin tức", href: "/quan-tri/tin-tuc" },
+    { label: data?.title },
+  ]);
 
   return (
     <>
@@ -76,9 +76,9 @@ const DescriptionNewsModule = () => {
               >
                 Chủ đề
               </Label>
-              <Select disabled defaultValue={data?.topic_id}>
+              <Select disabled defaultValue={data?.topic_id?._id}>
                 <SelectTrigger className="max-w-sm">
-                  <SelectValue>{topic?.topic_name}</SelectValue>
+                  <SelectValue>{data?.topic_id?.topic_name}</SelectValue>
                 </SelectTrigger>
               </Select>
             </div>

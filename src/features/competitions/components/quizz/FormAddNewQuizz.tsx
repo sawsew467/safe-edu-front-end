@@ -73,7 +73,7 @@ const AddNewQuizz = ({
               <FormItem>
                 <FormLabel>Tiêu đề</FormLabel>
                 <FormControl>
-                  <Input placeholder="nhập tiêu đề" {...field} />
+                  <Input placeholder="Nhập tiêu đề" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

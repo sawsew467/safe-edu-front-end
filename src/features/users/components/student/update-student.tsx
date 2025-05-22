@@ -132,13 +132,13 @@ export default function UpdateProfileModule() {
           return {
             provinces: data?.data
               ? data?.data?.items?.map((province: Province) => ({
-                  label: province?.name,
-                  value: province?._id,
-                }))
+                label: province?.name,
+                value: province?._id,
+              }))
               : [],
           };
         },
-      },
+      }
     );
 
   const { organizations } = useGetAllOrganizationQuery(undefined, {
@@ -147,10 +147,10 @@ export default function UpdateProfileModule() {
       return {
         organizations: data?.data
           ? data?.data?.items?.map((org: Organization) => ({
-              label: org?.name,
-              value: org?._id,
-              province_id: org?.province_id?._id,
-            }))
+            label: org?.name,
+            value: org?._id,
+            province_id: org?.province_id?._id,
+          }))
           : [],
       };
     },
@@ -165,7 +165,7 @@ export default function UpdateProfileModule() {
   React.useEffect(() => {
     if (provinces && organizations) {
       const filteredOrganizations = organizations?.filter(
-        (org: OrganizationOptions) => org?.province_id === selectedProvince,
+        (org: OrganizationOptions) => org?.province_id === selectedProvince
       );
 
       setOrganizationsByProvince(filteredOrganizations);
@@ -173,7 +173,7 @@ export default function UpdateProfileModule() {
   }, [provinces?.length, organizations?.length, selectedProvince]);
 
   const handleBack = () => {
-    router.replace("/quan-tri/nguoi-dung?tab=student");
+    router.replace("/trang-ca-nhan");
   };
 
   React.useEffect(() => {
@@ -184,20 +184,18 @@ export default function UpdateProfileModule() {
       form.setValue("phone_number", user?.phone_number);
       form.setValue(
         "date_of_birth",
-        user?.date_of_birth ? new Date(user?.date_of_birth) : new Date(),
+        user?.date_of_birth ? new Date(user?.date_of_birth) : new Date()
       );
       form.setValue("avatar", user?.avatar);
 
-      form.setValue("organizationId", user?.organizationId?.[0]?._id);
+      form.setValue("organizationId", user?.organizationId?._id);
 
-      const province_id = user?.organizationId?.[0]?.province_id;
+      const province_id = user?.organizationId?.province_id;
 
       if (province_id) {
         form.setValue("provinceId", province_id);
         setSelectedProvince(province_id);
       }
-
-      // Set avatar preview if available
     }
   }, [user]);
 
@@ -206,7 +204,7 @@ export default function UpdateProfileModule() {
   };
 
   const handleFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>,
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0];
 
@@ -253,7 +251,7 @@ export default function UpdateProfileModule() {
           first_name,
           last_name,
           username,
-        }),
+        })
       );
       toast.success("Cập nhật hồ sơ thành công", { id: toastId });
     } catch (error) {
@@ -313,7 +311,7 @@ export default function UpdateProfileModule() {
                                     <AvatarFallback>
                                       {getInitials(
                                         form.getValues("first_name"),
-                                        form.getValues("last_name"),
+                                        form.getValues("last_name")
                                       )}
                                     </AvatarFallback>
                                   )}
@@ -547,7 +545,7 @@ export default function UpdateProfileModule() {
                                             >
                                               {label}
                                             </SelectItem>
-                                          ),
+                                          )
                                         )
                                       ) : (
                                         <div className="p-2 text-center text-muted-foreground">

@@ -15,6 +15,7 @@ import {
 import QuestionContent from "./question-content";
 import RightOption from "./right-option";
 import LeftOption from "./left-option";
+import ImportFileModal from "./import-file-modal";
 
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
@@ -33,7 +34,7 @@ export const formSchema = z.object({
       .optional(),
     {
       message: "Danh sách câu trả lời không hợp lệ",
-    },
+    }
   ),
   time_limit: z.string(),
   current_question: z.number(),
@@ -97,7 +98,7 @@ const QuestionManagement = ({ closeDialog }: { closeDialog: () => void }) => {
         questionsQuizzs.at(currentQuestion) as z.infer<typeof formSchema>,
         {
           keepDirty: false,
-        },
+        }
       );
     } else if (isSuccess) {
       addFirstQuestion();
@@ -111,7 +112,7 @@ const QuestionManagement = ({ closeDialog }: { closeDialog: () => void }) => {
 
   const getValueField = (field: string): string | undefined => {
     const fieldValue = form.getValues(
-      field as keyof z.infer<typeof formSchema>,
+      field as keyof z.infer<typeof formSchema>
     );
 
     if (fieldValue === undefined) return undefined;
@@ -173,9 +174,13 @@ const QuestionManagement = ({ closeDialog }: { closeDialog: () => void }) => {
             <Button type="button" variant="destructive" onClick={closeDialog}>
               Thoát
             </Button>
-            <Button variant="default" onClick={handleSave}>
-              Lưu
-            </Button>
+            <div className="flex gap-2">
+              <ImportFileModal />
+
+              <Button variant="default" onClick={handleSave}>
+                Lưu
+              </Button>
+            </div>
           </div>
           <div className="grid gap-4 min-h-[500px]  grid-cols-6">
             <div className="col-span-1 max-h-[80vh]">

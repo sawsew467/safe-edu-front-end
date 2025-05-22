@@ -59,7 +59,7 @@ export default function PremiumLeaderboard({ slug }: { slug: string }) {
         isLoading,
         error,
       }),
-    },
+    }
   );
 
   const totalScore = data?.reduce((acc, item) => acc + item.score, 0) || 0;
@@ -90,7 +90,6 @@ export default function PremiumLeaderboard({ slug }: { slug: string }) {
 
   return (
     <div className="space-y-8">
-      {/* Header Stats */}
       {!isLoading && data && (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <Card className="bg-gradient-to-br from-amber-50 to-amber-100 border-amber-200">
@@ -205,7 +204,7 @@ export default function PremiumLeaderboard({ slug }: { slug: string }) {
                 <Medal className="h-5 w-5 text-gray-600" />
               </div>
               <p className="mt-1 text-center font-medium text-sm">
-                {data?.[1]?.user.first_name} {data?.[1]?.user.last_name}c
+                {data?.[1]?.user.first_name} {data?.[1]?.user.last_name}
               </p>
               <p className="text-gray-600 text-xs">
                 {data?.[1]?.score.toFixed(1)}
@@ -376,7 +375,7 @@ function LeaderboardItem({
         "grid grid-cols-12 items-center border-b border-gray-100 dark:border-gray-900 dark:hover:border-gray-800 p-4 hover:bg-gray-50 transition-colors",
         isTopThree && "bg-gray-50 dark:bg-gray-700",
         "grid grid-cols-12 items-center border-b border-gray-100 dark:border-gray-900 dark:hover:border-gray-800 p-4 hover:bg-gray-50 transition-colors",
-        isTopThree && "bg-gray-50 dark:bg-gray-700",
+        isTopThree && "bg-gray-50 dark:bg-gray-700"
       )}
       initial={{ opacity: 0, y: 20 }}
       transition={{ delay: rank * 0.05, duration: 0.3 }}
@@ -386,7 +385,7 @@ function LeaderboardItem({
         <div
           className={cn(
             "flex h-8 w-8 items-center justify-center rounded-full font-bold shadow-sm",
-            getRankStyles(),
+            getRankStyles()
           )}
         >
           {rank}
@@ -405,7 +404,7 @@ function LeaderboardItem({
                   ? "border-gray-300"
                   : rank === 3
                     ? "border-amber-700"
-                    : "border-gray-200",
+                    : "border-gray-200"
             )}
             onClick={() => {
               router.push(`/trang-ca-nhan/${user.username}`);
@@ -428,7 +427,7 @@ function LeaderboardItem({
                   ? "bg-yellow-400"
                   : rank === 2
                     ? "bg-gray-300"
-                    : "bg-amber-700",
+                    : "bg-amber-700"
               )}
             >
               <Star className="h-3 w-3 text-white" />
@@ -440,7 +439,7 @@ function LeaderboardItem({
           <Link
             className={cn(
               "font-medium line-clamp-1 hover:underline",
-              isMySelf && "text-[#75A815]",
+              isMySelf && "text-[#75A815]"
             )}
             href={`/trang-ca-nhan/${user?.username}`}
           >
@@ -461,7 +460,7 @@ function LeaderboardItem({
                 ? "bg-gray-400 text-gray-950"
                 : rank === 3
                   ? "bg-amber-700 text-white"
-                  : "bg-[#75A815] text-white",
+                  : "bg-[#75A815] text-white"
           )}
         >
           {formattedScore} điểm

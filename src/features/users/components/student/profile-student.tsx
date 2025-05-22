@@ -58,7 +58,7 @@ export default function ProfilePage() {
   const averageScore = data?.quizResults
     ? data?.quizResults?.reduce(
         (acc: number, result: any) => acc + (result?.score || 0),
-        0,
+        0
       ) /
       (data?.quizResults?.filter((item) => item?.score !== undefined).length ||
         1)
@@ -175,7 +175,7 @@ export default function ProfilePage() {
                     }}
                   >
                     <School className="h-3.5 w-3.5" />
-                    <span>{data?.organizationId?.[0]?.name}</span>
+                    <span>{data?.organizationId?.name}</span>
                   </MotionBadge>
                 </MotionDiv>
                 {user_role?.userId === data?._id && (
@@ -235,7 +235,7 @@ export default function ProfilePage() {
                   <div>
                     <p className="text-sm font-medium">Tổ chức</p>
                     <p className="text-sm text-muted-foreground">
-                      {data?.organizationId?.[0]?.name}
+                      {data?.organizationId?.name}
                     </p>
                   </div>
                 </MotionDiv>
@@ -396,7 +396,7 @@ export default function ProfilePage() {
                         >
                           {
                             data?.quizResults?.filter(
-                              (r: any) => r.score >= 7 && r.score < 9,
+                              (r: any) => r.score >= 7 && r.score < 9
                             )?.length
                           }
                         </MotionDiv>
@@ -422,7 +422,7 @@ export default function ProfilePage() {
                         >
                           {
                             data?.quizResults?.filter(
-                              (r: any) => r.score >= 5 && r.score < 7,
+                              (r: any) => r.score >= 5 && r.score < 7
                             )?.length
                           }
                         </MotionDiv>

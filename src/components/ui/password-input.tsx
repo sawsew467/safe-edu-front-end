@@ -28,7 +28,7 @@ const PasswordInput = React.forwardRef<
       <Input
         ref={ref}
         className={cn(
-          "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
+          "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pr-10",
           className,
         )}
         onCopy={handleCopy}
@@ -36,7 +36,6 @@ const PasswordInput = React.forwardRef<
         onDrag={handleCopy}
         onDrop={handleCopy}
         onPaste={handleCopy}
-        onSelect={handleCopy}
         {...props}
         type={showPassword ? "text" : "password"}
       />
@@ -44,6 +43,8 @@ const PasswordInput = React.forwardRef<
         className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
         disabled={disabled}
         size="sm"
+        style={{ zIndex: 2 }}
+        tabIndex={-1}
         type="button"
         variant="ghost"
         onClick={() => setShowPassword((prev) => !prev)}
@@ -54,16 +55,15 @@ const PasswordInput = React.forwardRef<
           <EyeOffIcon aria-hidden="true" className="h-4 w-4" />
         )}
       </Button>
-
       <style>
         {`
-			.hide-password-toggle::-ms-reveal,
-			.hide-password-toggle::-ms-clear {
-				visibility: hidden;
-				pointer-events: none;
-				display: none;
-			}
-		`}
+        .hide-password-toggle::-ms-reveal,
+        .hide-password-toggle::-ms-clear {
+          visibility: hidden;
+          pointer-events: none;
+          display: none;
+        }
+      `}
       </style>
     </div>
   );

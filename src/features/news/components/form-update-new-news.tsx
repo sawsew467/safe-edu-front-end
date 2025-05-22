@@ -38,6 +38,7 @@ import {
 } from "@/features/topic/api";
 import TitlePage from "@/components/ui/title-page";
 import { DataTopic } from "@/features/topic/topic.type";
+import useBreadcrumb from "@/hooks/useBreadcrumb";
 
 const initialNews = {
   title: "",
@@ -55,8 +56,14 @@ const FormUpdateNews = () => {
       selectFromResult: ({ data }) => ({
         news: data?.data,
       }),
-    },
+    }
   );
+
+  useBreadcrumb([
+    { label: "Tin tức", href: "/quan-tri/tin-tuc" },
+    { label: news?.title },
+  ]);
+
   const [addTopic, { isLoading: isAddTopicLoading }] = useAddNewTopicMutation();
   const [updateNews, { isLoading: isUpdateNewsLoading }] =
     useUpdateNewsMutation();
@@ -159,7 +166,7 @@ const FormUpdateNews = () => {
                 <FormItem>
                   <FormLabel>Tiêu đề</FormLabel>
                   <FormControl>
-                    <Input placeholder="nhập tiêu đề" {...field} />
+                    <Input placeholder="Nhập tiêu đề" {...field} />
                   </FormControl>
                   <FormDescription>
                     Đây là tiêu đề được hiển thị ở bên ngoài tin tức
@@ -208,7 +215,7 @@ const FormUpdateNews = () => {
                           >
                             {label}
                           </SelectItem>
-                        ),
+                        )
                       )}
                     </SelectContent>
                   </Select>
@@ -228,7 +235,7 @@ const FormUpdateNews = () => {
                 <FormItem>
                   <FormLabel>Tác giả</FormLabel>
                   <FormControl>
-                    <Input placeholder="nhập tiêu đề" {...field} />
+                    <Input placeholder="Nhập tiêu đề" {...field} />
                   </FormControl>
                   <FormDescription>Đây là tác giả của bài báo</FormDescription>
                   <FormMessage />

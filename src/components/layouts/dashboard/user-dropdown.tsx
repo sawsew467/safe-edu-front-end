@@ -10,11 +10,11 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAppSelector } from "@/hooks/redux-toolkit";
-import constants from "@/settings/constants";
-import { deleteClientCookie } from "@/lib/jsCookies";
+import { deleteAllClientCookie } from "@/lib/jsCookies";
 
 function UserDropdown() {
   const router = useRouter();
@@ -24,11 +24,7 @@ function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleSignOut = () => {
-    deleteClientCookie(constants.ACCESS_TOKEN_ADMIN);
-    deleteClientCookie(constants.REFRESH_TOKEN_ADMIN);
-    deleteClientCookie(constants.ACCESS_TOKEN);
-    deleteClientCookie(constants.REFRESH_TOKEN);
-    deleteClientCookie(constants.USER_INFO);
+    deleteAllClientCookie();
 
     window.location.reload();
   };
@@ -49,7 +45,7 @@ function UserDropdown() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent forceMount align="end" className="w-56">
-        {/* <DropdownMenuLabel className="font-normal">
+        <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">
               {`${userInfo?.displayName || ""}`}
@@ -59,7 +55,7 @@ function UserDropdown() {
             </p>
           </div>
         </DropdownMenuLabel>
-        <DropdownMenuSeparator />
+        {/* <DropdownMenuSeparator />
         <DropdownMenuItem>
           <Link className="w-full" href="/profile">
             Profile

@@ -6,6 +6,7 @@ import { TypeNews } from "../news.type";
 
 import DataTable from "@/components/data-table/data-table";
 import { columns } from "@/app/quan-tri/(dashboard)/tin-tuc/columns";
+import useBreadcrumb from "@/hooks/useBreadcrumb";
 
 const NewsTableModule = () => {
   const { news, isFetching } = useGetAllNewsQuery(
@@ -19,8 +20,10 @@ const NewsTableModule = () => {
           isFetching,
         };
       },
-    },
+    }
   );
+
+  useBreadcrumb([{ label: "Tin tức" }]);
 
   return <DataTable columns={columns} data={news} isLoading={isFetching} />;
 };

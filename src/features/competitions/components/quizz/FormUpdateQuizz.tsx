@@ -60,7 +60,7 @@ const FormUpdateQuizz = ({
         quizz: data?.data,
         isFetching: isFetching,
       }),
-    },
+    }
   );
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {

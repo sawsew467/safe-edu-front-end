@@ -17,28 +17,28 @@ const getStatus = (status: string) => {
       return (
         <div className="flex items-center text-yellow-500">
           <TimerIcon className="mr-2 h-4 w-4 text-yellow-500" />
-          <p className="text-sm">Sắp diễn ra</p>
+          <p className="text-xs">Sắp diễn ra</p>
         </div>
       );
     case "Outgoing":
       return (
         <div className="flex items-center text-red-500">
           <CrossCircledIcon className="mr-2 h-4 w-4 text-red-500" />
-          <p className="text-sm">Đã kết thúc</p>
+          <p className="text-xs">Đã kết thúc</p>
         </div>
       );
     case "Ongoing":
       return (
         <div className="flex items-center text-green-500">
           <CheckCircledIcon className="mr-2 h-4 w-4 text-green-500" />
-          <p className="text-sm">Đang diễn ra</p>
+          <p className="text-xs">Đang diễn ra</p>
         </div>
       );
     default:
       return (
         <div className="flex items-center text-red-500">
           <CheckCircledIcon className="mr-2 h-4 w-4 text-red-500" />
-          <p className="text-sm">Đã kết thúc</p>
+          <p className="text-xs">Đã kết thúc</p>
         </div>
       );
   }
@@ -51,6 +51,7 @@ export function CompetitionArticleCard({
   image,
   slug,
   description,
+  statusCompetitions,
 }: {
   title: string;
   startDate: string;
@@ -58,6 +59,7 @@ export function CompetitionArticleCard({
   image?: string | null;
   slug: string;
   description: string;
+  statusCompetitions?: "done" | "doing" | "not-start";
 }) {
   const status =
     new Date(startDate) > new Date()
@@ -70,7 +72,6 @@ export function CompetitionArticleCard({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       transition={{ duration: 0.5 }}
-      viewport={{ once: true, margin: "-100px" }}
       whileInView={{ opacity: 1, y: 0 }}
     >
       <Card className="overflow-hidden hover:shadow-md transition-shadow h-full">
@@ -82,8 +83,7 @@ export function CompetitionArticleCard({
             whileInView={{ opacity: 1, scale: 1 }}
           >
             <Badge className="absolute backdrop-blur-lg top-2 right-2 z-10 shadow-md bg-white/60 dark:bg-black/60 hover:bg-white/60 text-primary rounded-full">
-              <div className="h-1.5 w-1.5 rounded-full bg-primary mr-2" /> Đang
-              diễn ra
+              {getStatus(status)}
             </Badge>
           </motion.div>
           <motion.div
@@ -132,7 +132,7 @@ export function CompetitionArticleCard({
                 <p className=" text-sm">Bắt đầu:</p>
                 <span className="text-gray-500 text-sm">
                   <p className="capitalize">
-                    {formatDate(startDate, "dddd, DD/MM HH:mm")}
+                    {formatDate(startDate, "dddd, DD/MM")}
                   </p>
                 </span>
               </div>
@@ -141,7 +141,7 @@ export function CompetitionArticleCard({
                 <span className="text-gray-500 text-sm">
                   <p className="capitalize">
                     {" "}
-                    {formatDate(endDate, "dddd, DD/MM HH:mm")}
+                    {formatDate(endDate, "dddd, DD/MM")}
                   </p>
                 </span>
               </div>
@@ -153,8 +153,11 @@ export function CompetitionArticleCard({
               viewport={{ once: true }}
               whileInView={{ opacity: 1, y: 0 }}
             >
-              {/* <div className="mt-2">{getStatus(status)}</div> */}
-              <ActionCompetitions slug={slug} status={status} />
+              <ActionCompetitions
+                slug={slug}
+                status={status}
+                statusCompetitions={statusCompetitions}
+              />
             </motion.div>
           </div>
         </CardContent>

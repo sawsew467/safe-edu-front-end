@@ -6,9 +6,11 @@ import { Button } from "@/components/ui/button";
 const ActionCompetitions = ({
   slug,
   status,
+  statusCompetitions,
 }: {
   slug: string;
   status: "Outgoing" | "Upcoming" | "Ongoing";
+  statusCompetitions?: "done" | "not-start" | "doing";
 }) => {
   "use client";
   const router = useRouter();
@@ -19,7 +21,9 @@ const ActionCompetitions = ({
       variant={
         status === "Upcoming"
           ? "outline"
-          : status === "Outgoing"
+          : status === "Outgoing" ||
+              statusCompetitions === "done" ||
+              statusCompetitions === "not-start"
             ? "secondary"
             : "default"
       }
@@ -29,9 +33,13 @@ const ActionCompetitions = ({
     >
       {status === "Upcoming"
         ? "Xem trước"
-        : status === "Outgoing"
+        : status === "Outgoing" ||
+            statusCompetitions === "done" ||
+            statusCompetitions === "not-start"
           ? "Xem"
-          : "Tham gia"}
+          : statusCompetitions === "doing"
+            ? "Tiếp tục"
+            : "Tham gia"}
     </Button>
   );
 };

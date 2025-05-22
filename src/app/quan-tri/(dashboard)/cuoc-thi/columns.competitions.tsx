@@ -66,7 +66,7 @@ export const columns: ColumnDef<Competitions>[] = [
     header: "Ngày tạo",
     cell: ({ row }) => {
       const createDate = formatDate(
-        row.original.updated_at ?? row.getValue("created_at"),
+        row.original.updated_at ?? row.getValue("created_at")
       );
 
       return <p>{createDate}</p>;
@@ -119,7 +119,7 @@ export const columns: ColumnDef<Competitions>[] = [
   // },
   {
     accessorKey: "number_join",
-    header: "Tổng người tham gia",
+    header: "Số người tham gia",
     cell: ({ row }) => {
       const numberJoin = row.getValue("number_join") as number;
 

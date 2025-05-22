@@ -61,7 +61,7 @@ export function Overview() {
           totalUsers: data?.data?.citizens?.total + data?.data?.students?.total,
         };
       },
-    }
+    },
   );
 
   const { totalOrganizations } = useGetCountOrganizationsQuery(
@@ -72,7 +72,7 @@ export function Overview() {
           totalOrganizations: data?.data,
         };
       },
-    }
+    },
   );
 
   const { totalNewsViews } = useGetCountNewsViewsQuery(
@@ -83,7 +83,7 @@ export function Overview() {
           totalNewsViews: data?.data,
         };
       },
-    }
+    },
   );
 
   const { totalLibraryViews } = useGetCountLibraryViewsQuery(
@@ -94,7 +94,7 @@ export function Overview() {
           totalLibraryViews: data?.data,
         };
       },
-    }
+    },
   );
 
   const { visitStats7Days } = useGetVisitStats7DaysQuery(
@@ -105,7 +105,7 @@ export function Overview() {
           visitStats7Days: data?.data,
         };
       },
-    }
+    },
   );
 
   const { dataOrganizationByProvince } = useGetCountOrganizationByProvinceQuery(
@@ -114,16 +114,11 @@ export function Overview() {
       selectFromResult({ data }) {
         return {
           dataOrganizationByProvince: data?.data?.filter(
-            (item: any) => item?.count
+            (item: any) => item?.count,
           ),
         };
       },
-    }
-  );
-
-  console.log(
-    "🚀 ~ Overview ~ dataOrganizationByProvince:",
-    dataOrganizationByProvince
+    },
   );
 
   return (
@@ -136,7 +131,7 @@ export function Overview() {
           <Users className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{totalUsers}</div>
+          <div className="text-2xl font-bold">{totalUsers || "N/A"}</div>
           {/* <p className="text-xs text-muted-foreground">
             +15% so với tháng trước
           </p> */}
