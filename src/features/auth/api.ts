@@ -1,6 +1,6 @@
-"use client";
-
+import { use } from 'react';
 import { baseApi } from "@/redux/baseApi";
+import { verify } from "crypto";
 
 export const authAPI = baseApi.injectEndpoints({
   endpoints: (build) => ({
@@ -59,6 +59,27 @@ export const authAPI = baseApi.injectEndpoints({
         body: data,
       }),
     }),
+    forgotPassword: build.mutation({
+      query: (data) => ({
+        url: "/auth/forgot-password",
+        method: "POST",
+        body: data,
+      }),
+    }),
+    verifyOtpForgotPassword: build.mutation({
+      query: (data) => ({
+        url: "/auth/verify-otp-forgot-password",
+        method: "POST",
+        body: data,
+      }),
+    }),
+    resetPassword: build.mutation({
+      query: (data) => ({
+        url: "/auth/reset-password",
+        method: "POST",
+        body: data,
+      }),
+    })
   }),
 });
 
@@ -71,4 +92,7 @@ export const {
   useCreateCitizenAccountMutation,
   useCreateStudentAccountMutation,
   useSignInMutation,
+  useForgotPasswordMutation,
+  useVerifyOtpForgotPasswordMutation,
+  useResetPasswordMutation
 } = authAPI;
