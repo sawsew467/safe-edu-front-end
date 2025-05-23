@@ -22,7 +22,9 @@ const getConentBtn = (
           ? "Bắt đầu"
           : status === "Upcoming"
             ? "Chưa bắt đầu"
-            : "Đã kết thúc";
+            : statusSubmit === undefined
+              ? "Tham gia"
+              : "Đã kết thúc";
     case QuizzType.PaintingPropaganda:
       return statusSubmit === "done" || status !== "Ongoing"
         ? "Xem tranh"
@@ -50,7 +52,12 @@ const ActionQuizz = ({
           data?.type === QuizzType.SingleChoice &&
           data?.statusSubmit === "cant-start"
         }
-        variant={data?.statusSubmit === "not-started" ? "default" : "outline"}
+        variant={
+          data?.statusSubmit === "not-started" ||
+          data?.statusSubmit === undefined
+            ? "default"
+            : "outline"
+        }
         onClick={() => {
           switch (data?.type) {
             case QuizzType.SingleChoice:

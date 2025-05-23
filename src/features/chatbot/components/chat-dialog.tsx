@@ -105,7 +105,7 @@ export function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
   const getImageUrl = useCallback(async (file: any) => {
     const formData = new FormData();
 
-    formData.append("image", file);
+    formData.append("file", file);
     try {
       const { data } = await uploadImage(formData).unwrap();
 
