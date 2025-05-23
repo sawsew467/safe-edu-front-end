@@ -72,6 +72,7 @@ export function CompetitionArticleCard({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       transition={{ duration: 0.5 }}
+      viewport={{ once: true }}
       whileInView={{ opacity: 1, y: 0 }}
     >
       <Card className="overflow-hidden hover:shadow-md transition-shadow h-full">
