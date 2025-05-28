@@ -33,7 +33,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { DateTimeInput } from "@/components/ui/datetime-input";
 import { Province } from "@/features/users/user.types";
 import { useGetAllOrganizationQuery } from "@/features/organizations/organization.api";
 import { Organization } from "@/features/organizations/types";
@@ -41,6 +40,7 @@ import { Combobox } from "@/components/ui/comboBox";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAppDispatch } from "@/hooks/redux-toolkit";
+import DateInputForm from "@/components/ui/date-input-form";
 
 interface RegistrationFormProps {
   userType: "student" | "citizen";
@@ -267,8 +267,7 @@ export default function RegistrationForm({
                     Ngày sinh<p className="text-red-500">*</p>
                   </FormLabel>
                   <FormControl>
-                    <DateTimeInput
-                      format="dd/MM/yyyy"
+                    <DateInputForm
                       value={field.value ? new Date(field.value) : undefined}
                       onChange={(e) => {
                         field.onChange(e?.toISOString());
@@ -334,7 +333,7 @@ export default function RegistrationForm({
                         <Combobox
                           options={provinces}
                           placeholder="Chọn tỉnh / thành phố"
-                          value={field.value}
+                          value={field.value ?? ""}
                           onValueChange={(e: string) => {
                             field.onChange(e);
                             setSelectProvince(e);
@@ -357,7 +356,7 @@ export default function RegistrationForm({
                         <Combobox
                           options={organizationsByProvince}
                           placeholder="Chọn tổ chức"
-                          value={field.value}
+                          value={field.value ?? ""}
                           onValueChange={field.onChange}
                         />
                       </FormControl>
