@@ -19,11 +19,11 @@ export async function customFetch(url: string, options: RequestInit = {}) {
   try {
     const response = await fetch(url, config);
 
-    if (response.status === 401) {
-      await refreshToken();
+    // if (response.status === 401) {
+    //   await refreshToken();
 
-      return await fetch(url, config);
-    }
+    //   return await fetch(url, config);
+    // }
     const res = await response.json();
 
     return res;
