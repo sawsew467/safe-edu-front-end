@@ -63,6 +63,12 @@ export const resetPasswordFormSchema = z
       .regex(/[a-z]/, {
         message: "Mật khẩu phải có ít nhất một chữ cái viết thường.",
       })
+      .regex(/[A-Z]/, {
+        message: "Mật khẩu phải có ít nhất một chữ cái viết hoa.",
+      })
+      .regex(/[a-z]/, {
+        message: "Mật khẩu phải có ít nhất một chữ cái viết thường.",
+      })
       .regex(/[0-9]/, { message: "Mật khẩu phải có ít nhất một chữ số." }),
     confirmPassword: z.string(),
   })
