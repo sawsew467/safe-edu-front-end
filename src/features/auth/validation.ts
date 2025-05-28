@@ -136,7 +136,9 @@ export const studentRegistrationSchema = z
       .max(50, { message: "Tên không được quá 50 ký tự" }),
     date_of_birth: z
       .union([
-        z.date({ message: "ngày sinh không hợp lệ " }),
+        z
+          .string({ message: "ngày sinh không hợp lệ " })
+          .min(1, { message: "ngày sinh không hợp lệ " }),
         z.null(),
         z.literal(""),
       ])
@@ -202,7 +204,15 @@ export const citizenRegistrationSchema = z
       .string()
       .min(1, { message: "Vui lòng nhập tên" })
       .max(50, { message: "Tên không được quá 50 ký tự" }),
-    date_of_birth: z.string().min(1, { message: "Vui lòng chọn ngày sinh" }),
+    date_of_birth: z
+      .union([
+        z.string({ message: "ngày sinh không hợp lệ " }).min(1, {
+          message: "ngày sinh không hợp lệ ",
+        }),
+        z.null(),
+        z.literal(""),
+      ])
+      .optional(),
   })
   .refine((data) => data.confirmPassword === data.password, {
     message: "Mật khẩu không khớp",
