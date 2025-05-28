@@ -114,7 +114,7 @@ export default function RegistrationForm({
     defaultValues: {
       last_name: "",
       first_name: "",
-      date_of_birth: "",
+      date_of_birth: new Date().toISOString(),
       username: "",
       password: "",
       confirmPassword: "",
@@ -124,6 +124,8 @@ export default function RegistrationForm({
       ...(userType === "student" ? { organizationId: "" } : {}),
     },
   });
+
+  console.log("form", form.getValues());
 
   React.useEffect(() => {
     if (provinces && organizations) {
@@ -268,8 +270,9 @@ export default function RegistrationForm({
                   </FormLabel>
                   <FormControl>
                     <DateInputForm
-                      value={field.value ? new Date(field.value) : undefined}
+                      value={field.value ? new Date(field.value) : new Date()}
                       onChange={(e) => {
+                        console.log("e", e?.toISOString());
                         field.onChange(e?.toISOString());
                       }}
                     />

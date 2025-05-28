@@ -1,17 +1,8 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@/components/ui/form";
+import { FormControl } from "@/components/ui/form";
 import {
   Select,
   SelectContent,
@@ -20,38 +11,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-// Zod schema để validate ngày tháng năm
-const dateFormSchema = z
-  .object({
-    day: z.string().min(1, { message: "Vui lòng chọn ngày" }),
-    month: z.string().min(1, { message: "Vui lòng chọn tháng" }),
-    year: z.string().min(1, { message: "Vui lòng chọn năm" }),
-  })
-  .refine(
-    (data) => {
-      // Kiểm tra ngày hợp lệ
-      const day = Number.parseInt(data.day);
-      const month = Number.parseInt(data.month);
-      const year = Number.parseInt(data.year);
-
-      // Tạo Date object để kiểm tra tính hợp lệ
-      const date = new Date(year, month - 1, day);
-
-      // Kiểm tra xem ngày có hợp lệ không
-      return (
-        date.getFullYear() === year &&
-        date.getMonth() === month - 1 &&
-        date.getDate() === day
-      );
-    },
-    {
-      message: "Ngày tháng năm không hợp lệ",
-      path: ["day"], // Hiển thị lỗi ở field day
-    },
-  );
-
-type DateFormValues = z.infer<typeof dateFormSchema>;
-
 export default function DateInputForm({
   value,
   onChange,
@@ -59,44 +18,23 @@ export default function DateInputForm({
   value?: Date;
   onChange?: (date: Date) => void;
 }) {
-  const form = useForm<DateFormValues>({
-    resolver: zodResolver(dateFormSchema),
-    defaultValues: {
-      day: "",
-      month: "",
-      year: "",
-    },
-    mode: "onChange",
-  });
+  const [[day, month, year], setDate] = useState([
+    new Date().getDate().toString(),
+    (new Date().getMonth() + 1).toString(),
+    new Date().getFullYear().toString(),
+  ]);
 
   useEffect(() => {
     if (value) {
-      form.reset({
-        day: value.getDate().toString(),
-        month: (value.getMonth() + 1).toString(),
-        year: value.getFullYear().toString(),
-      });
-    } else {
-      form.reset({
-        day: new Date().getDate().toString(),
-        month: (new Date().getMonth() + 1).toString(),
-        year: new Date().getFullYear().toString(),
-      });
+      setDate([
+        value.getDate().toString(),
+        (value.getMonth() + 1).toString(),
+        value.getFullYear().toString(),
+      ]);
     }
   }, [value]);
 
-  function onSubmit(values: DateFormValues) {
-    const selectedDate = new Date(
-      Number.parseInt(values.year),
-      Number.parseInt(values.month) - 1,
-      Number.parseInt(values.day),
-    );
-
-    onChange?.(selectedDate);
-  }
-
   // Tạo danh sách ngày (1-31)
-  const days = Array.from({ length: 31 }, (_, i) => i + 1);
 
   // Tạo danh sách tháng
   const months = [
@@ -121,12 +59,20 @@ export default function DateInputForm({
     (_, i) => currentYear + 10 - i,
   );
 
+  useEffect(() => {
+    const selectedDay = Number(day);
+    const selectedMonth = Number(month);
+    const selectedYear = Number(year);
+    const selectedDate = new Date(selectedYear, selectedMonth - 1, selectedDay);
+
+    onChange?.(selectedDate);
+  }, [day, month, year]);
+
   // Ensure day is valid for selected month/year
   useEffect(() => {
-    const selectedDay = Number(form.watch("day"));
-    const selectedMonth = Number(form.watch("month"));
-    const selectedYear = Number(form.watch("year"));
-
+    const selectedDay = Number(day);
+    const selectedMonth = Number(month);
+    const selectedYear = Number(year);
     const isLeapYear = (year: number) =>
       year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
 
@@ -139,124 +85,94 @@ export default function DateInputForm({
     }
 
     if (selectedDay > daysInMonth) {
-      form.setValue("day", "");
+      setDate(["", month, year]); // Reset day if invalid
     }
-  }, [form.watch("month"), form.watch("year")]);
+  }, [month, year]);
 
   return (
-    <Form {...form}>
-      <form className="space-y-6" onChange={form.handleSubmit(onSubmit)}>
-        <div className="grid grid-cols-3 gap-4">
-          {/* Select Ngày */}
-          <FormField
-            control={form.control}
-            name="day"
-            render={({ field }) => (
-              <FormItem>
-                <Select
-                  defaultValue={field.value}
-                  onValueChange={field.onChange}
-                >
-                  <FormControl>
-                    <SelectTrigger type="button">
-                      <SelectValue
-                        placeholder={field.value ? field.value : "Ngày"}
-                      />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {(() => {
-                      const selectedMonth = Number(form.watch("month"));
-                      const selectedYear = Number(form.watch("year"));
+    <div className="grid grid-cols-3 gap-4">
+      {/* Select Ngày */}
+      <Select
+        value={day}
+        onValueChange={(selectedDay) => {
+          setDate([selectedDay, month, year]);
+        }}
+      >
+        <FormControl>
+          <SelectTrigger>
+            <SelectValue placeholder={day || "Ngày"} />
+          </SelectTrigger>
+        </FormControl>
+        <SelectContent>
+          {(() => {
+            const selectedMonth = Number(month);
+            const selectedYear = Number(year);
 
-                      const isLeapYear = (year: number) =>
-                        year % 4 === 0 &&
-                        (year % 100 !== 0 || year % 400 === 0);
+            const isLeapYear = (year: number) =>
+              year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
 
-                      let daysInMonth = 31;
+            let daysInMonth = 31;
 
-                      if (selectedMonth === 2) {
-                        daysInMonth = isLeapYear(selectedYear) ? 29 : 28;
-                      } else if ([4, 6, 9, 11].includes(selectedMonth)) {
-                        daysInMonth = 30;
-                      }
+            if (selectedMonth === 2) {
+              daysInMonth = isLeapYear(selectedYear) ? 29 : 28;
+            } else if ([4, 6, 9, 11].includes(selectedMonth)) {
+              daysInMonth = 30;
+            }
 
-                      return Array.from(
-                        { length: daysInMonth },
-                        (_, i) => i + 1,
-                      ).map((day) => (
-                        <SelectItem key={day} value={day.toString()}>
-                          {day}
-                        </SelectItem>
-                      ));
-                    })()}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            return Array.from({ length: daysInMonth }, (_, i) => i + 1).map(
+              (day) => (
+                <SelectItem key={day} value={day.toString()}>
+                  {day}
+                </SelectItem>
+              ),
+            );
+          })()}
+        </SelectContent>
+      </Select>
 
-          <FormField
-            control={form.control}
-            name="month"
-            render={({ field }) => (
-              <FormItem>
-                <Select
-                  defaultValue={field.value}
-                  onValueChange={field.onChange}
-                >
-                  <FormControl>
-                    <SelectTrigger type="button">
-                      <SelectValue
-                        placeholder={field.value ? field.value : "Tháng"}
-                      />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {months.map((month) => (
-                      <SelectItem key={month.value} value={month.value}>
-                        {month.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      <Select
+        value={month}
+        onValueChange={(selectedMonth) => {
+          setDate([day, selectedMonth, year]);
+        }}
+      >
+        <FormControl>
+          <SelectTrigger>
+            <SelectValue placeholder={month ? `Tháng ${month}` : "Tháng"} />
+          </SelectTrigger>
+        </FormControl>
+        <SelectContent>
+          {months.map((month) => (
+            <SelectItem key={month.value} value={month.value}>
+              {month.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
 
-          {/* Select Năm */}
-          <FormField
-            control={form.control}
-            name="year"
-            render={({ field }) => (
-              <FormItem>
-                <Select
-                  defaultValue={field.value}
-                  onValueChange={field.onChange}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue
-                        placeholder={field.value ? field.value : "Năm"}
-                      />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {years.map((year) => (
-                      <SelectItem key={year} value={year.toString()}>
-                        {year}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-      </form>
-    </Form>
+      {/* Select Năm */}
+      <Select
+        defaultValue={year}
+        onValueChange={(selectedYear) => {
+          setDate([day, month, selectedYear]);
+          onChange?.(
+            new Date(Number(selectedYear), Number(month) - 1, Number(day)),
+          );
+        }}
+      >
+        <FormControl>
+          <SelectTrigger>
+            <SelectValue placeholder={year || "Năm"} />
+          </SelectTrigger>
+        </FormControl>
+        <SelectContent>
+          {years.map((year) => (
+            <SelectItem key={year} value={year.toString()}>
+              {year}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
   );
 }
