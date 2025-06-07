@@ -1,6 +1,7 @@
 "use client";
 import { useRouter } from "next-nprogress-bar";
 import { ArrowRight } from "lucide-react";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { QuizzType } from "@/settings/enums";
@@ -42,6 +43,7 @@ const ActionQuizz = ({
   status: "Upcoming" | "Outgoing" | "Ongoing";
 }) => {
   const router = useRouter();
+  const [isRouting, setIsRouting] = useState(false);
 
   return (
     <div className="flex gap-2">
@@ -52,6 +54,7 @@ const ActionQuizz = ({
           data?.type === QuizzType.SingleChoice &&
           data?.statusSubmit === "cant-start"
         }
+        isLoading={isRouting}
         variant={
           data?.statusSubmit === "not-started" ||
           data?.statusSubmit === undefined
@@ -63,12 +66,13 @@ const ActionQuizz = ({
             case QuizzType.SingleChoice:
               if (data?.statusSubmit === "done")
                 router.push(`/phan-thi-ly-thuyet/${slug}/ket-qua`);
-              else router.push(`/phan-thi-ly-thuyet/${slug}`);
+              else if (!isRouting) router.push(`/phan-thi-ly-thuyet/${slug}`);
               break;
             case QuizzType.PaintingPropaganda:
               router.push(`/phan-thi-ve-tranh-co-dong/${slug}`);
               break;
           }
+          setIsRouting(true);
         }}
       >
         {getConentBtn(data?.type, data?.statusSubmit, status)}
