@@ -38,6 +38,7 @@ export const columns: ColumnDef<Supervision>[] = [
           className="rounded-full"
           height={100}
           src={image}
+          unoptimized={true}
           width={100}
         />
       ) : (

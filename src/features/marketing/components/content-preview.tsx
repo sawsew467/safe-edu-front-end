@@ -59,9 +59,10 @@ function ContentPreview() {
                   <div className="aspect-video relative overflow-hidden rounded-lg">
                     <Image
                       fill
-                      alt={card.alt}
+                      alt={card?.alt}
                       className="object-contain"
-                      src={card.image}
+                      src={card?.image}
+                      unoptimized={true}
                     />
                   </div>
                   <p className="mt-4 text-sm text-muted-foreground text-center">

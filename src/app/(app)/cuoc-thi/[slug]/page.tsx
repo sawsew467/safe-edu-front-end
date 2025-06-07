@@ -13,7 +13,7 @@ import PremiumLeaderboard from "@/features/competitions/components/quizz/leaderB
 type Params = Promise<{ slug: string }>;
 const fetchQuizzByIdCompetition = async (slug: string) => {
   const { data } = await customFetch(
-    `${constants.API_SERVER}/competitions/get-all-quiz-by-slug/${slug}`
+    `${constants.API_SERVER}/competitions/get-all-quiz-by-slug/${slug}`,
   );
 
   return data?.data;
@@ -21,7 +21,7 @@ const fetchQuizzByIdCompetition = async (slug: string) => {
 
 const fetchCompetitionsById = async (slug: string) => {
   const { data } = await customFetch(
-    `${constants.API_SERVER}/competitions/slug/${slug}`
+    `${constants.API_SERVER}/competitions/slug/${slug}`,
   );
 
   return data;
@@ -30,14 +30,14 @@ const fetchCompetitionsById = async (slug: string) => {
 export async function generateMetadata({ params }: { params: Params }) {
   const { slug } = await params;
   const competition: Competitions = await fetchCompetitionsById(
-    (slug ?? "") as string
+    (slug ?? "") as string,
   );
 
   return {
     title: competition?.title,
     description: competition?.description,
     date: `${new Date(competition?.startDate).toLocaleDateString()} - ${new Date(
-      competition?.endDate
+      competition?.endDate,
     ).toLocaleDateString()}`,
   };
 }
@@ -45,11 +45,11 @@ export async function generateMetadata({ params }: { params: Params }) {
 const QuizzPage = async (props: { params: Params }) => {
   const { slug } = await props.params;
   const quizzs: Quizz[] = await fetchQuizzByIdCompetition(
-    (slug ?? "") as string
+    (slug ?? "") as string,
   );
 
   const competition: Competitions = await fetchCompetitionsById(
-    (slug ?? "") as string
+    (slug ?? "") as string,
   );
 
   const status =
@@ -124,6 +124,7 @@ const QuizzPage = async (props: { params: Params }) => {
             className="w-full h-full object-cover"
             height={1000}
             src={competition?.image_url || "/placeholder.svg"}
+            unoptimized={true}
             width={1000}
           />
           <div className="absolute w-full left-0 bottom-0 h-80 z-10 bg-gradient-to-t from-black/40 to-black/0" />

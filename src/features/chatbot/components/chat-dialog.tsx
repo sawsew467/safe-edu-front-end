@@ -202,6 +202,7 @@ export function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
                             className="rounded object-cover aspect-video "
                             height={200}
                             src={url}
+                            unoptimized={true}
                             width={200}
                           />
                         ))}
@@ -234,6 +235,7 @@ export function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
                     alt={`Uploaded image ${index + 1}`}
                     className="object-cover rounded"
                     src={item.url || "/placeholder.svg"}
+                    unoptimized={true}
                   />
                   <button
                     aria-label="Remove image"

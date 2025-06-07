@@ -217,6 +217,7 @@ const PaintingPropagandaModule = () => {
                       height={400}
                       loading="lazy"
                       src={picture?.picture ?? "/placeholder.svg"}
+                      unoptimized={true}
                       width={400}
                     />
                   </div>

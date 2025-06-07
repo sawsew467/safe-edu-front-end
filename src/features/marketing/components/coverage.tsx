@@ -73,6 +73,7 @@ function Coverage() {
                       alt={card.logo.alt}
                       className="object-contain"
                       src={card.logo.src}
+                      unoptimized={true}
                     />
                   </div>
                   <p className="text-sm text-muted-foreground">{card.date}</p>
