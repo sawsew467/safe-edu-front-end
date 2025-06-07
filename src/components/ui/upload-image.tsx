@@ -166,6 +166,7 @@ function DragZone({
                   style={{
                     maxHeight: maxHeight ? maxHeight + "px" : "none",
                   }}
+                  unoptimized={true}
                   width={400}
                 />
               </div>

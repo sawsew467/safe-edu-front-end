@@ -36,6 +36,7 @@ export const columns: ColumnDef<Manager>[] = [
           className="rounded-full"
           height={48}
           src={image}
+          unoptimized={true}
           width={48}
         />
       ) : (

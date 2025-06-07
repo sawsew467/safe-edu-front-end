@@ -99,6 +99,7 @@ export function CompetitionArticleCard({
               className="w-full h-48 object-cover"
               height={200}
               src={image || "/placeholder.svg"}
+              unoptimized={true}
               width={300}
             />
           </motion.div>

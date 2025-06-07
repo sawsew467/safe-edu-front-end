@@ -86,6 +86,7 @@ export default function QuizResults({ quizData, user }: QuizResultsProps) {
                 alt={`${user?.first_name || ""} ${user?.last_name || ""}`}
                 className="object-cover"
                 src={user?.avatar || "/placeholder.svg"}
+                unoptimized={true}
               />
             </div>
             <div className="space-y-1">

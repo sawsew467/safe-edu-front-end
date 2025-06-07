@@ -38,6 +38,7 @@ export const columns: ColumnDef<Student>[] = [
           className="rounded-full"
           height={48}
           src={image}
+          unoptimized={true}
           width={48}
         />
       ) : (
@@ -57,7 +58,7 @@ export const columns: ColumnDef<Student>[] = [
     header: "Tổ chức",
     cell: ({ row }) => {
       const organization: Organization = row.getValue(
-        "organizationId"
+        "organizationId",
       ) as Organization;
 
       return organization?.isActive ? (
