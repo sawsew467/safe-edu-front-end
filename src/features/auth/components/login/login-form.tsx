@@ -93,7 +93,7 @@ export default function LoginForm({
                       className="text-sm text-primary hover:underline"
                       href="/quen-mat-khau"
                     >
-                      Forgot password?
+                      Quên mật khẩu?
                     </Link>
                   </div>
                   <FormControl>

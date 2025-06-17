@@ -29,6 +29,7 @@ export const columns: ColumnDef<Competitions>[] = [
             className="object-cover w-full h-full"
             height={300}
             src={image}
+            unoptimized={true}
             width={400}
           />
         </div>
@@ -119,7 +120,7 @@ export const columns: ColumnDef<Competitions>[] = [
   // },
   {
     accessorKey: "number_join",
-    header: "Tổng người tham gia",
+    header: "Số người tham gia",
     cell: ({ row }) => {
       const numberJoin = row.getValue("number_join") as number;
 

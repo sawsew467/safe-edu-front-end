@@ -40,7 +40,7 @@ const QuizzManagement = ({ competitionId }: { competitionId: string }) => {
           })) ?? [],
         isFetching,
       }),
-    },
+    }
   );
 
   const closeDialogQuestion = () => {
@@ -49,14 +49,14 @@ const QuizzManagement = ({ competitionId }: { competitionId: string }) => {
 
   const handleRowClick = ({ data }: { data: Quizz }) => {
     router.push(
-      `/quan-tri/cuoc-thi/${competitionId}?tab=phan-thi&id=${data._id}`,
+      `/quan-tri/cuoc-thi/${competitionId}?tab=phan-thi&id=${data._id}`
     );
   };
 
   return (
     <>
       <div className="flex w-full justify-between">
-        <h3 className="text-2xl font-bold mb-4">Phần thi</h3>
+        <h3 className="text-2xl font-bold mb-4">Quản lý nội dung thi</h3>
         <Dialog open={isopen} onOpenChange={setOpenDialog}>
           <DialogTrigger asChild className="w-fit h-fit">
             <Button

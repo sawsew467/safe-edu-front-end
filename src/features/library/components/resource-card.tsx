@@ -15,8 +15,6 @@ export function ResourceCard({
   description: string;
   icon: string;
 }) {
-  console.log("🚀 ~ icon:", icon);
-
   return (
     <Card className={`overflow-hidden `}>
       <CardContent className="p-6">
@@ -27,6 +25,7 @@ export function ResourceCard({
               className="object-contain"
               height={80}
               src={icon}
+              unoptimized={true}
               width={80}
             />
           </div>

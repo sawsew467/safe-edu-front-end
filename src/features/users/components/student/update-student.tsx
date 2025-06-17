@@ -47,7 +47,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useGetAllOrganizationQuery } from "@/features/organizations/organization.api";
-import { DateTimeInput } from "@/components/ui/datetime-input";
 import { Combobox } from "@/components/ui/comboBox";
 import { useGetProvincesQuery } from "@/features/auth/api";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -64,6 +63,7 @@ import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useUploadImageMutation } from "@/services/common/upload/api.upload";
 import { setClientCookie } from "@/lib/jsCookies";
 import constants from "@/settings/constants";
+import DateInputForm from "@/components/ui/date-input-form";
 
 const initialForm = {
   first_name: "",
@@ -173,7 +173,7 @@ export default function UpdateProfileModule() {
   }, [provinces?.length, organizations?.length, selectedProvince]);
 
   const handleBack = () => {
-    router.back();
+    router.replace(`/trang-ca-nhan/${user?.username}`);
   };
 
   React.useEffect(() => {
@@ -188,16 +188,14 @@ export default function UpdateProfileModule() {
       );
       form.setValue("avatar", user?.avatar);
 
-      form.setValue("organizationId", user?.organizationId?.[0]?._id);
+      form.setValue("organizationId", user?.organizationId?._id);
 
-      const province_id = user?.organizationId?.[0]?.province_id;
+      const province_id = user?.organizationId?.province_id;
 
       if (province_id) {
         form.setValue("provinceId", province_id);
         setSelectedProvince(province_id);
       }
-
-      // Set avatar preview if available
     }
   }, [user]);
 
@@ -214,7 +212,7 @@ export default function UpdateProfileModule() {
       if (file.type.startsWith("image/")) {
         const formData = new FormData();
 
-        formData.append("image", file);
+        formData.append("file", file);
         const { data } = await uploadImage(formData);
 
         form.setValue("avatar", data?.data?.data);
@@ -402,10 +400,15 @@ export default function UpdateProfileModule() {
                                 Ngày sinh
                               </FormLabel>
                               <FormControl>
-                                <DateTimeInput
-                                  className="rounded-lg"
-                                  format="dd/MM/yyyy"
-                                  {...field}
+                                <DateInputForm
+                                  value={
+                                    field.value
+                                      ? new Date(field.value)
+                                      : new Date()
+                                  }
+                                  onChange={(date) => {
+                                    field.onChange(date);
+                                  }}
                                 />
                               </FormControl>
                               <FormDescription className="text-xs">

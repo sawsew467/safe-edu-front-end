@@ -77,6 +77,7 @@ const PictureContent = ({
               className="object-contain w-full h-full rounded-md"
               height={500}
               src={currentPicture?.picture ?? "/placeholder.png"}
+              unoptimized={true}
               width={500}
             />
           </div>

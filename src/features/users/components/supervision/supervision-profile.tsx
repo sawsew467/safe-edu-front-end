@@ -24,7 +24,7 @@ export default function SupervisionProfileModule() {
         supervisionProfile: data?.data,
         isFetching,
       }),
-    },
+    }
   );
 
   useBreadcrumb([
@@ -40,8 +40,7 @@ export default function SupervisionProfileModule() {
   return (
     <>
       <TitlePage
-        contentHref="Chỉnh sửa thông tin"
-        href={`/nguoi-dung/quan-sat-vien/${id}/chinh-sua`}
+        href={`/quan-tri/nguoi-dung/quan-sat-vien/${id}/chinh-sua`}
         startIcon={<Edit />}
         title="Trang cá nhân"
       />
@@ -53,6 +52,7 @@ export default function SupervisionProfileModule() {
             <Avatar className="size-20">
               <AvatarImage
                 alt={`Ảnh đại diện của ${supervisionProfile?.first_name} ${supervisionProfile?.last_name}`}
+                className="object-cover"
                 src={supervisionProfile?.avatar}
               />
               <AvatarFallback>{supervisionProfile?.avatar}</AvatarFallback>

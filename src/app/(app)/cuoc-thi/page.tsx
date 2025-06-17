@@ -45,13 +45,9 @@ const fetchLatestCompetitions = async (): Promise<{
     } else {
       competitions = data?.data;
     }
-    console.log("competitions", competitions);
 
     const latestCompetitions =
-      competitions?.filter(
-        (item: Competitions) =>
-          item?.isActive && new Date(item.endDate).getTime() > Date.now(),
-      ) ?? [];
+      competitions?.filter((item: Competitions) => item?.isActive) ?? [];
 
     const donedCompetitions =
       competitions?.filter(
@@ -65,11 +61,23 @@ const fetchLatestCompetitions = async (): Promise<{
           new Date(item.endDate).getTime() > Date.now(),
       ) ?? [];
 
+    const sortedLatestCompetitions = latestCompetitions.sort((a, b) => {
+      const getStatusPriority = (item: Competitions) => {
+        if (new Date(item.startDate) > new Date()) return 0;
+        if (new Date(item.endDate) < new Date()) return 2;
+
+        return 1;
+      };
+
+      const statusDiff = getStatusPriority(a) - getStatusPriority(b);
+
+      if (statusDiff !== 0) return statusDiff;
+
+      return new Date(b.startDate).getTime() - new Date(a.startDate).getTime();
+    });
+
     return {
-      latestCompetitions: latestCompetitions?.sort(
-        (a: Competitions, b: Competitions) =>
-          new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime(),
-      ),
+      latestCompetitions: sortedLatestCompetitions,
       doingCompetitions,
       donedCompetitions,
     };
@@ -89,6 +97,12 @@ const CompetitionsPage = async () => {
   return (
     <div className="min-h-screen ">
       <section className="container space-y-10 mx-auto px-4 py-12 md:py-16 rounded-lg ">
+        {doingCompetitions?.length !== 0 && (
+          <CompetitionsViewUser
+            competitions={doingCompetitions}
+            label="Cuộc thi đang tham gia"
+          />
+        )}
         {latestCompetitions?.length !== 0 && (
           <CompetitionsViewUser
             competitions={latestCompetitions}
@@ -98,13 +112,7 @@ const CompetitionsPage = async () => {
         {donedCompetitions?.length !== 0 && (
           <CompetitionsViewUser
             competitions={donedCompetitions}
-            label=" Cuộc thi đã tham gia"
-          />
-        )}
-        {doingCompetitions?.length !== 0 && (
-          <CompetitionsViewUser
-            competitions={doingCompetitions}
-            label="Cuộc thi đang tham gia"
+            label="Cuộc thi đã tham gia"
           />
         )}
       </section>

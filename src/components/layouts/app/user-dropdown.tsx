@@ -12,8 +12,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import constants from "@/settings/constants";
-import { deleteClientCookie } from "@/lib/jsCookies";
+import { deleteAllClientCookie } from "@/lib/jsCookies";
 import { useGetUserQuery } from "@/features/users/api/student.api";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -28,7 +27,7 @@ function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
 
-  const { user, isFetching, isSuccess } = useGetUserQuery(undefined, {
+  const { user, isSuccess } = useGetUserQuery(undefined, {
     selectFromResult: ({ data, isFetching, isSuccess }) => ({
       user: data?.data,
       isFetching,
@@ -40,8 +39,7 @@ function UserDropdown() {
     router.push(`/trang-ca-nhan/${user?.username}`);
   };
   const handleSignOut = () => {
-    deleteClientCookie(constants.ACCESS_TOKEN);
-    deleteClientCookie(constants.REFRESH_TOKEN);
+    deleteAllClientCookie();
 
     window.location.reload();
   };

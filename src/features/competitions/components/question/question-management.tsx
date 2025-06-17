@@ -15,6 +15,7 @@ import {
 import QuestionContent from "./question-content";
 import RightOption from "./right-option";
 import LeftOption from "./left-option";
+import ImportFileModal from "./import-file-modal";
 
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
@@ -55,17 +56,25 @@ const QuestionManagement = ({ closeDialog }: { closeDialog: () => void }) => {
     useGetQuestionByQuizzIdQuery(quizzId ? { id: quizzId } : skipToken, {
       selectFromResult: ({ data, isSuccess }) => ({
         questionsQuizzs:
-          data?.data?.data?.map((question: QuestionQuizz) => ({
-            _id: question?._id ?? "",
-            question: question?.question ?? "",
-            image: question?.image ?? "",
-            answer: question?.answer ?? [],
-            correct_answer: `answer.${question?.answer?.findIndex((ans) => ans === question?.correct_answer)}`,
-            time_limit: question?.time_limit?.toString() ?? "20",
-            point: question?.point?.toString() ?? "10",
-            isSaveBefore: true,
-            isSave: true,
-          })) ?? [],
+          data?.data?.data
+            ?.map((question: QuestionQuizz) => ({
+              _id: question?._id ?? "",
+              question: question?.question ?? "",
+              image: question?.image ?? "",
+              answer: question?.answer ?? [],
+              correct_answer: `answer.${question?.answer?.findIndex((ans) => ans === question?.correct_answer)}`,
+              time_limit: question?.time_limit?.toString() ?? "20",
+              point: question?.point?.toString() ?? "10",
+              isSaveBefore: true,
+              isSave: true,
+              created_at: question?.created_at ?? "",
+            }))
+            .sort((a: QuestionQuizz, b: QuestionQuizz) =>
+              new Date(a.created_at).getTime() <
+              new Date(b.created_at).getTime()
+                ? -1
+                : 1,
+            ) ?? [],
         isSuccess,
       }),
     });
@@ -173,9 +182,13 @@ const QuestionManagement = ({ closeDialog }: { closeDialog: () => void }) => {
             <Button type="button" variant="destructive" onClick={closeDialog}>
               Thoát
             </Button>
-            <Button variant="default" onClick={handleSave}>
-              Lưu
-            </Button>
+            <div className="flex gap-2">
+              <ImportFileModal />
+
+              <Button variant="default" onClick={handleSave}>
+                Lưu
+              </Button>
+            </div>
           </div>
           <div className="grid gap-4 min-h-[500px]  grid-cols-6">
             <div className="col-span-1 max-h-[80vh]">

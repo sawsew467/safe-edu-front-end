@@ -3,14 +3,6 @@ import { baseApi } from "@/redux/baseApi";
 
 export const PictureApi = baseApiAdmin.injectEndpoints({
   endpoints: (build) => ({
-    getAllPictureByQuizId: build.query({
-      query: ({ id }) => ({
-        url: `/picture/get-all-by-quizId/${id}`,
-        method: "GET",
-        flashError: true,
-      }),
-      providesTags: ["Picture"],
-    }),
     getPicture: build.query({
       query: ({ id }) => ({
         url: `/picture/${id}`,
@@ -98,6 +90,14 @@ const pictureUserApi = baseApi.injectEndpoints({
         return ["Picture", "Quizz"];
       },
     }),
+    getAllPictureByQuizId: build.query({
+      query: ({ id }) => ({
+        url: `/picture/get-all-by-quizId/${id}`,
+        method: "GET",
+        flashError: true,
+      }),
+      providesTags: ["Picture"],
+    }),
     getMyPicture: build.query({
       query: ({ id }) => ({
         url: `/picture/my-picture/${id}`,
@@ -139,10 +139,10 @@ export const {
   useGetMyPictureQuery,
   useCommentPictureMutation,
   useGetAllCommentByPictureIdQuery,
+  useGetAllPictureByQuizIdQuery,
 } = pictureUserApi;
 
 export const {
-  useGetAllPictureByQuizIdQuery,
   useGetPictureQuery,
   useDeletePictureMutation,
   useActivePictureMutation,

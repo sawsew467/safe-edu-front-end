@@ -184,6 +184,7 @@ const RightSide = ({
           className="max-h-full object-cover"
           height={800}
           src={picture?.picture || "/placeholder.svg"}
+          unoptimized={true}
           width={800}
         />
       </div>

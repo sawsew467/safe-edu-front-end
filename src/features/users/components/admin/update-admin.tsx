@@ -43,7 +43,7 @@ export default function AddNewAdminModule() {
       selectFromResult: ({ data }) => ({
         admin: data?.data,
       }),
-    },
+    }
   );
   const form = useForm<z.infer<typeof formAdminSchema>>({
     mode: "onSubmit",
@@ -51,7 +51,7 @@ export default function AddNewAdminModule() {
     defaultValues: initialForm,
   });
   const handleBack = () => {
-    router.replace("/nguoi-dung");
+    router.replace("/quan-tri/nguoi-dung");
   };
 
   useEffect(() => {
@@ -95,7 +95,7 @@ export default function AddNewAdminModule() {
                   <FormItem>
                     <FormLabel>Họ</FormLabel>
                     <FormControl>
-                      <Input placeholder="nhập họ..." type="text" {...field} />
+                      <Input placeholder="Nhập họ..." type="text" {...field} />
                     </FormControl>
                     <FormDescription>Nhập họ và tên của bạn</FormDescription>
                     <FormMessage />
@@ -111,7 +111,7 @@ export default function AddNewAdminModule() {
                   <FormItem>
                     <FormLabel>Tên</FormLabel>
                     <FormControl>
-                      <Input placeholder="nhập tên..." type="" {...field} />
+                      <Input placeholder="Nhập tên..." type="" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -129,7 +129,7 @@ export default function AddNewAdminModule() {
                     <FormLabel>Email</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="nhập email..."
+                        placeholder="Nhập email..."
                         type="email"
                         {...field}
                       />
@@ -150,7 +150,7 @@ export default function AddNewAdminModule() {
                     <FormLabel>Số điện thoại</FormLabel>
                     <FormControl className="w-full">
                       <PhoneInput
-                        placeholder="nhập sdt..."
+                        placeholder="Nhập sdt..."
                         {...field}
                         defaultCountry="VN"
                       />

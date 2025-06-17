@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 import { Button } from "@/components/ui/button";
 import { Library } from "@/features/library/library.type";
 import { ResourceCard } from "@/features/library/components/resource-card";
@@ -25,25 +23,22 @@ const fetchLibraryById = async (id: string) => {
   return data;
 };
 
-const fetchRelatedLibraries = async (
-  topicId: string,
-  libraryDetailId: string,
-) => {
+const fetchRelatedLibraries = async (libraryDetailId: string) => {
   const res = await fetch(`${constants.API_SERVER}/categories`);
 
   const { data } = await res.json();
 
   const activeLibraries =
-    data?.items?.filter(
-      (item: Library) => item?.isActive && item._id !== libraryDetailId,
-    ) ?? [];
+    data?.items?.filter((item: Library) => {
+      return item?.isActive && item._id !== libraryDetailId;
+    }) ?? [];
 
   return activeLibraries
     ?.sort(
       (a: Library, b: Library) =>
         new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
     )
-    ?.filter((item: Library) => item.topic_id === topicId)
+    ?.filter((item: Library) => item.topic_id?.id === libraryDetailId)
     ?.slice(0, 3);
 };
 
@@ -52,8 +47,7 @@ export default async function LibraryDetailPage(props: { params: Params }) {
   const libraryDetail: Library = await fetchLibraryById(id);
 
   const relatedLibraries: Library[] = await fetchRelatedLibraries(
-    libraryDetail?.topic_id,
-    libraryDetail?._id,
+    libraryDetail?.topic_id?._id,
   );
 
   return (
@@ -101,7 +95,7 @@ export default async function LibraryDetailPage(props: { params: Params }) {
               </h1>
 
               {/* Featured Image */}
-              <div className="mb-8">
+              {/* <div className="mb-8">
                 <Image
                   alt={libraryDetail?.category_name}
                   className="w-full h-auto rounded-lg"
@@ -109,7 +103,7 @@ export default async function LibraryDetailPage(props: { params: Params }) {
                   src={libraryDetail?.image || "/placeholder.svg"}
                   width={800}
                 />
-              </div>
+              </div> */}
 
               {/* Action Buttons */}
               {/* <div className="flex flex-wrap gap-3 mb-8">

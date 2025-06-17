@@ -55,7 +55,7 @@ export default function PremiumLeaderboard({ slug }: { slug: string }) {
     { slug },
     {
       selectFromResult: ({ data, isLoading, error }) => ({
-        data: data?.data as UserScore[],
+        data: data?.data?.filter((item: UserScore) => item) as UserScore[],
         isLoading,
         error,
       }),
@@ -90,7 +90,6 @@ export default function PremiumLeaderboard({ slug }: { slug: string }) {
 
   return (
     <div className="space-y-8">
-      {/* Header Stats */}
       {!isLoading && data && (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <Card className="bg-gradient-to-br from-amber-50 to-amber-100 border-amber-200">
@@ -205,7 +204,7 @@ export default function PremiumLeaderboard({ slug }: { slug: string }) {
                 <Medal className="h-5 w-5 text-gray-600" />
               </div>
               <p className="mt-1 text-center font-medium text-sm">
-                {data?.[1]?.user.first_name} {data?.[1]?.user.last_name}c
+                {data?.[1]?.user.first_name} {data?.[1]?.user.last_name}
               </p>
               <p className="text-gray-600 text-xs">
                 {data?.[1]?.score.toFixed(1)}

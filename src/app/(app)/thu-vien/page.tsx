@@ -64,9 +64,10 @@ async function LibraryPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {libraries
                 ?.filter(
-                  (item) => item.topic_id?.toString() === topic._id?.toString(),
+                  (item) =>
+                    item.topic_id?.id?.toString() === topic._id?.toString()
                 )
-                ?.map((item, index) => (
+                ?.map((item) => (
                   <ResourceCard
                     key={item._id}
                     description={item.description}

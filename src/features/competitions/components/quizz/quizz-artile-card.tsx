@@ -48,7 +48,7 @@ export default function QuizzArticleCard({
           </div>
           <div className="flex justify-between items-end">
             <ActionQuizz
-              data={{ isSubmit: data?.data?.isSubmit, type }}
+              data={{ statusSubmit: data?.data?.status, type }}
               slug={slug}
               status={status}
             />

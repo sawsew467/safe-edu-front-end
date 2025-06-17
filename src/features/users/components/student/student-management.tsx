@@ -20,16 +20,12 @@ const StudentManagement = () => {
           })) ?? [],
         isFetching,
       }),
-    },
+    }
   );
 
   return (
     <>
-      <TitlePage
-        contentHref="Thêm học sinh viên"
-        href="nguoi-dung/hoc-sinh/them"
-        title="Quản lí học sinh"
-      />
+      <TitlePage href="nguoi-dung/hoc-sinh/them" title="Quản lí học sinh" />
       <DataTable columns={columns} data={students} isLoading={isFetching} />
     </>
   );

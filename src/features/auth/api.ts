@@ -1,5 +1,3 @@
-"use client";
-
 import { baseApi } from "@/redux/baseApi";
 
 export const authAPI = baseApi.injectEndpoints({
@@ -35,7 +33,7 @@ export const authAPI = baseApi.injectEndpoints({
     }),
     getProvinces: build.query({
       query: () => ({
-        url: "/provinces/provinces",
+        url: "/provinces/all",
         method: "GET",
       }),
     }),
@@ -59,6 +57,27 @@ export const authAPI = baseApi.injectEndpoints({
         body: data,
       }),
     }),
+    forgotPassword: build.mutation({
+      query: (data) => ({
+        url: "/auth/forgot-password",
+        method: "POST",
+        body: data,
+      }),
+    }),
+    verifyOtpForgotPassword: build.mutation({
+      query: (data) => ({
+        url: "/auth/verify-otp-forgot-password",
+        method: "POST",
+        body: data,
+      }),
+    }),
+    resetPassword: build.mutation({
+      query: (data) => ({
+        url: "/auth/reset-password",
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -71,4 +90,7 @@ export const {
   useCreateCitizenAccountMutation,
   useCreateStudentAccountMutation,
   useSignInMutation,
+  useForgotPasswordMutation,
+  useVerifyOtpForgotPasswordMutation,
+  useResetPasswordMutation,
 } = authAPI;

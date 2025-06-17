@@ -46,8 +46,8 @@ const FormAddNewLibrary = () => {
   const router = useRouter();
 
   useBreadcrumb([
-    { label: "Thư viện", href: "/thu-vien" },
-    { label: "Thêm bài mới" },
+    { label: "Thư viện", href: "/quan-tri/thu-vien" },
+    { label: "Thêm nội dung mới" },
   ]);
 
   const form = useForm<z.infer<typeof formLibrarySchema>>({
@@ -106,8 +106,9 @@ const FormAddNewLibrary = () => {
       toast.error("Thêm thư viện thất bại", { id: toasID });
     }
   };
+
   const handleRouterBack = () => {
-    router.replace("/thu-vien");
+    router.replace("/quan-tri/thu-vien");
   };
 
   return (
@@ -120,7 +121,7 @@ const FormAddNewLibrary = () => {
             <FormItem>
               <FormLabel>Tiêu đề</FormLabel>
               <FormControl>
-                <Input placeholder="nhập tiêu đề" {...field} />
+                <Input placeholder="Nhập tiêu đề" {...field} />
               </FormControl>
               <FormDescription>
                 Đây là tiêu đề được hiển thị ở bên ngoài thư viện

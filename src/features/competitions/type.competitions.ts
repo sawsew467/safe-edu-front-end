@@ -1,3 +1,4 @@
+import { Organization } from "../organizations/types";
 import { Citizens, Student } from "../users/user.types";
 
 import { QuizzType } from "@/settings/enums";
@@ -20,6 +21,7 @@ export interface Competitions {
   updated_at: string;
   slug: string;
   id: string;
+  organizationId: Organization;
 }
 
 export interface Question {

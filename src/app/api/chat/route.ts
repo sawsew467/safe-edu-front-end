@@ -18,7 +18,6 @@ export async function OPTIONS() {
 export async function POST(req: Request) {
   const { messages, images } = await req.json();
 
-  console.log("🚀 ~ POST ~ images:", images);
   const systemMessage = {
     role: "system",
     content: `
@@ -46,8 +45,6 @@ export async function POST(req: Request) {
     };
   });
 
-  console.log("🚀 ~ formattedMessages ~ formattedMessages:", formattedMessages);
-
   // Thêm image block theo đúng format GPT-4o yêu cầu
   const imageBlocks = images.map((img: any) => ({
     role: "user",
@@ -65,14 +62,10 @@ export async function POST(req: Request) {
     ],
   }));
 
-  console.log("🚀 ~ imageBlocks ~ imageBlocks:", imageBlocks);
-
   const response = await client.chat.completions.create({
     model: "gpt-4o",
     messages: [systemMessage, ...formattedMessages, ...imageBlocks],
   });
-
-  console.log("🚀 ~ POST ~ response:", response);
 
   const result = response.choices[0];
 
@@ -85,6 +78,6 @@ export async function POST(req: Request) {
         "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json",
       },
-    }
+    },
   );
 }

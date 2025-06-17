@@ -3,10 +3,10 @@
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { CheckCircle, AlertCircle, Eye, EyeOff } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Eye, EyeOff } from "lucide-react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -27,47 +27,44 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-
-// Define the form schema with Zod
-const formSchema = z
-  .object({
-    password: z
-      .string()
-      .min(8, { message: "Mật khẩu phải có ít nhất 8 ký tự." })
-      .regex(/[A-Z]/, {
-        message: "Mật khẩu phải có ít nhất một chữ cái viết hoa.",
-      })
-      .regex(/[a-z]/, {
-        message: "Mật khẩu phải có ít nhất một chữ cái viết thường.",
-      })
-      .regex(/[0-9]/, { message: "Mật khẩu phải có ít nhất một chữ số." }),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Mật khẩu xác nhận không khớp.",
-    path: ["confirmPassword"],
-  });
-
-type FormValues = z.infer<typeof formSchema>;
+import { useResetPasswordMutation } from "@/features/auth/api";
+import {
+  resetPasswordFormSchema,
+  ResetPasswordFormValues,
+} from "@/features/auth/validation";
 
 export default function ResetPasswordForm() {
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [resetPassword, { isLoading }] = useResetPasswordMutation();
 
-  // const supabase = createClientComponentClient()
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const otp = searchParams.get("otp");
 
-  // Initialize the form with React Hook Form and Zod validation
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<ResetPasswordFormValues>({
+    resolver: zodResolver(resetPasswordFormSchema),
     defaultValues: {
-      password: "",
+      newPassword: "",
       confirmPassword: "",
     },
   });
+  const handleSubmit = async (data: {
+    newPassword: string;
+    confirmPassword: string;
+  }) => {
+    try {
+      const res = await resetPassword({
+        otp: otp,
+        newPassword: data.newPassword,
+      }).unwrap();
+
+      toast.success("Đặt lại mật khẩu thành công. Vui lòng đăng nhập lại.");
+      router.replace("/dang-nhap");
+    } catch (error: any) {
+    } finally {
+    }
+  };
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-4 md:p-8 bg-gradient-to-b from-primary/80  to-primary/20 dark:from-[#3a5a0e]/40 dark:to-[#3a5a0e]/50 relative overflow-hidden">
@@ -81,107 +78,89 @@ export default function ResetPasswordForm() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {isSuccess ? (
-            <Alert className="bg-green-50 border-green-200">
-              <CheckCircle className="h-4 w-4 text-green-600" />
-              <AlertDescription className="text-green-700">
-                Mật khẩu đã được đặt lại thành công. Đang chuyển hướng đến trang
-                đăng nhập...
-              </AlertDescription>
-            </Alert>
-          ) : (
-            <Form {...form}>
-              <form
-                // onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-4"
-              >
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Mật khẩu mới</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Input
-                            className="pr-10"
-                            type={showPassword ? "text" : "password"}
-                            {...field}
-                          />
-                          <button
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
-                            type="button"
-                            onClick={() => setShowPassword(!showPassword)}
-                          >
-                            {!showPassword ? (
-                              <EyeOff className="h-4 w-4" />
-                            ) : (
-                              <Eye className="h-4 w-4" />
-                            )}
-                          </button>
-                        </div>
-                      </FormControl>
-                      <FormDescription>
-                        Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ
-                        thường và số.
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="confirmPassword"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Xác nhận mật khẩu</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Input
-                            className="pr-10"
-                            type={showConfirmPassword ? "text" : "password"}
-                            {...field}
-                          />
-                          <button
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
-                            type="button"
-                            onClick={() =>
-                              setShowConfirmPassword(!showConfirmPassword)
-                            }
-                          >
-                            {!showConfirmPassword ? (
-                              <EyeOff className="h-4 w-4" />
-                            ) : (
-                              <Eye className="h-4 w-4" />
-                            )}
-                          </button>
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                {error && (
-                  <Alert variant="destructive">
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertDescription>{error}</AlertDescription>
-                  </Alert>
+          <Form {...form}>
+            <form
+              className="space-y-4"
+              onSubmit={form.handleSubmit(handleSubmit)}
+            >
+              <FormField
+                control={form.control}
+                name="newPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Mật khẩu mới</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Input
+                          className="pr-10"
+                          type={showPassword ? "text" : "password"}
+                          {...field}
+                        />
+                        <button
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                        >
+                          {!showPassword ? (
+                            <EyeOff className="h-4 w-4" />
+                          ) : (
+                            <Eye className="h-4 w-4" />
+                          )}
+                        </button>
+                      </div>
+                    </FormControl>
+                    <FormDescription>
+                      Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ
+                      thường và số.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
                 )}
+              />
 
-                <Button
-                  className="w-full"
-                  disabled={form.formState.isSubmitting}
-                  type="submit"
-                >
-                  {form.formState.isSubmitting
-                    ? "Đang đặt lại..."
-                    : "Đặt lại mật khẩu"}
-                </Button>
-              </form>
-            </Form>
-          )}
+              <FormField
+                control={form.control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Xác nhận mật khẩu</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Input
+                          className="pr-10"
+                          type={showConfirmPassword ? "text" : "password"}
+                          {...field}
+                        />
+                        <button
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                          type="button"
+                          onClick={() =>
+                            setShowConfirmPassword(!showConfirmPassword)
+                          }
+                        >
+                          {!showConfirmPassword ? (
+                            <EyeOff className="h-4 w-4" />
+                          ) : (
+                            <Eye className="h-4 w-4" />
+                          )}
+                        </button>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <Button
+                className="w-full"
+                disabled={isLoading}
+                isLoading={isLoading}
+                type="submit"
+              >
+                Đặt lại mật khẩu
+              </Button>
+            </form>
+          </Form>
         </CardContent>
         <CardFooter className="flex justify-center">
           <div className="text-sm text-muted-foreground">

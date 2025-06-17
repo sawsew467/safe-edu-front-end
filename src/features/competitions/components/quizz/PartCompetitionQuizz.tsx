@@ -86,7 +86,7 @@ const PartCompetitionQuizz = ({
         setOpen(false);
       }
     } else {
-      router.replace(`/phan-thi-ly-thuyet/${id}/ket-qua`);
+      window.location.reload();
     }
   };
 
@@ -157,6 +157,7 @@ const PartCompetitionQuizz = ({
                   className="md:max-w-[300px] max-w-[250px] max-h-[250px] md:max-h-[300px] w-max h-max object-contain rounded-lg"
                   height={400}
                   src={current_question?.image ?? "/placeholder.png"}
+                  unoptimized={true}
                   width={400}
                 />
               </motion.div>

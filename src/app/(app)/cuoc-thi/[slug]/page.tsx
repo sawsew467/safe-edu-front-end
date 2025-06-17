@@ -124,6 +124,7 @@ const QuizzPage = async (props: { params: Params }) => {
             className="w-full h-full object-cover"
             height={1000}
             src={competition?.image_url || "/placeholder.svg"}
+            unoptimized={true}
             width={1000}
           />
           <div className="absolute w-full left-0 bottom-0 h-80 z-10 bg-gradient-to-t from-black/40 to-black/0" />
@@ -139,12 +140,12 @@ const QuizzPage = async (props: { params: Params }) => {
                 <div className="flex flex-col items-start">
                   <div className="flex items-center text-[#4a6b0e]">
                     <Calendar className="w-4 h-4 mr-1" />
-                    <span className="font-medium">
+                    <span className="font-medium capitalize">
                       {formatDate(competition?.startDate, "dddd, DD/MM")}
                     </span>
                   </div>
-                  <div className="flex items-center text-[#4a6b0e] text-sm">
-                    <Clock className="w-3 h-3 mr-1" />
+                  <div className="flex items-center text-[#4a6b0e] ">
+                    <Clock className="w-4 h-4 mr-1" />
                     <span className="font-medium">
                       {formatDate(competition?.startDate, "HH [giờ] mm [phút]")}
                     </span>
@@ -163,12 +164,12 @@ const QuizzPage = async (props: { params: Params }) => {
                 <div className="flex flex-col items-start">
                   <div className="flex items-center text-red-800 ">
                     <Calendar className="w-4 h-4 mr-1" />
-                    <span className="font-medium">
+                    <span className="font-medium capitalize">
                       {formatDate(competition?.endDate, "dddd, DD/MM")}
                     </span>
                   </div>
-                  <div className="flex items-center text-red-800 text-sm">
-                    <Clock className="w-3 h-3 mr-1" />
+                  <div className="flex items-center text-red-800 ">
+                    <Clock className="w-4 h-4 mr-1" />
                     <span>
                       {formatDate(competition?.endDate, "HH [giờ] mm [phút]")}
                     </span>

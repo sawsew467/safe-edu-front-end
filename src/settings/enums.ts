@@ -9,7 +9,7 @@ export enum UserRole {
   admin = "Quản trị viên",
   supervision = "Quan sát viên",
   manager = "Quản lí",
-  citizen = "Cư dân",
+  citizen = "Công dân",
   student = "Học sinh",
 }
 
@@ -17,7 +17,7 @@ export enum UserRoleBE {
   Admin = "Quản trị viên",
   Supervision = "Quan sát viên",
   Manager = "Quản lí",
-  Citizen = "Cư dân",
+  Citizen = "Công dân",
   Student = "Học sinh",
 }
 export enum StatusCompetition {

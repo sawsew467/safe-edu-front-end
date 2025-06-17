@@ -1,5 +1,7 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
+import { useRouter } from "next-nprogress-bar";
+import { Loader2 } from "lucide-react";
 
 import { useGetAllOrganizationQuery } from "../organization.api";
 import { Organization } from "../types";
@@ -11,12 +13,12 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { columns } from "@/app/quan-tri/(dashboard)/to-chuc/column.organizations";
 import useBreadcrumb from "@/hooks/useBreadcrumb";
+import { useAppSelector } from "@/hooks/redux-toolkit";
 
 const OrganizationsManagement = () => {
   useBreadcrumb([
@@ -25,8 +27,21 @@ const OrganizationsManagement = () => {
     },
   ]);
 
+  const { current_organization } = useAppSelector((state) => state.auth);
+
+  const router = useRouter();
+
   const [isopen, setOpenDialog] = React.useState(false);
-  const [isopenNotification, setOpenDialogNotification] = React.useState(true);
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  useEffect(() => {
+    setIsLoading(true);
+    if (current_organization) {
+      router.push(`/quan-tri/to-chuc/${current_organization.id}`);
+    }
+    setIsLoading(false);
+  }, [current_organization]);
+
   const { organizations, isFetching } = useGetAllOrganizationQuery(undefined, {
     selectFromResult: ({ data, isFetching }) => ({
       organizations:
@@ -39,24 +54,18 @@ const OrganizationsManagement = () => {
     }),
   });
 
+  if (isLoading || current_organization) {
+    return (
+      <div className="flex w-full h-screen justify-center items-center">
+        <Loader2 className="w-10 h-10 animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="flex w-full justify-between">
         <h3 className="text-2xl font-bold mb-4">Quản lý tổ chức</h3>
-        <Dialog
-          open={isopenNotification}
-          onOpenChange={setOpenDialogNotification}
-        >
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Thông Báo</DialogTitle>
-            </DialogHeader>
-            <p className="text-gray-700">
-              Tính năng này đang được phát triển. Các thông tin hiển thị hiện
-              tại chỉ là giả lập.
-            </p>
-          </DialogContent>
-        </Dialog>
         <Dialog open={isopen} onOpenChange={setOpenDialog}>
           <DialogTrigger asChild className="w-fit h-fit">
             <Button

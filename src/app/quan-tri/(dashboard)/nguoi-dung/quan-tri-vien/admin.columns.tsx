@@ -16,7 +16,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { isImageLink } from "@/utils/checkimage";
 import { Admin } from "@/features/users/user.types";
 import {
   useActiveAdminMutation,
@@ -28,17 +27,16 @@ export const columns: ColumnDef<Admin>[] = [
     accessorKey: "avatar_url",
     header: "Ảnh đại diện",
     cell: ({ row }) => {
-      const image: string | null = isImageLink(row.getValue("avatar_url"))
-        ? row.getValue("avatar_url")
-        : null;
+      const image: string | null = row.getValue("avatar_url");
 
       return image ? (
         <Image
           alt={`Ảnh đại diện của ${row.original?.full_name}`}
           className="rounded-full"
-          height={100}
+          height={48}
           src={image}
-          width={100}
+          unoptimized={true}
+          width={48}
         />
       ) : (
         <p className="text-red-500">*không tìm thấy ảnh đại diện</p>
@@ -79,7 +77,7 @@ export const columns: ColumnDef<Admin>[] = [
     cell: ({ row }) => {
       const status = row.getValue("isActive")
         ? { value: "active", label: "Hoạt động" }
-        : { value: "inactive", label: "Tạm dừng" };
+        : { value: "inactive", label: "Đã khoá" };
 
       return (
         <div
@@ -158,16 +156,16 @@ const Action = ({ row }: { row: Row<Admin> }) => {
       <DropdownMenuContent align="end">
         <DropdownMenuItem>
           <Link
-            className="flex gap-2 w-full"
+            className="flex gap-2 w-full items-center"
             href={`nguoi-dung/quan-tri-vien/${row.original?.id}`}
           >
             <Eye className="w-4 h-4 text-blue-500" />
-            {<span className="">{"Xem"}</span>}
+            {<span className="">{"Xem thông tin"}</span>}
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
           <button
-            className="flex gap-2 w-full"
+            className="flex gap-2 w-full items-center"
             onClick={() => handleAdmin(row.original?.id)}
           >
             {row.original?.isActive ? (
@@ -177,7 +175,7 @@ const Action = ({ row }: { row: Row<Admin> }) => {
             )}
             {
               <span className="">
-                {row.original?.isActive ? "Tạm dừng" : "Hoạt động"}
+                {row.original?.isActive ? "Khoá tài khoản" : "Mở lại tài khoản"}
               </span>
             }
           </button>

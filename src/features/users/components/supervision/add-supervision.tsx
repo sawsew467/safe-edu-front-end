@@ -7,7 +7,6 @@ import { useRouter } from "next-nprogress-bar";
 
 import { useAddNewSupervisionMutation } from "../../api/supervison.api";
 import { formSupervisionSchema } from "../../user.schema";
-import { useGetAllProvinceQuery } from "../../api/province.api";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -23,6 +22,7 @@ import { Input } from "@/components/ui/input";
 import TitlePage from "@/components/ui/title-page";
 import { MultiSelect } from "@/components/ui/custom-multi-select";
 import useBreadcrumb from "@/hooks/useBreadcrumb";
+import { useGetProvincesQuery } from "@/features/auth/api";
 const initialForm = {
   first_name: "",
   last_name: "",
@@ -43,7 +43,7 @@ export default function AddNewSupervisionModule() {
     },
   ]);
   const [createSupervisionAccount] = useAddNewSupervisionMutation();
-  const { pronvinces } = useGetAllProvinceQuery(undefined, {
+  const { pronvinces } = useGetProvincesQuery(undefined, {
     selectFromResult: ({ data }) => ({
       pronvinces:
         data?.data?.items?.map((item: { name: string; _id: string }) => ({
@@ -59,7 +59,7 @@ export default function AddNewSupervisionModule() {
     defaultValues: initialForm,
   });
   const handleBack = () => {
-    router.replace("/nguoi-dung?tab=supervision");
+    router.replace("/quan-tri/nguoi-dung?tab=supervision");
   };
 
   async function onSubmit(data: z.infer<typeof formSupervisionSchema>) {
@@ -91,7 +91,7 @@ export default function AddNewSupervisionModule() {
                   <FormItem>
                     <FormLabel>Họ</FormLabel>
                     <FormControl>
-                      <Input placeholder="nhập họ..." type="text" {...field} />
+                      <Input placeholder="Nhập họ..." type="text" {...field} />
                     </FormControl>
                     <FormDescription>Nhập họ và tên của bạn</FormDescription>
                     <FormMessage />
@@ -107,7 +107,7 @@ export default function AddNewSupervisionModule() {
                   <FormItem>
                     <FormLabel>Tên</FormLabel>
                     <FormControl>
-                      <Input placeholder="nhập tên..." type="" {...field} />
+                      <Input placeholder="Nhập tên..." type="" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -122,7 +122,7 @@ export default function AddNewSupervisionModule() {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input placeholder="nhập email..." type="email" {...field} />
+                  <Input placeholder="Nhập email..." type="email" {...field} />
                 </FormControl>
                 <FormDescription>Email làm việc của bạn.</FormDescription>
                 <FormMessage />

@@ -36,7 +36,48 @@ export const ChangePasswordShema = z
   });
 
 export type PhoneNumberFormValues = z.infer<typeof phoneNumberSchema>;
-// Base schema without refinement
+
+export const forgotPasswordSchema = z.object({
+  email: z
+    .string()
+    .min(1, { message: "Vui lòng nhập email" })
+    .email({ message: "Email không hợp lệ" }),
+});
+
+export type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>;
+
+export const verifyOtpFormSchema = z.object({
+  otp: z.string().min(6, { message: "Mã OTP phải có 6 chữ số" }),
+});
+
+export type VerifyOtpFormValues = z.infer<typeof verifyOtpFormSchema>;
+
+export const resetPasswordFormSchema = z
+  .object({
+    newPassword: z
+      .string()
+      .min(8, { message: "Mật khẩu phải có ít nhất 8 ký tự." })
+      .regex(/[A-Z]/, {
+        message: "Mật khẩu phải có ít nhất một chữ cái viết hoa.",
+      })
+      .regex(/[a-z]/, {
+        message: "Mật khẩu phải có ít nhất một chữ cái viết thường.",
+      })
+      .regex(/[A-Z]/, {
+        message: "Mật khẩu phải có ít nhất một chữ cái viết hoa.",
+      })
+      .regex(/[a-z]/, {
+        message: "Mật khẩu phải có ít nhất một chữ cái viết thường.",
+      })
+      .regex(/[0-9]/, { message: "Mật khẩu phải có ít nhất một chữ số." }),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Mật khẩu xác nhận không khớp.",
+    path: ["confirmPassword"],
+  });
+
+export type ResetPasswordFormValues = z.infer<typeof resetPasswordFormSchema>;
 
 // Validation schema for OTP step
 export const otpSchema = z.object({
@@ -63,8 +104,8 @@ const phoneRegex = new RegExp(/^0\d{8,12}$/);
 // Student registration schema (extends base schema)
 export const studentRegistrationSchema = z
   .object({
-    organizationId: z.string().min(1, { message: "Vui lòng chọn trường" }),
-    provinceId: z.string().min(1, { message: "Vui lòng chọn trường" }),
+    organizationId: z.string().optional(),
+    provinceId: z.string().optional(),
     username: z
       .string()
       .min(1, { message: "Vui lòng nhập tên đăng nhập" })
@@ -99,7 +140,15 @@ export const studentRegistrationSchema = z
       .string()
       .min(1, { message: "Vui lòng nhập tên" })
       .max(50, { message: "Tên không được quá 50 ký tự" }),
-    date_of_birth: z.string().min(1, { message: "Vui lòng chọn ngày sinh" }),
+    date_of_birth: z
+      .union([
+        z
+          .string({ message: "ngày sinh không hợp lệ " })
+          .min(1, { message: "ngày sinh không hợp lệ " }),
+        z.null(),
+        z.literal(""),
+      ])
+      .optional(),
   })
   .refine((data) => data.confirmPassword === data.password, {
     message: "Mật khẩu không khớp",
@@ -161,7 +210,15 @@ export const citizenRegistrationSchema = z
       .string()
       .min(1, { message: "Vui lòng nhập tên" })
       .max(50, { message: "Tên không được quá 50 ký tự" }),
-    date_of_birth: z.string().min(1, { message: "Vui lòng chọn ngày sinh" }),
+    date_of_birth: z
+      .union([
+        z.string({ message: "ngày sinh không hợp lệ " }).min(1, {
+          message: "ngày sinh không hợp lệ ",
+        }),
+        z.null(),
+        z.literal(""),
+      ])
+      .optional(),
   })
   .refine((data) => data.confirmPassword === data.password, {
     message: "Mật khẩu không khớp",

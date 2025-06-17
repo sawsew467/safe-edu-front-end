@@ -37,7 +37,6 @@ export function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
 
   const [messages, setMessages] = useState<Message[]>([]);
 
-  console.log("🚀 ~ ChatDialog ~ messages:", messages);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -89,7 +88,6 @@ export function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
         setMessages(tempMessages);
       })
       .catch((err) => {
-        console.log("🚀 ~ handleSendMessage ~ err:", err);
         const errorMessage: Message = {
           id: Date.now().toString() + "-error",
           role: "assistant",
@@ -107,7 +105,7 @@ export function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
   const getImageUrl = useCallback(async (file: any) => {
     const formData = new FormData();
 
-    formData.append("image", file);
+    formData.append("file", file);
     try {
       const { data } = await uploadImage(formData).unwrap();
 
@@ -204,6 +202,7 @@ export function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
                             className="rounded object-cover aspect-video "
                             height={200}
                             src={url}
+                            unoptimized={true}
                             width={200}
                           />
                         ))}
@@ -236,6 +235,7 @@ export function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
                     alt={`Uploaded image ${index + 1}`}
                     className="object-cover rounded"
                     src={item.url || "/placeholder.svg"}
+                    unoptimized={true}
                   />
                   <button
                     aria-label="Remove image"

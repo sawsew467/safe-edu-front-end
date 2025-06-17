@@ -86,16 +86,16 @@ const ActionRow = ({ row }: { row: Row<Library> }) => {
       <DropdownMenuContent align="end">
         <DropdownMenuItem>
           <Link
-            className="flex gap-2 w-full"
+            className="flex gap-2 w-full items-center"
             href={`thu-vien/${row.original._id}`}
           >
             <Eye className="w-4 h-4 text-blue-500" />
-            {<span className="">{"Xem"}</span>}
+            {<span className="">{"Xem thông tin"}</span>}
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
           <Link
-            className="flex gap-2 w-full"
+            className="flex gap-2 w-full items-center"
             href={`thu-vien/${row.original._id}/chinh-sua`}
           >
             <Pencil className="h-4 w-4 text-green-500" />
@@ -105,7 +105,7 @@ const ActionRow = ({ row }: { row: Row<Library> }) => {
 
         <DropdownMenuItem>
           <button
-            className="flex gap-2 w-full"
+            className="flex gap-2 w-full items-center"
             onClick={() => handleDeleteLibrary(row.original._id)}
           >
             <Trash2 className="h-4 w-4 text-red-500" />

@@ -23,11 +23,22 @@ export const UploadApi = createApi({
   baseQuery: baseQuery,
   endpoints: (build) => ({
     uploadImage: build.mutation({
-      query: (body: FormData) => {
+      query: (formData: FormData) => {
         return {
           url: `/categories/upload-image`,
           method: "POST",
-          body: body,
+          body: formData,
+          flashError: true,
+          formData: true,
+        };
+      },
+    }),
+    importQuestionByZip: build.mutation({
+      query: (formData: FormData) => {
+        return {
+          url: `/questions/import-zip-file`,
+          method: "POST",
+          body: formData,
           flashError: true,
           formData: true,
         };
@@ -36,4 +47,5 @@ export const UploadApi = createApi({
   }),
 });
 
-export const { useUploadImageMutation } = UploadApi;
+export const { useUploadImageMutation, useImportQuestionByZipMutation } =
+  UploadApi;

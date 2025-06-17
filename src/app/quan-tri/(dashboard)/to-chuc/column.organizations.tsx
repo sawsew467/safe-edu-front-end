@@ -13,7 +13,6 @@ import Link from "next/link";
 
 import { formatDate } from "@/utils/format-date";
 import { Organization } from "@/features/organizations/types";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   useActiveOrganizationsMutation,
   useDeleteOrganizationMutation,
@@ -39,23 +38,23 @@ interface OrganizationColumn extends Organization {
   province_name: string;
 }
 export const columns: ColumnDef<OrganizationColumn>[] = [
-  {
-    accessorKey: "image",
-    cell: ({ row }) => {
-      return (
-        <div className="w-full">
-          <Avatar className="h-16 w-16 mb-4">
-            <AvatarImage alt={row.original.name} src={row.original.image} />
-            <AvatarFallback>
-              {row.original.name?.slice(0, 3)?.toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
-        </div>
-      );
-    },
-    enableColumnFilter: false,
-    enableSorting: false,
-  },
+  // {
+  //   accessorKey: "image",
+  //   cell: ({ row }) => {
+  //     return (
+  //       <div className="w-full">
+  //         <Avatar className="h-16 w-16 mb-4">
+  //           <AvatarImage alt={row.original.name} src={row.original.image} />
+  //           <AvatarFallback>
+  //             {row.original.name?.slice(0, 3)?.toUpperCase()}
+  //           </AvatarFallback>
+  //         </Avatar>
+  //       </div>
+  //     );
+  //   },
+  //   enableColumnFilter: false,
+  //   enableSorting: false,
+  // },
   {
     accessorKey: "name",
     header: "Tổ chức",
@@ -169,11 +168,11 @@ const ActionRow = ({ row }: { row: Row<OrganizationColumn> }) => {
           <Dialog open={isopen}>
             <DialogTrigger className="w-full">
               <Link
-                className="flex gap-2 px-2 py-1 justify-start w-full"
+                className="flex gap-2 px-2 py-1 justify-start w-full items-center"
                 href={`to-chuc/${row.original._id}`}
               >
                 <Eye className="h-4 w-4 text-blue-500" />
-                {<span className="">{"Xem"}</span>}
+                {<span className="">{"Xem thông tin"}</span>}
               </Link>
             </DialogTrigger>
             <DialogContent>
