@@ -23,6 +23,8 @@ const DocumentsTable = () => {
     }
   );
 
+  console.log("🚀 ~ DocumentsTable ~ documents:", documents);
+
   useBreadcrumb([{ label: "Tài liệu" }]);
 
   return (

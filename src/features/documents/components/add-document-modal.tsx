@@ -4,7 +4,6 @@ import React, { useCallback, useState } from "react";
 import { Upload } from "lucide-react";
 import { useDropzone } from "react-dropzone";
 import { toast } from "sonner";
-import { useSearchParams } from "next/navigation";
 
 import {
   DialogClose,
@@ -19,15 +18,40 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useImportQuestionByZipMutation } from "@/services/common/upload/api.upload";
 import { useAppDispatch } from "@/hooks/redux-toolkit";
 import { baseApiAdmin } from "@/redux/admin/baseApi";
+import constants from "@/settings/constants";
+import { getClientCookie } from "@/lib/jsCookies";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+
+const sendFile = async (file: File, name: string) => {
+  const formData = new FormData();
+
+  formData.append("image", file);
+  formData.append("document_name", name);
+
+  const accessToken = getClientCookie(constants.ACCESS_TOKEN_ADMIN);
+
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_SERVER}/document-files/upload`,
+    {
+      method: "POST",
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+
+  return response.json();
+};
 
 function AddDocumentModal() {
-  const searchParams = useSearchParams();
-  const quizId = searchParams.get("id");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [file, setFile] = useState<File | null>(null);
+  const [name, setName] = useState<string>("");
   const [openDialog, setOpenDialog] = useState<boolean>(false);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -45,22 +69,21 @@ function AddDocumentModal() {
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
-  const [importQuestionByZip, { isLoading }] = useImportQuestionByZipMutation();
-
   const dispatch = useAppDispatch();
 
   const handleFileUpload = async (file: File) => {
-    const formData = new FormData();
-
-    formData.append("file", file);
-    formData.append("quizId", quizId ?? "");
     try {
-      await importQuestionByZip(formData).unwrap();
-      dispatch(baseApiAdmin.util.invalidateTags(["Question"]));
+      setIsLoading(true);
+      const response = await sendFile(file, name);
+
+      console.log("🚀 ~ handleFileUpload ~ response:", response);
+      dispatch(baseApiAdmin.util.invalidateTags(["Documents"]));
       toast.success("Import dữ liệu thành công");
       setOpenDialog(false);
     } catch (error) {
       toast.error("Import dữ liệu thất bại");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -120,7 +143,7 @@ function AddDocumentModal() {
               <p className="text-sm text-[#78cc26] mt-2 w-full text-nowrap truncate text-center">
                 Tải lên thành công!
               </p>
-              <p className="font-medium mt-2 w-full text-nowrap truncate text-center">
+              <p className="font-medium mt-2 w-full text-nowrap truncate text-center max-w-[300px]">
                 {file.name}
               </p>
               <div {...getRootProps()}>
@@ -132,13 +155,21 @@ function AddDocumentModal() {
               </div>
             </div>
           )}
+          <div className="flex flex-col gap-2 mt-4">
+            <Label>Tên tài liệu</Label>
+            <Input
+              placeholder="Nhập tên tài liệu"
+              type="text"
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
         </DialogDescription>
         <DialogFooter>
           <DialogClose asChild>
             <Button variant="outline">Hủy bỏ</Button>
           </DialogClose>
           <Button
-            disabled={!file}
+            disabled={!file || !name}
             isLoading={isLoading}
             variant="default"
             onClick={handleImport}

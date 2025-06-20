@@ -34,19 +34,25 @@ export const metadata = {
 };
 
 const fetchLatestNews = async () => {
-  const res = await fetch(`${constants.API_SERVER}/news`);
+  try {
+    const res = await fetch(`${constants.API_SERVER}/news`);
 
-  const data = await res.json();
+    const data = await res.json();
 
-  const latestNews =
-    data?.data?.items?.filter((item: TypeNews) => item?.isActive) ?? [];
+    const latestNews =
+      data?.data?.items?.filter((item: TypeNews) => item?.isActive) ?? [];
 
-  return latestNews
-    ?.sort(
-      (a: TypeNews, b: TypeNews) =>
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-    )
-    .slice(0, 3);
+    return latestNews
+      ?.sort(
+        (a: TypeNews, b: TypeNews) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      )
+      .slice(0, 3);
+  } catch (error) {
+    console.log("🚀 ~ fetchLatestNews ~ error:", error);
+
+    return [];
+  }
 };
 const fetchLatestCompetitions = async (): Promise<{
   totalPage: number;
@@ -82,19 +88,24 @@ const fetchLatestCompetitions = async (): Promise<{
 };
 
 const fetchLatestLibrary = async () => {
-  const res = await fetch(`${constants.API_SERVER}/categories`);
+  try {
+    const res = await fetch(`${constants.API_SERVER}/categories`);
+    const data = await res.json();
 
-  const data = await res.json();
+    const latestLibraries =
+      data?.data?.items?.filter((item: Library) => item?.isActive) ?? [];
 
-  const latestLibraries =
-    data?.data?.items?.filter((item: Library) => item?.isActive) ?? [];
+    return latestLibraries
+      ?.sort(
+        (a: Library, b: Library) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      )
+      .slice(0, 6);
+  } catch (error) {
+    console.log("🚀 ~ fetchLatestLibrary ~ error:", error);
 
-  return latestLibraries
-    ?.sort(
-      (a: Library, b: Library) =>
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-    )
-    .slice(0, 6);
+    return [];
+  }
 };
 
 async function AppPage() {

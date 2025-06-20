@@ -21,8 +21,19 @@ export const documentsAPI = baseApiAdmin.injectEndpoints({
       }),
       invalidatesTags: ["Documents"],
     }),
+    updateDocument: build.mutation({
+      query: (data) => ({
+        url: `/document-files/${data.id}`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["Documents"],
+    }),
   }),
 });
 
-export const { useGetAllDocumentsQuery, useDeleteDocumentMutation } =
-  documentsAPI;
+export const {
+  useGetAllDocumentsQuery,
+  useDeleteDocumentMutation,
+  useUpdateDocumentMutation,
+} = documentsAPI;

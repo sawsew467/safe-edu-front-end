@@ -3,7 +3,7 @@
 import type React from "react";
 
 import { useState, useRef, useCallback } from "react";
-import { Send, ImageIcon, X, Loader2 } from "lucide-react";
+import { Send, X, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { Attachment } from "ai";
 
@@ -261,7 +261,7 @@ export function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
               type="file"
               onChange={handleImageUpload}
             />
-            <Button
+            {/* <Button
               aria-label="Upload images"
               className="flex-shrink-0"
               size="icon"
@@ -270,7 +270,7 @@ export function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
               onClick={() => fileInputRef.current?.click()}
             >
               <ImageIcon className="h-5 w-5" />
-            </Button>
+            </Button> */}
             <AutoExpandingTextarea
               className="w-full"
               placeholder="Nhập câu hỏi của bạn..."
