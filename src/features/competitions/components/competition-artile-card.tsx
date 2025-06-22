@@ -51,6 +51,7 @@ export function CompetitionArticleCard({
   image,
   slug,
   description,
+  statusCompetitions,
 }: {
   title: string;
   startDate: string;
@@ -58,6 +59,7 @@ export function CompetitionArticleCard({
   image?: string | null;
   slug: string;
   description: string;
+  statusCompetitions?: "done" | "doing" | "not-start";
 }) {
   const status =
     new Date(startDate) > new Date()
@@ -70,6 +72,7 @@ export function CompetitionArticleCard({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       transition={{ duration: 0.5 }}
+      viewport={{ once: true }}
       whileInView={{ opacity: 1, y: 0 }}
     >
       <Card className="overflow-hidden hover:shadow-md transition-shadow h-full">
@@ -81,7 +84,7 @@ export function CompetitionArticleCard({
             whileInView={{ opacity: 1, scale: 1 }}
           >
             <Badge className="absolute backdrop-blur-lg top-2 right-2 z-10 shadow-md bg-white/60 dark:bg-black/60 hover:bg-white/60 text-primary rounded-full">
-               {getStatus(status)}
+              {getStatus(status)}
             </Badge>
           </motion.div>
           <motion.div
@@ -96,6 +99,7 @@ export function CompetitionArticleCard({
               className="w-full h-48 object-cover"
               height={200}
               src={image || "/placeholder.svg"}
+              unoptimized={true}
               width={300}
             />
           </motion.div>
@@ -151,7 +155,11 @@ export function CompetitionArticleCard({
               viewport={{ once: true }}
               whileInView={{ opacity: 1, y: 0 }}
             >
-              <ActionCompetitions slug={slug} status={status} />
+              <ActionCompetitions
+                slug={slug}
+                status={status}
+                statusCompetitions={statusCompetitions}
+              />
             </motion.div>
           </div>
         </CardContent>

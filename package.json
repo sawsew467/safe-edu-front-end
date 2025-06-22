@@ -73,6 +73,7 @@
     "openai": "^4.98.0",
     "pdf-parse": "^1.1.1",
     "prettier": "^3.4.1",
+    "quill": "2.0.3",
     "quill-delta": "^5.1.0",
     "react": "19.0.0-rc-66855b96-20241106",
     "react-day-picker": "^8.10.1",

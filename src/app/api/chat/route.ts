@@ -161,7 +161,7 @@ export async function POST(req: Request) {
         "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json",
       },
-    }
+    },
   );
 
   // const formattedMessages = messages.map((msg: any) => {

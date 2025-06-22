@@ -29,6 +29,7 @@ export const columns: ColumnDef<Competitions>[] = [
             className="object-cover w-full h-full"
             height={300}
             src={image}
+            unoptimized={true}
             width={400}
           />
         </div>
@@ -66,7 +67,7 @@ export const columns: ColumnDef<Competitions>[] = [
     header: "Ngày tạo",
     cell: ({ row }) => {
       const createDate = formatDate(
-        row.original.updated_at ?? row.getValue("created_at")
+        row.original.updated_at ?? row.getValue("created_at"),
       );
 
       return <p>{createDate}</p>;

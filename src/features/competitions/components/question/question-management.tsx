@@ -34,7 +34,7 @@ export const formSchema = z.object({
       .optional(),
     {
       message: "Danh sách câu trả lời không hợp lệ",
-    }
+    },
   ),
   time_limit: z.string(),
   current_question: z.number(),
@@ -56,17 +56,25 @@ const QuestionManagement = ({ closeDialog }: { closeDialog: () => void }) => {
     useGetQuestionByQuizzIdQuery(quizzId ? { id: quizzId } : skipToken, {
       selectFromResult: ({ data, isSuccess }) => ({
         questionsQuizzs:
-          data?.data?.data?.map((question: QuestionQuizz) => ({
-            _id: question?._id ?? "",
-            question: question?.question ?? "",
-            image: question?.image ?? "",
-            answer: question?.answer ?? [],
-            correct_answer: `answer.${question?.answer?.findIndex((ans) => ans === question?.correct_answer)}`,
-            time_limit: question?.time_limit?.toString() ?? "20",
-            point: question?.point?.toString() ?? "10",
-            isSaveBefore: true,
-            isSave: true,
-          })) ?? [],
+          data?.data?.data
+            ?.map((question: QuestionQuizz) => ({
+              _id: question?._id ?? "",
+              question: question?.question ?? "",
+              image: question?.image ?? "",
+              answer: question?.answer ?? [],
+              correct_answer: `answer.${question?.answer?.findIndex((ans) => ans === question?.correct_answer)}`,
+              time_limit: question?.time_limit?.toString() ?? "20",
+              point: question?.point?.toString() ?? "10",
+              isSaveBefore: true,
+              isSave: true,
+              created_at: question?.created_at ?? "",
+            }))
+            .sort((a: QuestionQuizz, b: QuestionQuizz) =>
+              new Date(a.created_at).getTime() <
+              new Date(b.created_at).getTime()
+                ? -1
+                : 1,
+            ) ?? [],
         isSuccess,
       }),
     });
@@ -98,7 +106,7 @@ const QuestionManagement = ({ closeDialog }: { closeDialog: () => void }) => {
         questionsQuizzs.at(currentQuestion) as z.infer<typeof formSchema>,
         {
           keepDirty: false,
-        }
+        },
       );
     } else if (isSuccess) {
       addFirstQuestion();
@@ -112,7 +120,7 @@ const QuestionManagement = ({ closeDialog }: { closeDialog: () => void }) => {
 
   const getValueField = (field: string): string | undefined => {
     const fieldValue = form.getValues(
-      field as keyof z.infer<typeof formSchema>
+      field as keyof z.infer<typeof formSchema>,
     );
 
     if (fieldValue === undefined) return undefined;

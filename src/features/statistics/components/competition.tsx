@@ -53,23 +53,19 @@ export function Competition() {
           }),
         };
       },
-    }
+    },
   );
 
   const { quizResultData } = useGetQuizResultMonthlyStatsQuery(
     {},
     {
       selectFromResult({ data }) {
-        console.log("🚀 ~ selectFromResult ~ data:", data);
-
         return {
           quizResultData: data?.data,
         };
       },
-    }
+    },
   );
-
-  console.log("🚀 ~ Competition ~ quizResultData:", quizResultData);
 
   return (
     <div className="grid gap-4 grid-cols-2">

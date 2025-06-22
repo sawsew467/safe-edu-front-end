@@ -35,16 +35,16 @@ interface ApiResponse {
 const getMaxScore = (data: UserScore[]) => {
   if (!data?.length) return 0;
 
-  return Math.max(...data.map((item) => item.score));
+  return Math.max(...data.map((item) => item?.score));
 };
 
 export default function PremiumLeaderboardAdmin({ slug }: { slug: string }) {
   // Use React Query to fetch data
-  const { data, isFetching, error, isSuccess } = useGetLeaderBoardQuery(
+  const { data, isFetching, error } = useGetLeaderBoardQuery(
     slug ? { slug } : skipToken,
     {
       selectFromResult: ({ data, isFetching, error, isSuccess }) => ({
-        data: data?.data as UserScore[],
+        data: data?.data?.filter((item: UserScore) => item) as UserScore[],
         isFetching,
         error,
         isSuccess,
@@ -52,7 +52,7 @@ export default function PremiumLeaderboardAdmin({ slug }: { slug: string }) {
     },
   );
 
-  const totalScore = data?.reduce((acc, item) => acc + item.score, 0) || 0;
+  const totalScore = data?.reduce((acc, item) => acc + item?.score, 0) || 0;
   const averageScore = totalScore / (data?.length || 1);
 
   if (error) {
@@ -105,7 +105,7 @@ export default function PremiumLeaderboardAdmin({ slug }: { slug: string }) {
                   Điểm Cao Nhất
                 </h3>
                 <p className="text-2xl font-bold text-emerald-900">
-                  {maxScore.toFixed(1)}
+                  {maxScore?.toFixed(1)}
                 </p>
               </div>
               <div className="rounded-full bg-emerald-200 p-3">
@@ -121,7 +121,7 @@ export default function PremiumLeaderboardAdmin({ slug }: { slug: string }) {
                   Điểm trung bình
                 </h3>
                 <p className="text-2xl font-bold text-purple-900">
-                  {averageScore.toFixed(1)}
+                  {averageScore?.toFixed(1)}
                 </p>
               </div>
               <div className="rounded-full bg-purple-200 p-3">
@@ -155,7 +155,7 @@ export default function PremiumLeaderboardAdmin({ slug }: { slug: string }) {
               <div className="w-full">
                 {data?.map((item: UserScore, index: number) => (
                   <LeaderboardItem
-                    key={item.user._id}
+                    key={item?.user._id}
                     maxScore={maxScore}
                     rank={index + 1}
                     userScore={item}
@@ -180,15 +180,15 @@ function LeaderboardItem({
   maxScore: number;
 }) {
   const { user, score } = userScore;
-  const fullName = `${user.first_name} ${user.last_name}`;
+  const fullName = `${user?.first_name} ${user?.last_name}`;
   const router = useRouter();
   const { user_role } = useAppSelector((state) => state.auth);
 
   // Format score to 2 decimal places if needed
-  const formattedScore = score % 1 === 0 ? score.toString() : score.toFixed(1);
+  const formattedScore =
+    (score || 0) % 1 === 0 ? score?.toString() : score?.toFixed(1);
 
   // Calculate progress percentage
-  const progressPercentage = maxScore > 0 ? (score / maxScore) * 100 : 0;
 
   // Determine if this is a top 3 position
   const isTopThree = rank <= 3;

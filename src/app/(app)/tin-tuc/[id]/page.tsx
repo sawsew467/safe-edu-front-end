@@ -143,6 +143,7 @@ export default async function NewsDetailPage(props: { params: Params }) {
                   className="w-full h-auto rounded-lg"
                   height={450}
                   src={newsDetail.image || "/placeholder.svg"}
+                  unoptimized={true}
                   width={800}
                 />
               </div>
@@ -178,6 +179,7 @@ export default async function NewsDetailPage(props: { params: Params }) {
                               className="w-full h-48 object-cover"
                               height={200}
                               src={newsDetail.image || "/placeholder.svg"}
+                              unoptimized={true}
                               width={300}
                             />
                             <div className="absolute top-3 left-3">

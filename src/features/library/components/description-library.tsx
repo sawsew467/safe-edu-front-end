@@ -30,10 +30,8 @@ const DescriptionModule = () => {
         isSuccess,
       }),
       refetchOnMountOrArgChange: true,
-    }
+    },
   );
-
-  console.log("🚀 ~ DescriptionModule ~ data:", data);
 
   useBreadcrumb([
     { label: "Thư viện", href: "/quan-tri/thu-vien" },

@@ -34,14 +34,14 @@ function UserDropdown() {
       isSuccess,
     }),
   });
-  
+
   const handleGetProfile = () => {
     router.push(`/trang-ca-nhan/${user?.username}`);
   };
   const handleSignOut = () => {
     deleteAllClientCookie();
 
-    // window.location.reload();
+    window.location.reload();
   };
 
   if (isSuccess && !user) return null;

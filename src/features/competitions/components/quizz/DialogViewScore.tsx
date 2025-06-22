@@ -80,6 +80,7 @@ export default function DialogViewScore({
               className="max-h-full max-w-full object-contain"
               height={800}
               src={myPicture?.picture || "/placeholder.svg"}
+              unoptimized={true}
               width={800}
             />
           </div>

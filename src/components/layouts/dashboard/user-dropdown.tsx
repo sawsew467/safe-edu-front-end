@@ -29,8 +29,6 @@ function UserDropdown() {
     window.location.reload();
   };
 
-  console.log("userInfo", userInfo);
-  
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>

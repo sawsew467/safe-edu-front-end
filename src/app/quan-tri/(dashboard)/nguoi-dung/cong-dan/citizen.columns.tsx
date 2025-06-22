@@ -39,6 +39,7 @@ export const columns: ColumnDef<Citizens>[] = [
           className="rounded-full aspect-square object-cover"
           height={48}
           src={image}
+          unoptimized={true}
           width={48}
         />
       ) : (

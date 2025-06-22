@@ -25,6 +25,7 @@ export function ResourceCard({
               className="object-contain"
               height={80}
               src={icon}
+              unoptimized={true}
               width={80}
             />
           </div>

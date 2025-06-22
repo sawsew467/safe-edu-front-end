@@ -47,7 +47,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useGetAllOrganizationQuery } from "@/features/organizations/organization.api";
-import { DateTimeInput } from "@/components/ui/datetime-input";
 import { Combobox } from "@/components/ui/comboBox";
 import { useGetProvincesQuery } from "@/features/auth/api";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -64,6 +63,7 @@ import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useUploadImageMutation } from "@/services/common/upload/api.upload";
 import { setClientCookie } from "@/lib/jsCookies";
 import constants from "@/settings/constants";
+import DateInputForm from "@/components/ui/date-input-form";
 
 const initialForm = {
   first_name: "",
@@ -132,13 +132,13 @@ export default function UpdateProfileModule() {
           return {
             provinces: data?.data
               ? data?.data?.items?.map((province: Province) => ({
-                label: province?.name,
-                value: province?._id,
-              }))
+                  label: province?.name,
+                  value: province?._id,
+                }))
               : [],
           };
         },
-      }
+      },
     );
 
   const { organizations } = useGetAllOrganizationQuery(undefined, {
@@ -147,10 +147,10 @@ export default function UpdateProfileModule() {
       return {
         organizations: data?.data
           ? data?.data?.items?.map((org: Organization) => ({
-            label: org?.name,
-            value: org?._id,
-            province_id: org?.province_id?._id,
-          }))
+              label: org?.name,
+              value: org?._id,
+              province_id: org?.province_id?._id,
+            }))
           : [],
       };
     },
@@ -165,7 +165,7 @@ export default function UpdateProfileModule() {
   React.useEffect(() => {
     if (provinces && organizations) {
       const filteredOrganizations = organizations?.filter(
-        (org: OrganizationOptions) => org?.province_id === selectedProvince
+        (org: OrganizationOptions) => org?.province_id === selectedProvince,
       );
 
       setOrganizationsByProvince(filteredOrganizations);
@@ -173,7 +173,7 @@ export default function UpdateProfileModule() {
   }, [provinces?.length, organizations?.length, selectedProvince]);
 
   const handleBack = () => {
-    router.replace("/trang-ca-nhan");
+    router.replace(`/trang-ca-nhan/${user?.username}`);
   };
 
   React.useEffect(() => {
@@ -184,7 +184,7 @@ export default function UpdateProfileModule() {
       form.setValue("phone_number", user?.phone_number);
       form.setValue(
         "date_of_birth",
-        user?.date_of_birth ? new Date(user?.date_of_birth) : new Date()
+        user?.date_of_birth ? new Date(user?.date_of_birth) : new Date(),
       );
       form.setValue("avatar", user?.avatar);
 
@@ -204,7 +204,7 @@ export default function UpdateProfileModule() {
   };
 
   const handleFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = event.target.files?.[0];
 
@@ -251,7 +251,7 @@ export default function UpdateProfileModule() {
           first_name,
           last_name,
           username,
-        })
+        }),
       );
       toast.success("Cập nhật hồ sơ thành công", { id: toastId });
     } catch (error) {
@@ -311,7 +311,7 @@ export default function UpdateProfileModule() {
                                     <AvatarFallback>
                                       {getInitials(
                                         form.getValues("first_name"),
-                                        form.getValues("last_name")
+                                        form.getValues("last_name"),
                                       )}
                                     </AvatarFallback>
                                   )}
@@ -400,10 +400,15 @@ export default function UpdateProfileModule() {
                                 Ngày sinh
                               </FormLabel>
                               <FormControl>
-                                <DateTimeInput
-                                  className="rounded-lg"
-                                  format="dd/MM/yyyy"
-                                  {...field}
+                                <DateInputForm
+                                  value={
+                                    field.value
+                                      ? new Date(field.value)
+                                      : new Date()
+                                  }
+                                  onChange={(date) => {
+                                    field.onChange(date);
+                                  }}
                                 />
                               </FormControl>
                               <FormDescription className="text-xs">
@@ -545,7 +550,7 @@ export default function UpdateProfileModule() {
                                             >
                                               {label}
                                             </SelectItem>
-                                          )
+                                          ),
                                         )
                                       ) : (
                                         <div className="p-2 text-center text-muted-foreground">

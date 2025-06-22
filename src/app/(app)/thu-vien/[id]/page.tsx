@@ -36,7 +36,7 @@ const fetchRelatedLibraries = async (libraryDetailId: string) => {
   return activeLibraries
     ?.sort(
       (a: Library, b: Library) =>
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
     )
     ?.filter((item: Library) => item.topic_id?.id === libraryDetailId)
     ?.slice(0, 3);
@@ -46,10 +46,8 @@ export default async function LibraryDetailPage(props: { params: Params }) {
   const { id } = await props.params;
   const libraryDetail: Library = await fetchLibraryById(id);
 
-  console.log("🚀 ~ LibraryDetailPage ~ libraryDetail:", libraryDetail);
-
   const relatedLibraries: Library[] = await fetchRelatedLibraries(
-    libraryDetail?.topic_id?._id
+    libraryDetail?.topic_id?._id,
   );
 
   return (

@@ -26,6 +26,7 @@ export function ArticleCard({
               className="w-full h-48 object-cover"
               height={200}
               src={image || "/placeholder.svg"}
+              unoptimized={true}
               width={300}
             />
             <div className="absolute top-3 left-3">
