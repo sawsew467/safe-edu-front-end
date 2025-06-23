@@ -157,7 +157,10 @@ export function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px] h-[600px] flex flex-col p-0 gap-0">
+      <DialogContent
+        className="sm:max-w-[500px] h-[600px] flex flex-col p-0 gap-0"
+        onOpenAutoFocus={(e) => e.preventDefault()}
+      >
         <DialogHeader className="p-4 border-b">
           <DialogTitle className="text-center text-lg font-bold text-green-700">
             SafeEdu Chatbot
