@@ -115,15 +115,19 @@ const ActionRow = ({ row }: { row: Row<Document> }) => {
   const handleUploadDocument = async (file: Document) => {
     try {
       setIsUploading(true);
-      await fetch("/api/ai-knowledge", {
+      const response = await fetch("/api/ai-knowledge", {
         method: "POST",
         body: JSON.stringify({ file: file }),
       });
 
+      if (!response.ok) {
+        throw new Error("Tải tài liệu thất bại");
+      }
+
       await updateDocument({
         id: file._id,
         isUploaded: true,
-      });
+      }).unwrap();
 
       toast.success("Tải tài liệu thành công");
     } catch (err) {

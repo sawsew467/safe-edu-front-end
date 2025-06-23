@@ -90,7 +90,7 @@ export async function POST(req: Request) {
   } catch (error) {
     console.log("🚀 ~ POST ~ error:", error);
 
-    throw error;
+    throw new Error("Tải tài liệu thất bại");
   }
 }
 
