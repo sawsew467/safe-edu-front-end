@@ -18,6 +18,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useUploadImageMutation } from "@/services/common/upload/api.upload";
 import { Input } from "@/components/ui/input";
 import { AutoExpandingTextarea } from "@/components/ui/auto-expanding-textarea";
+import { cn } from "@/lib/utils";
 
 interface ChatDialogProps {
   open: boolean;
@@ -39,6 +40,9 @@ export function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
 
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+
+  console.log("🚀 ~ ChatDialog ~ isFocused:", isFocused);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -158,7 +162,10 @@ export function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="sm:max-w-[500px] h-[600px] flex flex-col p-0 gap-0"
+        className={cn(
+          "sm:max-w-[500px] h-[600px]  flex flex-col p-0 gap-0 transition-all duration-300",
+          isFocused && "h-[300px]"
+        )}
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
         <DialogHeader className="p-4 border-b">
@@ -278,7 +285,9 @@ export function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
               className="w-full"
               placeholder="Nhập câu hỏi của bạn..."
               value={input}
+              onBlur={() => setIsFocused(false)}
               onChange={(e) => setInput(e.target.value)}
+              onFocus={() => setIsFocused(true)}
             />
             <Button
               className="flex-shrink-0"
