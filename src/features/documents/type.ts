@@ -7,4 +7,5 @@ export type Document = {
   file_name: string;
   document_name: string;
   isUploaded: string;
+  type: "OFFICIAL" | "REFERENCE";
 };

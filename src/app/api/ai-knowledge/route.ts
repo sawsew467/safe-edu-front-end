@@ -57,6 +57,7 @@ export async function POST(req: Request) {
         input: `
         Tôi có một tài liệu về luật pháp, tôi muốn bạn tóm tắt nội dung của tài liệu này.
         Tài liệu tóm tắt này sẽ cần đủ nhỏ để đưa vào model text-embedding-3-large. 
+        Nếu tài liệu không quá dài, hãy giữ lại càng nhiều thông tin càng tốt, hạn chế lược bỏ thông tin.
         Lưu ý giữ nguyên các tiêu đề như "Điều I", "Điều II", "Mục 1", "Mục 2", ...
         Giữ lại cấu trúc Điều, Chương, Mục, 1, 2, 3, a), b), c),...
         Nội dung tài liệu: ${chunk?.content}
@@ -69,6 +70,7 @@ export async function POST(req: Request) {
         id: file._id,
         file_url: file.file_url,
         file_name: file.file_name,
+        type: file.type,
         document_name: file.document_name,
         content: response?.output_text,
       });

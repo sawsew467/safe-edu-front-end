@@ -121,7 +121,7 @@ export const searchInCollection = async (
   try {
     const result = await qdrantClient.search(collectionName, {
       vector: await embedding(query),
-      limit: 5,
+      limit: 10,
       with_payload: true,
     });
 

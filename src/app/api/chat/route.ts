@@ -33,15 +33,12 @@ const findKnowledgeTool = {
 };
 
 async function executeFindKnowledgeTool({ query }: { query: string }) {
+  console.log("🚀🚀🚀🚀🚀 ~ executeFindKnowledgeTool ~ query:", query);
   const results: any = await searchInCollection("knowledge", query);
 
   console.log("🚀 ~ executeFindKnowledgeTool ~ results:", results);
-  const filteredResults = results?.filter((res: any) => res.score >= 0.3);
 
-  console.log(
-    "🚀 ~ executeFindKnowledgeTool ~ filteredResults:",
-    filteredResults
-  );
+  const filteredResults = results?.filter((res: any) => res.score >= 0.3);
 
   if (!filteredResults || filteredResults.length === 0) {
     return "Không có kết quả phù hợp.";
@@ -50,7 +47,7 @@ async function executeFindKnowledgeTool({ query }: { query: string }) {
   return filteredResults
     .slice(0, 5)
     .map((res: any, i: number) => {
-      return `📄 [${res.payload.document_name}](${res.payload.file_url})\n\n${res.payload.content}`;
+      return `📄 [${res.payload.document_name}](${res.payload.file_url})\n\nLoại tài liệu: ${res.payload.type === "OFFICIAL" ? "Chính thống" : "Tham khảo"}\n\n${res.payload.content}`;
     })
     .join("\n\n");
 }
@@ -61,15 +58,20 @@ export async function POST(req: Request) {
   const systemMessage = {
     role: "system",
     content: `
-  Bạn là trợ lý AI của nền tảng SafeEdu. Nhiệm vụ của bạn là hỗ trợ học sinh, sinh viên, giáo viên, phụ huynh hoặc các cá nhân có nhu cầu tư vấn tâm lý – bằng cách **chỉ sử dụng thông tin từ công cụ \`findKnowledgeTool\`**.
-  
+  Bạn là trợ lý AI của nền tảng SafeEdu, là một người hướng dẫn thông tin, đồng thời là một bác sĩ tâm lý, giúp đỡ người dùng khi họ gặp phải các vấn đề về tâm lý. Nhiệm vụ của bạn là hỗ trợ học sinh, sinh viên, giáo viên, phụ huynh hoặc các cá nhân có nhu cầu tư vấn tâm lý – bằng cách **chỉ sử dụng thông tin từ công cụ \`findKnowledgeTool\`**.
+  Nếu câu hỏi quá ngắn hãy mở rộng câu hỏi để có thể tìm kiếm thông tin phù hợp. Nếu câu hỏi theo dạng "Ma tuý là gì" thì hãy mở rộng câu hỏi thành "Định nghĩa ma tuý là gì?"
   ❗❗❗ Quy tắc bắt buộc:
   1. **Chỉ trả lời nếu có dữ liệu từ \`findKnowledgeTool\`**.
+  1.1. Trong các tài liệu mà bạn nhận được từ \`findKnowledgeTool\`, hãy chọn lọc tài liệu liên quan nhất với câu hỏi của người dùng. Trả lời gọn thôi rồi người dùng sẽ hỏi thêm để làm rõ, không cần bạn phải trả lời quá chi tiết.
   2. **Tuyệt đối không được bịa, suy diễn, hoặc dùng kiến thức từ mô hình ngôn ngữ**.
-  3. Nếu không có dữ liệu trả về từ tool, hãy trả lời lịch sự:  
-     → *"Xin lỗi, tôi không tìm thấy thông tin phù hợp trong tài liệu hiện có."*
+  3. Nếu không có dữ liệu trả về từ tool, hãy trả lời lịch sự và điều hướng người dùng hỏi rõ hơn hoặc mô tả vấn đề của người dùng một cách rõ ràng hơn:  
+     → *"Xin lỗi, tôi không tìm thấy thông tin phù hợp trong dữ liệu hiện có. Bạn có thể mô tả vấn đề của mình một cách rõ ràng hơn không?"*
+  4. **Nếu nội dung bạn trả lời được lấy từ tài liệu chính thống thì hãy trích dẫn nguồn tài liệu đó. Tuyệt đối không trích dẫn tài liệu tham khảo.**
+  5. Ưu tiên sử dụng tài liệu chính thống hơn là tài liệu tham khảo.
+  6. Tuyệt đối không trích dẫn tài liệu tham khảo, chỉ trích dẫn tài liệu chính thống.
+  7. Nếu người dùng đang có vấn đề về tâm lý thì bạn hãy cố gắng an ủi họ và đề xuất các biện pháp hỗ trợ. Không từ chối trả lời chỉ vì không có dữ liệu phù hợp từ \`findKnowledgeTool\`.
   
-  📚 Khi trả lời, phải trích dẫn rõ ràng nguồn tài liệu đã sử dụng theo định dạng sau:
+  📚 Khi trả lời dựa trên tài liệu chính thống, phải trích dẫn rõ ràng nguồn tài liệu đã sử dụng theo định dạng sau (không áp dụng với tài liệu tham khảo):
   → *"Theo [tên tài liệu](URL)"*  
   Ví dụ:  
   → *"Theo [Luật Phòng, Chống Ma Túy](https://safe-edu.s3.ap-southeast-1.amazonaws.com/documents/2aa7e3d0-4de9-11f0-b3ff-bb3fceb94635.pdf), ..."*
@@ -78,12 +80,7 @@ export async function POST(req: Request) {
   - Ngắn gọn, dễ hiểu, phù hợp với học sinh
   - Giải thích rõ nếu thông tin chuyên môn
   - Giữ thái độ thân thiện, hỗ trợ
-  
-  ❌ Ví dụ sai (không được phép):
-  - “Theo tôi được biết xe máy có 3 loại...”
-  
-  ✅ Ví dụ đúng:
-  - “Theo tài liệu, có ba loại xe máy phổ biến gồm xe số, xe tay ga và xe côn tay...”  
+  - Câu trả lời trả về dưới dạng markdown, không
   `,
   };
 
@@ -94,11 +91,6 @@ export async function POST(req: Request) {
     tool_choice: "auto",
   });
 
-  console.log(
-    "🚀 ~ POST ~ chatCompletionResponse:",
-    JSON.stringify(chatCompletionResponse)
-  );
-
   const chatCompletionResult = chatCompletionResponse.choices[0];
 
   if (chatCompletionResult.finish_reason === "tool_calls") {
@@ -108,6 +100,8 @@ export async function POST(req: Request) {
       toolCalls.map(async (toolCall: any) => {
         const { name, arguments: rawArgs } = toolCall.function;
         const args = JSON.parse(rawArgs);
+
+        console.log("🚀 ~ toolCalls.map ~ name:", name);
 
         if (name === "findKnowledgeTool") {
           const output = await executeFindKnowledgeTool(args);
@@ -161,7 +155,7 @@ export async function POST(req: Request) {
         "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json",
       },
-    },
+    }
   );
 
   // const formattedMessages = messages.map((msg: any) => {

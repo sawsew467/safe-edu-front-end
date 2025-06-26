@@ -6,6 +6,7 @@ import { useState, useRef, useCallback } from "react";
 import { Send, X, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { Attachment } from "ai";
+import ReactMarkdown from "react-markdown";
 
 import {
   Dialog,
@@ -164,7 +165,7 @@ export function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
       <DialogContent
         className={cn(
           "sm:max-w-[500px] h-[600px]  flex flex-col p-0 gap-0 transition-all duration-300",
-          isFocused && "h-[300px]"
+          isFocused && "h-[300px] lg:h-[600px]"
         )}
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
@@ -200,7 +201,7 @@ export function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
                       }`}
                     >
                       <div className="whitespace-pre-wrap text-sm">
-                        {message.content}
+                        <ReactMarkdown className="prose">{message.content}</ReactMarkdown>
                       </div>
                     </div>
                     {message.images && message.images.length > 0 && (

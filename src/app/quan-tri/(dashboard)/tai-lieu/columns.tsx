@@ -42,6 +42,21 @@ export const columns: ColumnDef<Document>[] = [
     },
   },
   {
+    accessorKey: "type",
+    header: "Loại",
+    cell: ({ row }) => {
+      return (
+        <Badge
+          variant={
+            row.getValue("type") === "OFFICIAL" ? "secondary" : "outline"
+          }
+        >
+          {row.getValue("type") === "OFFICIAL" ? "Chính thống" : "Tham khảo"}
+        </Badge>
+      );
+    },
+  },
+  {
     accessorKey: "isUploaded",
     header: "Chatbot",
     cell: ({ row }) => {

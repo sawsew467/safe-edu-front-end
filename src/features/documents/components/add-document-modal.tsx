@@ -24,12 +24,24 @@ import constants from "@/settings/constants";
 import { getClientCookie } from "@/lib/jsCookies";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectValue,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 
-const sendFile = async (file: File, name: string) => {
+const sendFile = async (
+  file: File,
+  name: string,
+  type: "OFFICIAL" | "REFERENCE"
+) => {
   const formData = new FormData();
 
   formData.append("image", file);
   formData.append("document_name", name);
+  formData.append("type", type);
 
   const accessToken = getClientCookie(constants.ACCESS_TOKEN_ADMIN);
 
@@ -53,6 +65,7 @@ function AddDocumentModal() {
   const [file, setFile] = useState<File | null>(null);
   const [name, setName] = useState<string>("");
   const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const [type, setType] = useState<"OFFICIAL" | "REFERENCE">("OFFICIAL");
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     acceptedFiles.forEach((file: File) => {
@@ -74,7 +87,7 @@ function AddDocumentModal() {
   const handleFileUpload = async (file: File) => {
     try {
       setIsLoading(true);
-      const response = await sendFile(file, name);
+      const response = await sendFile(file, name, type);
 
       console.log("🚀 ~ handleFileUpload ~ response:", response);
       dispatch(baseApiAdmin.util.invalidateTags(["Documents"]));
@@ -162,6 +175,23 @@ function AddDocumentModal() {
               type="text"
               onChange={(e) => setName(e.target.value)}
             />
+          </div>
+          <div className="flex flex-col gap-2 mt-4">
+            <Label>Loại tài liệu</Label>
+            <Select
+              value={type}
+              onValueChange={(value) =>
+                setType(value as "OFFICIAL" | "REFERENCE")
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Chọn loại tài liệu" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="OFFICIAL">Chính thống</SelectItem>
+                <SelectItem value="REFERENCE">Tham khảo</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </DialogDescription>
         <DialogFooter>
