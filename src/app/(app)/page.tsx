@@ -60,8 +60,10 @@ const fetchLatestCompetitions = async (): Promise<{
 }> => {
   try {
     const { data } = await customFetch(
-      `${constants.API_SERVER}/competitions?pageNumber=${1}&pageSize=10`
+      `${constants.API_SERVER}/competitions?pageNumber=${1}&pageSize=100`
     );
+
+    console.log("🚀 ~ fetchLatestCompetitions ~ data:", data);
 
     const latestCompetitions =
       data
