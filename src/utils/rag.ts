@@ -31,12 +31,12 @@ export const chunkDocuments = async (text: string) => {
 };
 
 export const chunkDocumentsByLawStructure = async (text: string) => {
-  const rawChunks = text.split(/(?:\r?\n)+(?=^Chương\s+([IVXLCDM]+|\d+)\s*)/gm);
+  const rawChunks = text.split(/(?:\r?\n)+(?=^CHƯƠNG\s+([IVXLCDM]+|\d+)\s*)/gm);
 
   const structuredChunks = rawChunks
     .map((chunk, index) => {
-      const titleMatch = chunk.match(/^Chương\s+([IVXLCDM]+|\d+).*$/m);
-      const title = titleMatch ? titleMatch[0].trim() : `Chương ${index + 1}`;
+      const titleMatch = chunk.match(/^CHƯƠNG\s+([IVXLCDM]+|\d+).*$/m);
+      const title = titleMatch ? titleMatch[0].trim() : `CHƯƠNG ${index + 1}`;
 
       return {
         metadata: {

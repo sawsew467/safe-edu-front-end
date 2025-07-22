@@ -19,7 +19,24 @@ export async function OPTIONS() {
 
 const findKnowledgeTool = {
   name: "findKnowledgeTool",
-  description: "Tìm kiếm kiến thức phù hợp với mô tả của người dùng",
+  description:
+    "Tìm kiếm kiến thức chính thống phù hợp với mô tả của người dùng",
+  parameters: {
+    type: "object",
+    properties: {
+      query: {
+        type: "string",
+        description: "Mô tả câu hỏi mà người dùng đang tìm",
+      },
+    },
+    required: ["query"],
+  },
+};
+
+const findConsultingTool = {
+  name: "findConsultingTool",
+  description:
+    "Tìm kiếm thông tin về tư vấn tâm lý phù hợp với mô tả của người dùng",
   parameters: {
     type: "object",
     properties: {
@@ -33,10 +50,7 @@ const findKnowledgeTool = {
 };
 
 async function executeFindKnowledgeTool({ query }: { query: string }) {
-  console.log("🚀🚀🚀🚀🚀 ~ executeFindKnowledgeTool ~ query:", query);
   const results: any = await searchInCollection("knowledge", query);
-
-  console.log("🚀 ~ executeFindKnowledgeTool ~ results:", results);
 
   const filteredResults = results?.filter((res: any) => res.score >= 0.3);
 
@@ -52,48 +66,109 @@ async function executeFindKnowledgeTool({ query }: { query: string }) {
     .join("\n\n");
 }
 
+async function executeFindConsultingTool({ query }: { query: string }) {
+  const results: any = await searchInCollection("consulting", query);
+
+  console.log("🚀 ~ executeFindConsultingTool ~ results:", results);
+
+  const filteredResults = results?.filter((res: any) => res.score >= 0.3);
+
+  if (!filteredResults || filteredResults.length === 0) {
+    return "Không có kết quả phù hợp.";
+  }
+
+  return filteredResults
+    .slice(0, 5)
+    .map((res: any, i: number) => {
+      return `Thôn tin tham khảo ${i + 1}: ${res.payload.content}\n\n`;
+    })
+    .join("\n\n");
+}
+
 export async function POST(req: Request) {
   const { messages, images } = await req.json();
 
   const systemMessage = {
     role: "system",
     content: `
-  Bạn là trợ lý AI của nền tảng SafeEdu, là một người hướng dẫn thông tin, đồng thời là một bác sĩ tâm lý, giúp đỡ người dùng khi họ gặp phải các vấn đề về tâm lý. Nhiệm vụ của bạn là hỗ trợ học sinh, sinh viên, giáo viên, phụ huynh hoặc các cá nhân có nhu cầu tư vấn tâm lý – bằng cách **chỉ sử dụng thông tin từ công cụ \`findKnowledgeTool\`**.
-  Nếu câu hỏi quá ngắn hãy mở rộng câu hỏi để có thể tìm kiếm thông tin phù hợp. Nếu câu hỏi theo dạng "Ma tuý là gì" thì hãy mở rộng câu hỏi thành "Định nghĩa ma tuý là gì?"
-  ❗❗❗ Quy tắc bắt buộc:
-  1. **Chỉ trả lời nếu có dữ liệu từ \`findKnowledgeTool\`**.
-  1.1. Trong các tài liệu mà bạn nhận được từ \`findKnowledgeTool\`, hãy chọn lọc tài liệu liên quan nhất với câu hỏi của người dùng. Trả lời gọn thôi rồi người dùng sẽ hỏi thêm để làm rõ, không cần bạn phải trả lời quá chi tiết.
-  2. **Tuyệt đối không được bịa, suy diễn, hoặc dùng kiến thức từ mô hình ngôn ngữ**.
-  3. Nếu không có dữ liệu trả về từ tool, hãy trả lời lịch sự và điều hướng người dùng hỏi rõ hơn hoặc mô tả vấn đề của người dùng một cách rõ ràng hơn:  
-     → *"Xin lỗi, tôi không tìm thấy thông tin phù hợp trong dữ liệu hiện có. Bạn có thể mô tả vấn đề của mình một cách rõ ràng hơn không?"*
-  4. **Nếu nội dung bạn trả lời được lấy từ tài liệu chính thống thì hãy trích dẫn nguồn tài liệu đó. Tuyệt đối không trích dẫn tài liệu tham khảo.**
-  5. Ưu tiên sử dụng tài liệu chính thống hơn là tài liệu tham khảo.
-  6. Tuyệt đối không trích dẫn tài liệu tham khảo, chỉ trích dẫn tài liệu chính thống.
-  7. Nếu người dùng đang có vấn đề về tâm lý thì bạn hãy cố gắng an ủi họ và đề xuất các biện pháp hỗ trợ. Không từ chối trả lời chỉ vì không có dữ liệu phù hợp từ \`findKnowledgeTool\`.
-  
-  📚 Khi trả lời dựa trên tài liệu chính thống, phải trích dẫn rõ ràng nguồn tài liệu đã sử dụng theo định dạng sau (không áp dụng với tài liệu tham khảo):
-  → *"Theo [tên tài liệu](URL)"*  
-  Ví dụ:  
-  → *"Theo [Luật Phòng, Chống Ma Túy](https://safe-edu.s3.ap-southeast-1.amazonaws.com/documents/2aa7e3d0-4de9-11f0-b3ff-bb3fceb94635.pdf), ..."*
-  
-  💬 Cách trả lời:
-  - Ngắn gọn, dễ hiểu, phù hợp với học sinh
-  - Giải thích rõ nếu thông tin chuyên môn
-  - Giữ thái độ thân thiện, hỗ trợ
-  - Câu trả lời trả về dưới dạng markdown, không
+❗️QUY TẮC ƯU TIÊN TOOL
+- Nếu người dùng đang gặp khó khăn, lo âu, hoặc cần chia sẻ: PHẢI gọi tool \`findConsultingTool\` TRƯỚC.
+- Chỉ gọi \`findKnowledgeTool\` khi người dùng cần tra cứu thông tin chính thống, dạng lý thuyết như “ma túy là gì?”, “luật nào quy định...”.
+- TUYỆT ĐỐI KHÔNG dùng kiến thức nội tại của AI để trả lời thay thế tài liệu chính thống.
+
+---
+
+🎯 VAI TRÒ & SỨ MỆNH
+Bạn là SafeEdu AI – người bạn tinh tế trong bóng tối của những khủng hoảng tuổi trẻ. Bạn hiện diện để:
+- An ủi, thấu cảm và hỗ trợ người dùng vượt qua: bạo lực học đường, nghiện ngập, khủng hoảng tâm lý.
+- Luôn tử tế, không phán xét, luôn trao quyền và tôn trọng quyền riêng tư tuyệt đối.
+
+---
+
+🧭 QUY TRÌNH BẮT BUỘC: THẤU CẢM → HƯỚNG DẪN → HÀNH ĐỘNG
+1. **THẤU CẢM:** Luôn mở đầu bằng sự công nhận cảm xúc người dùng.
+   - Ví dụ: "Mình hiểu bạn đang rất đau khổ và cô đơn. Mình ở đây rồi, không sao cả..."
+
+2. **HƯỚNG DẪN:** Đặt câu hỏi nhẹ nhàng để hiểu thêm tình huống. Gợi ý tìm hiểu thêm.
+   - Ví dụ: "Bạn có thể chia sẻ cụ thể hơn về chuyện vừa xảy ra không?", "Bạn có muốn mình hỗ trợ về 'kỹ năng bảo vệ bản thân' không?"
+
+3. **HÀNH ĐỘNG:** Đề xuất giải pháp rõ ràng, thực hiện được ngay cả khi người dùng đang hoảng loạn.
+   - Ví dụ: “Giải pháp nắm bắt nhanh: 1. Hít thở sâu 2. Viết ra giấy 3. Nhắn cho SafeEdu.”
+
+---
+
+📚 SỬ DỤNG TOOL
+- Luôn gọi \`findConsultingTool\` trước để tìm tư vấn phù hợp.
+- Chỉ dùng \`findKnowledgeTool\` nếu câu hỏi yêu cầu kiến thức chính thống.
+- Nếu không tìm được tài liệu: phản hồi lịch sự và mời người dùng mô tả kỹ hơn.
+
+📌 Cách trích dẫn chính thống:
+→ *"Theo [Tên tài liệu](URL)"*
+
+🛑 Không dùng kiến thức ngôn ngữ mô hình để trả lời nếu không có dữ liệu chính thống từ \`findKnowledgeTool\`.
+
+---
+
+🧠 KỸ NĂNG VÀ CHỦ ĐỀ BẠN PHẢI THÀNH THẠO
+- **Bạo lực học đường:** các hình thức, kỹ năng tự vệ, cách báo cáo
+- **Nghiện chất:** dấu hiệu nhận diện, pháp lý, tư vấn cai nghiện
+- **Sức khỏe tâm thần:** lo âu, mất ngủ, trầm cảm, cách hít thở, viết nhật ký
+- **Nguồn trợ giúp:** Gọi 111 (trẻ em), 1900.969.603 (cai nghiện), chuyên viên học đường
+
+---
+
+🔐 BẢO MẬT & GIỚI HẠN
+- SafeEdu AI cam kết bảo mật tuyệt đối. "Bạn hoàn toàn có thể yên tâm. Mọi thông tin đều được mã hóa."
+- Bạn là AI hỗ trợ đầu tiên, không thay thế được chuyên gia. Luôn khuyến khích kết nối với người thật: người lớn đáng tin, bác sĩ, chuyên viên tâm lý.
+- Nếu có nguy cơ đe dọa tính mạng: lập tức hướng dẫn người dùng gọi 111, 113, 115 hoặc nhờ người lớn giúp đỡ.
+
+---
+
+💬 PHONG CÁCH TRẢ LỜI
+- Ngắn gọn, rõ ràng, phù hợp học sinh
+- Luôn hỗ trợ, an ủi, truyền động lực
+- Không dùng từ ngữ chuyên môn phức tạp
+- Dạng markdown, dễ đọc
   `,
   };
 
   const chatCompletionResponse = await client.chat.completions.create({
     model: "gpt-4o",
     messages: [systemMessage, ...messages],
-    tools: [{ type: "function", function: findKnowledgeTool }],
+    tools: [
+      { type: "function", function: findKnowledgeTool },
+      { type: "function", function: findConsultingTool },
+    ],
     tool_choice: "auto",
   });
 
   const chatCompletionResult = chatCompletionResponse.choices[0];
 
+  console.log("🚀 ~ POST ~ chatCompletionResult:", chatCompletionResult);
+
   if (chatCompletionResult.finish_reason === "tool_calls") {
+    console.log("????");
+
     const toolCalls: any = chatCompletionResult.message.tool_calls;
 
     const toolResponses = await Promise.all(
@@ -105,6 +180,15 @@ export async function POST(req: Request) {
 
         if (name === "findKnowledgeTool") {
           const output = await executeFindKnowledgeTool(args);
+
+          return {
+            tool_call_id: toolCall.id,
+            output,
+          };
+        }
+
+        if (name === "findConsultingTool") {
+          const output = await executeFindConsultingTool(args);
 
           return {
             tool_call_id: toolCall.id,

@@ -114,7 +114,7 @@ const ActionRow = ({ row }: { row: Row<Document> }) => {
       setIsDeleting(true);
       await fetch("/api/ai-knowledge", {
         method: "DELETE",
-        body: JSON.stringify({ id: file._id }),
+        body: JSON.stringify({ file: file }),
       });
       await deleteDocument(file._id).unwrap();
 

@@ -22,8 +22,6 @@ export async function OPTIONS() {
   });
 }
 
-const collectionName = "knowledge";
-
 export async function POST(req: Request) {
   const { file } = await req.json();
 
@@ -36,11 +34,13 @@ export async function POST(req: Request) {
     for (const doc of docs) {
       const chunk = await chunkDocumentsByLawStructure(doc.pageContent);
 
+      console.log("🚀 ~ POST ~ chunk:", chunk);
+
       chunks = [...chunks, ...chunk];
     }
 
     for (const chunk of chunks.slice(1)) {
-      if (chunk?.content?.startsWith("Chương")) {
+      if (chunk?.content?.startsWith("CHƯƠNG")) {
         newChunks.push(chunk);
       } else {
         if (newChunks?.length === 0) newChunks.push(chunk);
@@ -65,6 +65,9 @@ export async function POST(req: Request) {
       });
 
       console.log("Đang embedding nội dung tài liệu...");
+
+      const collectionName =
+        file.type === "OFFICIAL" ? "knowledge" : "consulting";
 
       await addPointToCollection(collectionName, response?.output_text, {
         id: file._id,
@@ -98,16 +101,17 @@ export async function POST(req: Request) {
 
 export async function DELETE(req: Request) {
   try {
-    const { id } = await req.json();
+    const { file } = await req.json();
 
-    console.log("🚀 ~ DELETE ~ id:", id);
+    const collectionName =
+      file.type === "OFFICIAL" ? "knowledge" : "consulting";
 
     const points = await getAllPointsInCollection(collectionName);
 
     await deleteManyPointsInCollection(
       collectionName,
       points.points
-        .filter((point: any) => point?.payload?.id === id)
+        .filter((point: any) => point?.payload?.id === file?.id)
         .map((point: any) => point.id)
     );
 
