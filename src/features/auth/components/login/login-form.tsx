@@ -92,6 +92,7 @@ export default function LoginForm({
                     <Link
                       className="text-sm text-primary hover:underline"
                       href="/quen-mat-khau"
+                      tabIndex={-1}
                     >
                       Quên mật khẩu?
                     </Link>

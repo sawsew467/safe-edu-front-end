@@ -121,7 +121,7 @@ const ActionRow = ({ row }: { row: Row<Document> }) => {
       toast.success("Xóa tài liệu thành công");
     } catch (err) {
       toast.error("Không thể xóa");
-      console.log(err);
+      console.error(err);
     } finally {
       setIsDeleting(false);
     }
@@ -147,7 +147,7 @@ const ActionRow = ({ row }: { row: Row<Document> }) => {
       toast.success("Tải tài liệu thành công");
     } catch (err) {
       toast.error("Tải tài liệu thất bại");
-      console.log(err);
+      console.error(err);
     } finally {
       setIsUploading(false);
     }

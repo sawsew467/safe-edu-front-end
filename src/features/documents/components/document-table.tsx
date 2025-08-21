@@ -24,10 +24,8 @@ const DocumentsTable = () => {
         };
       },
       refetchOnMountOrArgChange: true,
-    }
+    },
   );
-
-  console.log("🚀 ~ DocumentsTable ~ documents:", documents);
 
   useBreadcrumb([{ label: "Tài liệu" }]);
 

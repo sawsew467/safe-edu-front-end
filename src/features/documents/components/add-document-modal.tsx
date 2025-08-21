@@ -35,7 +35,7 @@ import {
 const sendFile = async (
   file: File,
   name: string,
-  type: "OFFICIAL" | "REFERENCE"
+  type: "OFFICIAL" | "REFERENCE",
 ) => {
   const formData = new FormData();
 
@@ -53,7 +53,7 @@ const sendFile = async (
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
-    }
+    },
   );
 
   return response.json();
@@ -71,8 +71,8 @@ function AddDocumentModal() {
     acceptedFiles.forEach((file: File) => {
       const reader = new FileReader();
 
-      reader.onabort = () => console.log("file reading was aborted");
-      reader.onerror = () => console.log("file reading has failed");
+      reader.onabort = () => console.error("file reading was aborted");
+      reader.onerror = () => console.error("file reading has failed");
       reader.onload = () => {
         setFile(file);
       };
@@ -89,7 +89,6 @@ function AddDocumentModal() {
       setIsLoading(true);
       const response = await sendFile(file, name, type);
 
-      console.log("🚀 ~ handleFileUpload ~ response:", response);
       dispatch(baseApiAdmin.util.invalidateTags(["Documents"]));
       toast.success("Import dữ liệu thành công");
       setOpenDialog(false);
