@@ -34,8 +34,6 @@ export async function POST(req: Request) {
     for (const doc of docs) {
       const chunk = await chunkDocumentsByLawStructure(doc.pageContent);
 
-      console.log("🚀 ~ POST ~ chunk:", chunk);
-
       chunks = [...chunks, ...chunk];
     }
 
@@ -49,9 +47,6 @@ export async function POST(req: Request) {
     }
 
     for (const chunk of newChunks) {
-      console.log("----- Xử lý ", chunk?.metadata?.title, "-----");
-      console.log("Đang tóm tắt nội dung tài liệu...");
-
       const response = await client.responses.create({
         model: "gpt-4o-mini",
         input: `
@@ -60,11 +55,10 @@ export async function POST(req: Request) {
         Nếu tài liệu không quá dài, hãy giữ lại càng nhiều thông tin càng tốt, hạn chế lược bỏ thông tin.
         Lưu ý giữ nguyên các tiêu đề như "Điều I", "Điều II", "Mục 1", "Mục 2", ...
         Giữ lại cấu trúc Điều, Chương, Mục, 1, 2, 3, a), b), c),...
+        
         Nội dung tài liệu: ${chunk?.content}
         `,
       });
-
-      console.log("Đang embedding nội dung tài liệu...");
 
       const collectionName =
         file.type === "OFFICIAL" ? "knowledge" : "consulting";
@@ -77,8 +71,6 @@ export async function POST(req: Request) {
         document_name: file.document_name,
         content: response?.output_text,
       });
-
-      console.log("✓ Đã xử lý xong ", chunk?.metadata?.title);
     }
 
     return new Response(
@@ -90,11 +82,9 @@ export async function POST(req: Request) {
           "Access-Control-Allow-Origin": "*",
           "Content-Type": "application/json",
         },
-      }
+      },
     );
   } catch (error) {
-    console.log("🚀 ~ POST ~ error:", error);
-
     throw new Error("Tải tài liệu thất bại");
   }
 }
@@ -112,15 +102,13 @@ export async function DELETE(req: Request) {
       collectionName,
       points.points
         .filter((point: any) => point?.payload?.id === file?.id)
-        .map((point: any) => point.id)
+        .map((point: any) => point.id),
     );
 
     return new Response(JSON.stringify({ message: "Deleted" }), {
       status: 200,
     });
   } catch (error) {
-    console.log("🚀 ~ DELETE ~ error:", error);
-
     return new Response(JSON.stringify({ error: "Failed to delete" }), {
       status: 500,
     });

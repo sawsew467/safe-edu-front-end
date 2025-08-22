@@ -125,8 +125,6 @@ export default function RegistrationForm({
     },
   });
 
-  console.log("form", form.getValues());
-
   React.useEffect(() => {
     if (provinces && organizations) {
       const filteredOrganizations = organizations?.filter(
@@ -272,7 +270,6 @@ export default function RegistrationForm({
                     <DateInputForm
                       value={field.value ? new Date(field.value) : new Date()}
                       onChange={(e) => {
-                        console.log("e", e?.toISOString());
                         field.onChange(e?.toISOString());
                       }}
                     />

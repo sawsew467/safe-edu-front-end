@@ -58,7 +58,7 @@ export default function ProfilePage() {
   const averageScore = data?.quizResults
     ? data?.quizResults?.reduce(
         (acc: number, result: any) => acc + (result?.score || 0),
-        0
+        0,
       ) /
       (data?.quizResults?.filter((item) => item?.score !== undefined).length ||
         1)
@@ -81,7 +81,7 @@ export default function ProfilePage() {
       y: 0,
       opacity: 1,
       transition: {
-        type: "spring",
+        type: "spring" as const,
         stiffness: 100,
         damping: 12,
       },
@@ -396,7 +396,7 @@ export default function ProfilePage() {
                         >
                           {
                             data?.quizResults?.filter(
-                              (r: any) => r.score >= 7 && r.score < 9
+                              (r: any) => r.score >= 7 && r.score < 9,
                             )?.length
                           }
                         </MotionDiv>
@@ -422,7 +422,7 @@ export default function ProfilePage() {
                         >
                           {
                             data?.quizResults?.filter(
-                              (r: any) => r.score >= 5 && r.score < 7
+                              (r: any) => r.score >= 5 && r.score < 7,
                             )?.length
                           }
                         </MotionDiv>

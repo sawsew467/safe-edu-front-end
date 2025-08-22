@@ -45,12 +45,10 @@ const fetchLatestNews = async () => {
     return latestNews
       ?.sort(
         (a: TypeNews, b: TypeNews) =>
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
       )
       .slice(0, 3);
   } catch (error) {
-    console.log("🚀 ~ fetchLatestNews ~ error:", error);
-
     return [];
   }
 };
@@ -60,20 +58,18 @@ const fetchLatestCompetitions = async (): Promise<{
 }> => {
   try {
     const { data } = await customFetch(
-      `${constants.API_SERVER}/competitions?pageNumber=${1}&pageSize=100`
+      `${constants.API_SERVER}/competitions?pageNumber=${1}&pageSize=100`,
     );
-
-    console.log("🚀 ~ fetchLatestCompetitions ~ data:", data);
 
     const latestCompetitions =
       data
         ?.filter(
           (item: Competitions) =>
-            item?.isActive && new Date(item.endDate) > new Date()
+            item?.isActive && new Date(item.endDate) > new Date(),
         )
         ?.sort(
           (a: Competitions, b: Competitions) =>
-            new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
+            new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime(),
         )
         .slice(0, 3) ?? [];
 
@@ -100,11 +96,11 @@ const fetchLatestLibrary = async () => {
     return latestLibraries
       ?.sort(
         (a: Library, b: Library) =>
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
       )
       .slice(0, 6);
   } catch (error) {
-    console.log("🚀 ~ fetchLatestLibrary ~ error:", error);
+    console.error("🚀 ~ fetchLatestLibrary ~ error:", error);
 
     return [];
   }

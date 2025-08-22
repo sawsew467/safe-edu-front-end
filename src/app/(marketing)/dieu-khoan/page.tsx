@@ -38,7 +38,7 @@ export default function TermsAndConditionsPage() {
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-sm p-8">
           <div className="prose max-w-none">
-            <p>
+            <p className="dark:text-black">
               Các điều khoản và điều kiện này áp dụng cho ứng dụng SafeEdu (sau
               đây gọi là &quot;Ứng Dụng&quot;) dành cho thiết bị di động được
               tạo bởi Trần Văn Bảo Thắng (sau đây gọi là &quot;Nhà Cung Cấp Dịch
@@ -47,7 +47,7 @@ export default function TermsAndConditionsPage() {
 
             <Separator className="my-8" />
 
-            <p>
+            <p className="dark:text-black">
               Khi tải xuống hoặc sử dụng Ứng Dụng, bạn tự động đồng ý với các
               điều khoản sau đây. Chúng tôi khuyên bạn nên đọc kỹ và hiểu rõ các
               điều khoản này trước khi sử dụng Ứng Dụng. Nghiêm cấm sao chép,
@@ -61,7 +61,7 @@ export default function TermsAndConditionsPage() {
 
             <Separator className="my-8" />
 
-            <p>
+            <p className="dark:text-black">
               Nhà Cung Cấp Dịch Vụ cam kết đảm bảo rằng Ứng Dụng có ích và hiệu
               quả nhất có thể. Vì vậy, họ có quyền sửa đổi Ứng Dụng hoặc tính
               phí cho các dịch vụ của họ bất cứ lúc nào và vì bất kỳ lý do gì.
@@ -71,7 +71,7 @@ export default function TermsAndConditionsPage() {
 
             <Separator className="my-8" />
 
-            <p>
+            <p className="dark:text-black">
               Ứng Dụng lưu trữ và xử lý dữ liệu cá nhân mà bạn đã cung cấp cho
               Nhà Cung Cấp Dịch Vụ để cung cấp Dịch Vụ. Bạn có trách nhiệm duy
               trì tính bảo mật của điện thoại và quyền truy cập vào Ứng Dụng.
@@ -86,7 +86,7 @@ export default function TermsAndConditionsPage() {
 
             <Separator className="my-8" />
 
-            <p>
+            <p className="dark:text-black">
               Xin lưu ý rằng Ứng Dụng sử dụng các dịch vụ của bên thứ ba có Điều
               Khoản và Điều Kiện riêng. Dưới đây là các liên kết đến Điều Khoản
               và Điều Kiện của các nhà cung cấp dịch vụ bên thứ ba được Ứng Dụng
@@ -116,7 +116,7 @@ export default function TermsAndConditionsPage() {
 
             <Separator className="my-8" />
 
-            <p>
+            <p className="dark:text-black">
               Xin lưu ý rằng Nhà Cung Cấp Dịch Vụ không chịu trách nhiệm về một
               số khía cạnh nhất định. Một số chức năng của Ứng Dụng yêu cầu kết
               nối internet hoạt động, có thể là Wi-Fi hoặc do nhà cung cấp mạng
@@ -128,7 +128,7 @@ export default function TermsAndConditionsPage() {
 
             <Separator className="my-8" />
 
-            <p>
+            <p className="dark:text-black">
               Nếu bạn đang sử dụng ứng dụng bên ngoài khu vực Wi-Fi, xin lưu ý
               rằng các điều khoản thỏa thuận của nhà cung cấp mạng di động của
               bạn vẫn áp dụng. Do đó, bạn có thể phải trả phí cho nhà cung cấp
@@ -145,7 +145,7 @@ export default function TermsAndConditionsPage() {
 
             <Separator className="my-8" />
 
-            <p>
+            <p className="dark:text-black">
               Tương tự, Nhà Cung Cấp Dịch Vụ không thể luôn luôn chịu trách
               nhiệm về việc bạn sử dụng ứng dụng. Ví dụ, bạn có trách nhiệm đảm
               bảo rằng thiết bị của bạn vẫn được sạc pin. Nếu thiết bị của bạn
@@ -155,7 +155,7 @@ export default function TermsAndConditionsPage() {
 
             <Separator className="my-8" />
 
-            <p>
+            <p className="dark:text-black">
               Về trách nhiệm của Nhà Cung Cấp Dịch Vụ đối với việc bạn sử dụng
               ứng dụng, điều quan trọng cần lưu ý là mặc dù họ cố gắng đảm bảo
               rằng nó được cập nhật và chính xác mọi lúc, họ vẫn phụ thuộc vào
@@ -167,7 +167,7 @@ export default function TermsAndConditionsPage() {
 
             <Separator className="my-8" />
 
-            <p>
+            <p className="dark:text-black">
               Nhà Cung Cấp Dịch Vụ có thể muốn cập nhật ứng dụng tại một thời
               điểm nào đó. Ứng dụng hiện có sẵn theo yêu cầu của hệ điều hành
               (và đối với bất kỳ hệ thống bổ sung nào mà họ quyết định mở rộng
@@ -191,7 +191,7 @@ export default function TermsAndConditionsPage() {
             <h2 className="text-2xl font-bold mb-4">
               Thay Đổi Đối Với Các Điều Khoản và Điều Kiện Này
             </h2>
-            <p>
+            <p className="dark:text-black">
               Nhà Cung Cấp Dịch Vụ có thể cập nhật định kỳ Điều Khoản và Điều
               Kiện của họ. Do đó, bạn được khuyên nên xem lại trang này thường
               xuyên để biết bất kỳ thay đổi nào. Nhà Cung Cấp Dịch Vụ sẽ thông
@@ -201,14 +201,14 @@ export default function TermsAndConditionsPage() {
 
             <Separator className="my-8" />
 
-            <p className="font-medium text-center">
+            <p className="font-medium text-center dark:text-black">
               Các điều khoản và điều kiện này có hiệu lực từ ngày 20-02-2025
             </p>
 
             <Separator className="my-8" />
 
             <h2 className="text-2xl font-bold mb-4">Liên Hệ Với Chúng Tôi</h2>
-            <p>
+            <p className="dark:text-black">
               Nếu bạn có bất kỳ câu hỏi hoặc đề xuất nào về Điều Khoản và Điều
               Kiện, vui lòng không ngần ngại liên hệ với Nhà Cung Cấp Dịch Vụ
               tại thangtvb.dev@gmail.com.

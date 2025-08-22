@@ -1,7 +1,5 @@
 import { WebPDFLoader } from "@langchain/community/document_loaders/web/pdf";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
-import OpenAI from "openai";
-const client = new OpenAI();
 
 import { Document } from "@/features/documents/type";
 

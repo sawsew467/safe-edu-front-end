@@ -43,8 +43,6 @@ export function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
 
-  console.log("🚀 ~ ChatDialog ~ isFocused:", isFocused);
-
   const fileInputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [uploadImage, { isLoading: isUploading }] = useUploadImageMutation();
@@ -165,7 +163,7 @@ export function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
       <DialogContent
         className={cn(
           "sm:max-w-[500px] h-[600px]  flex flex-col p-0 gap-0 transition-all duration-300",
-          isFocused && "h-[300px] lg:h-[600px]"
+          isFocused && "h-[300px] lg:h-[600px]",
         )}
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
@@ -196,12 +194,14 @@ export function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
                     <div
                       className={`max-w-[80%] rounded-2xl px-4 py-3 ${
                         message.role === "user"
-                          ? "bg-primary text-white"
+                          ? "bg-primary text-white dark:text-black"
                           : "bg-gray-100 text-gray-800"
                       }`}
                     >
                       <div className="whitespace-pre-wrap text-sm">
-                        <ReactMarkdown className="prose">{message.content}</ReactMarkdown>
+                        <ReactMarkdown className="prose">
+                          {message.content}
+                        </ReactMarkdown>
                       </div>
                     </div>
                     {message.images && message.images.length > 0 && (

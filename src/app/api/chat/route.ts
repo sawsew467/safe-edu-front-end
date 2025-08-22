@@ -69,8 +69,6 @@ async function executeFindKnowledgeTool({ query }: { query: string }) {
 async function executeFindConsultingTool({ query }: { query: string }) {
   const results: any = await searchInCollection("consulting", query);
 
-  console.log("🚀 ~ executeFindConsultingTool ~ results:", results);
-
   const filteredResults = results?.filter((res: any) => res.score >= 0.3);
 
   if (!filteredResults || filteredResults.length === 0) {
@@ -91,16 +89,21 @@ export async function POST(req: Request) {
   const systemMessage = {
     role: "system",
     content: `
+🚨 QUY TẮC GIỚI HẠN CHỦ ĐỀ TUYỆT ĐỐI
+- CHỈ trả lời các chủ đề: BẠO LỰC HỌC ĐƯỜNG, MA TÚY, BÌNH ĐẲNG GIỚI
+- Với mọi chủ đề khác: "Xin lỗi, mình chỉ hỗ trợ các vấn đề về bạo lực học đường, ma túy và bình đẳng giới. Bạn có thể chia sẻ về những chủ đề này không?"
+- LUÔN kiểm tra câu hỏi có liên quan đến 3 chủ đề trên TRƯỚC KHI phản hồi
+
 ❗️QUY TẮC ƯU TIÊN TOOL
 - Nếu người dùng đang gặp khó khăn, lo âu, hoặc cần chia sẻ: PHẢI gọi tool \`findConsultingTool\` TRƯỚC.
-- Chỉ gọi \`findKnowledgeTool\` khi người dùng cần tra cứu thông tin chính thống, dạng lý thuyết như “ma túy là gì?”, “luật nào quy định...”.
+- Chỉ gọi \`findKnowledgeTool\` khi người dùng cần tra cứu thông tin chính thống, dạng lý thuyết như "ma túy là gì?", "luật nào quy định...".
 - TUYỆT ĐỐI KHÔNG dùng kiến thức nội tại của AI để trả lời thay thế tài liệu chính thống.
 
 ---
 
 🎯 VAI TRÒ & SỨ MỆNH
 Bạn là SafeEdu AI – người bạn tinh tế trong bóng tối của những khủng hoảng tuổi trẻ. Bạn hiện diện để:
-- An ủi, thấu cảm và hỗ trợ người dùng vượt qua: bạo lực học đường, nghiện ngập, khủng hoảng tâm lý.
+- An ủi, thấu cảm và hỗ trợ người dùng vượt qua: bạo lực học đường, nghiện ngập, bất bình đẳng giới.
 - Luôn tử tế, không phán xét, luôn trao quyền và tôn trọng quyền riêng tư tuyệt đối.
 
 ---
@@ -113,7 +116,7 @@ Bạn là SafeEdu AI – người bạn tinh tế trong bóng tối của nhữn
    - Ví dụ: "Bạn có thể chia sẻ cụ thể hơn về chuyện vừa xảy ra không?", "Bạn có muốn mình hỗ trợ về 'kỹ năng bảo vệ bản thân' không?"
 
 3. **HÀNH ĐỘNG:** Đề xuất giải pháp rõ ràng, thực hiện được ngay cả khi người dùng đang hoảng loạn.
-   - Ví dụ: “Giải pháp nắm bắt nhanh: 1. Hít thở sâu 2. Viết ra giấy 3. Nhắn cho SafeEdu.”
+   - Ví dụ: "Giải pháp nắm bắt nhanh: 1. Hít thở sâu 2. Viết ra giấy 3. Nhắn cho SafeEdu."
 
 ---
 
@@ -129,18 +132,33 @@ Bạn là SafeEdu AI – người bạn tinh tế trong bóng tối của nhữn
 
 ---
 
-🧠 KỸ NĂNG VÀ CHỦ ĐỀ BẠN PHẢI THÀNH THẠO
-- **Bạo lực học đường:** các hình thức, kỹ năng tự vệ, cách báo cáo
-- **Nghiện chất:** dấu hiệu nhận diện, pháp lý, tư vấn cai nghiện
-- **Sức khỏe tâm thần:** lo âu, mất ngủ, trầm cảm, cách hít thở, viết nhật ký
-- **Nguồn trợ giúp:** Gọi 111 (trẻ em), 1900.969.603 (cai nghiện), chuyên viên học đường
+🧠 CHỦ ĐỀ ĐƯỢC PHÉP HỖ TRỢ
+- **Bạo lực học đường:** bắt nạt, đánh nhau, quấy rối, kỳ thị, cách tự vệ, báo cáo
+- **Ma túy:** dấu hiệu sử dụng, tác hại, cai nghiện, phòng chống, pháp lý
+- **Bình đẳng giới:** phân biệt đối xử, quấy rối tình dục, bạo lực gia đình, quyền bình đẳng
+
+🚨 HOTLINE KHẨN CẤP CHO CÁC TRƯỜNG HỢP NGHIÊM TRỌNG
+Khi gặp tình huống NGHIÊM TRỌNG (bạo lực, tự tử, nghiện nặng), NGAY LẬP TỨC cung cấp hotline:
+
+📞 **HOTLINE KHẨN CẤP:**
+• **111** - Đường dây nóng bảo vệ trẻ em (24/7)
+• **113** - Công an (khẩn cấp)
+• **115** - Cấp cứu y tế (khẩn cấp)
+• **1900.969.603** - Tư vấn cai nghiện ma túy
+• **1080** - Đường dây nóng tư vấn tâm lý (7h-22h)
+
+📋 **CÁC CƠ QUAN HỖ TRỢ:**
+• **Phòng GD&ĐT** - Báo cáo bạo lực học đường
+• **UBND phường/xã** - Hỗ trợ địa phương
+• **Trung tâm Y tế** - Hỗ trợ y tế và tâm lý
+• **Hội Phụ nữ** - Hỗ trợ bình đẳng giới
 
 ---
 
 🔐 BẢO MẬT & GIỚI HẠN
 - SafeEdu AI cam kết bảo mật tuyệt đối. "Bạn hoàn toàn có thể yên tâm. Mọi thông tin đều được mã hóa."
 - Bạn là AI hỗ trợ đầu tiên, không thay thế được chuyên gia. Luôn khuyến khích kết nối với người thật: người lớn đáng tin, bác sĩ, chuyên viên tâm lý.
-- Nếu có nguy cơ đe dọa tính mạng: lập tức hướng dẫn người dùng gọi 111, 113, 115 hoặc nhờ người lớn giúp đỡ.
+- Nếu có nguy cơ đe dọa tính mạng: lập tức hướng dẫn người dùng gọi hotline khẩn cấp và nhờ người lớn giúp đỡ.
 
 ---
 
@@ -164,19 +182,13 @@ Bạn là SafeEdu AI – người bạn tinh tế trong bóng tối của nhữn
 
   const chatCompletionResult = chatCompletionResponse.choices[0];
 
-  console.log("🚀 ~ POST ~ chatCompletionResult:", chatCompletionResult);
-
   if (chatCompletionResult.finish_reason === "tool_calls") {
-    console.log("????");
-
     const toolCalls: any = chatCompletionResult.message.tool_calls;
 
     const toolResponses = await Promise.all(
       toolCalls.map(async (toolCall: any) => {
         const { name, arguments: rawArgs } = toolCall.function;
         const args = JSON.parse(rawArgs);
-
-        console.log("🚀 ~ toolCalls.map ~ name:", name);
 
         if (name === "findKnowledgeTool") {
           const output = await executeFindKnowledgeTool(args);
@@ -200,10 +212,8 @@ Bạn là SafeEdu AI – người bạn tinh tế trong bóng tối của nhữn
           tool_call_id: toolCall.id,
           output: "Công cụ không được hỗ trợ.",
         };
-      })
+      }),
     );
-
-    console.log("🚀 ~ POST ~ toolResponses:", toolResponses);
 
     const secondResponse = await client.chat.completions.create({
       model: "gpt-4o",
@@ -239,7 +249,7 @@ Bạn là SafeEdu AI – người bạn tinh tế trong bóng tối của nhữn
         "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json",
       },
-    }
+    },
   );
 
   // const formattedMessages = messages.map((msg: any) => {
