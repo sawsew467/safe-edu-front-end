@@ -56,19 +56,6 @@ export async function POST(req: Request) {
         Lưu ý giữ nguyên các tiêu đề như "Điều I", "Điều II", "Mục 1", "Mục 2", ...
         Giữ lại cấu trúc Điều, Chương, Mục, 1, 2, 3, a), b), c),...
         
-        QUAN TRỌNG: Bot chỉ được tóm tắt và trả lời các vấn đề liên quan đến:
-        1. Bạo lực học đường
-        2. Ma túy 
-        3. Bình đẳng giới
-        
-        Nếu tài liệu không thuộc các chủ đề trên, hãy từ chối tóm tắt và trả lời: "Tôi chỉ hỗ trợ các vấn đề về bạo lực học đường, ma túy và bình đẳng giới."
-        
-        Đối với các vấn đề nghiêm trọng trong phạm vi hỗ trợ, không tự xử lý mà cung cấp các hotline cơ quan chức năng:
-        - Đường dây nóng Bộ GD&ĐT: 1900.969.6
-        - Tổng đài 111 (Trung tâm Bảo trợ trẻ em)
-        - Công an 113
-        - Tổng đài 1800.1567 (Phòng chống tệ nạn xã hội)
-        
         Nội dung tài liệu: ${chunk?.content}
         `,
       });
