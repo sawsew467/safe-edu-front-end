@@ -1,0 +1,29 @@
+name: Deploy to VPS - Network Setup
+
+on:
+  workflow_call:
+
+jobs:
+  network-setup:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Decode SSH key
+        run: |
+          echo "${{ secrets.VPS_SSH_KEY_BASE64 }}" | base64 -d > id_ed25519
+          chmod 600 id_ed25519
+
+      - name: Check and create Docker network
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: root
+          port: ${{ secrets.VPS_PORT }}
+          key_path: id_ed25519
+          script: |
+            echo "🔧 Checking if Docker network exists..."
+            if ! docker network inspect safe-edu-network > /dev/null 2>&1; then
+              echo "Network safe-edu-network does not exist. Creating network..."
+              docker network create safe-edu-network
+            else
+              echo "Network safe-edu-network already exists."
+            fi

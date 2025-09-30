@@ -1,0 +1,21 @@
+name: Upload Environment Variables
+
+on:
+  workflow_call:
+
+jobs:
+  upload-env:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Decode SSH key
+        run: |
+          echo "${{ secrets.VPS_SSH_KEY_BASE64 }}" | base64 -d > id_ed25519
+          chmod 600 id_ed25519
+
+      - name: Upload .env to VPS
+        run: |
+          ssh -i id_ed25519 -p ${{ secrets.VPS_PORT }} -o StrictHostKeyChecking=no root@${{ secrets.VPS_HOST }} <<EOF
+            mkdir -p /root/safe-edu-front-end
+            echo "${{ secrets.ENV_PRODUCTION }}" > /root/safe-edu-front-end/.env
+          EOF
