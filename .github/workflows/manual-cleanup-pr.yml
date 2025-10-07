@@ -1,0 +1,78 @@
+name: Manual Cleanup PR Preview
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number to cleanup'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+env:
+  BASE_PORT: 3100
+
+jobs:
+  cleanup-preview:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate PR Number
+        id: validate
+        run: |
+          PR_NUMBER="${{ github.event.inputs.pr_number }}"
+          if ! [[ "$PR_NUMBER" =~ ^[0-9]+$ ]]; then
+            echo "❌ Invalid PR number: $PR_NUMBER"
+            exit 1
+          fi
+
+          PREVIEW_PORT=$((BASE_PORT + PR_NUMBER))
+          PREVIEW_URL="safe-edu-pr-${PR_NUMBER}.safe-edu.site"
+
+          echo "pr_number=${PR_NUMBER}" >> $GITHUB_OUTPUT
+          echo "preview_port=${PREVIEW_PORT}" >> $GITHUB_OUTPUT
+          echo "preview_url=${PREVIEW_URL}" >> $GITHUB_OUTPUT
+
+          echo "🧹 Will cleanup PR #${PR_NUMBER}"
+          echo "   Port: ${PREVIEW_PORT}"
+          echo "   URL: ${PREVIEW_URL}"
+
+      - name: Decode SSH key
+        run: |
+          echo "${{ secrets.VPS_SSH_KEY_BASE64 }}" | base64 -d > id_ed25519
+          chmod 600 id_ed25519
+
+      - name: Upload Cleanup Script
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: root
+          port: ${{ secrets.VPS_PORT }}
+          key_path: id_ed25519
+          source: 'scripts/manual-cleanup-pr.sh'
+          target: '/root/safe-edu-front-end/'
+
+      - name: Run Cleanup
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: root
+          port: ${{ secrets.VPS_PORT }}
+          key_path: id_ed25519
+          script: |
+            chmod +x /root/safe-edu-front-end/scripts/manual-cleanup-pr.sh
+            /root/safe-edu-front-end/scripts/manual-cleanup-pr.sh ${{ steps.validate.outputs.pr_number }}
+
+      - name: Summary
+        run: |
+          echo "✅ Cleanup completed for PR #${{ steps.validate.outputs.pr_number }}"
+          echo ""
+          echo "**Cleaned up:**"
+          echo "- Container: safe-edu-pr-${{ steps.validate.outputs.pr_number }}"
+          echo "- Image: ghcr.io/${{ github.repository_owner }}/safe-edu-front-end:pr-${{ steps.validate.outputs.pr_number }}"
+          echo "- Nginx config: /etc/nginx/sites-*/safe-edu-pr-${{ steps.validate.outputs.pr_number }}"
+          echo "- Env file: /root/safe-edu-front-end/.env.pr-${{ steps.validate.outputs.pr_number }}"

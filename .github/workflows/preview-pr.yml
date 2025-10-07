@@ -1,0 +1,338 @@
+name: Preview PR Deployment
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main]
+
+permissions:
+  contents: read
+  packages: write
+  pull-requests: write
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/safe-edu-front-end
+  BASE_PORT: 3100
+
+jobs:
+  build-preview-image:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 120
+    outputs:
+      pr_number: ${{ steps.pr_info.outputs.pr_number }}
+      preview_port: ${{ steps.pr_info.outputs.preview_port }}
+      preview_url: ${{ steps.pr_info.outputs.preview_url }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get PR Info
+        id: pr_info
+        run: |
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          PREVIEW_PORT=$((BASE_PORT + PR_NUMBER))
+          PREVIEW_URL="safe-edu-pr-${PR_NUMBER}.safe-edu.site"
+
+          echo "pr_number=${PR_NUMBER}" >> $GITHUB_OUTPUT
+          echo "preview_port=${PREVIEW_PORT}" >> $GITHUB_OUTPUT
+          echo "preview_url=${PREVIEW_URL}" >> $GITHUB_OUTPUT
+
+          echo "📋 PR #${PR_NUMBER}"
+          echo "🔌 Port: ${PREVIEW_PORT}"
+          echo "🌐 URL: https://${PREVIEW_URL}"
+
+      - name: Extract Docker Metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=pr-${{ steps.pr_info.outputs.pr_number }}
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Push Preview Docker Image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            NEXT_PUBLIC_API_SERVER=${{ secrets.NEXT_PUBLIC_API_SERVER }}
+            NEXT_PUBLIC_BASE_URL=https://${{ steps.pr_info.outputs.preview_url }}
+            NEXT_PUBLIC_DSN_SENTRY=${{ secrets.NEXT_PUBLIC_DSN_SENTRY }}
+            NEXT_PUBLIC_DOMAIN_IMAGE=${{ secrets.NEXT_PUBLIC_DOMAIN_IMAGE }}
+            NEXT_PUBLIC_ASSETS_URL=${{ secrets.NEXT_PUBLIC_ASSETS_URL }}
+            NEXT_PUBLIC_FIREBASE_KEY_PAIR=${{ secrets.NEXT_PUBLIC_FIREBASE_KEY_PAIR }}
+            NEXT_PUBLIC_FIREBASE_API_KEY=${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }}
+            NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=${{ secrets.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN }}
+            NEXT_PUBLIC_FIREBASE_PROJECT_ID=${{ secrets.NEXT_PUBLIC_FIREBASE_PROJECT_ID }}
+            NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=${{ secrets.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET }}
+            NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=${{ secrets.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID }}
+            NEXT_PUBLIC_FIREBASE_APP_ID=${{ secrets.NEXT_PUBLIC_FIREBASE_APP_ID }}
+            NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=${{ secrets.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID }}
+            OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+
+  deploy-preview:
+    needs: build-preview-image
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Decode SSH key
+        run: |
+          echo "${{ secrets.VPS_SSH_KEY_BASE64 }}" | base64 -d > id_ed25519
+          chmod 600 id_ed25519
+
+      - name: Login to GHCR on VPS
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: root
+          port: ${{ secrets.VPS_PORT }}
+          key_path: id_ed25519
+          script: |
+            echo "🔐 Logging in to GHCR..."
+            echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
+
+      - name: Pull Preview Image
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: root
+          port: ${{ secrets.VPS_PORT }}
+          key_path: id_ed25519
+          script: |
+            echo "📦 Pulling preview image..."
+            docker pull ghcr.io/${{ github.repository_owner }}/safe-edu-front-end:pr-${{ needs.build-preview-image.outputs.pr_number }}
+
+      - name: Setup Docker Network
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: root
+          port: ${{ secrets.VPS_PORT }}
+          key_path: id_ed25519
+          script: |
+            if ! docker network inspect safe-edu-network > /dev/null 2>&1; then
+              echo "Creating network..."
+              docker network create safe-edu-network
+            fi
+
+      - name: Stop Old Preview Container
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: root
+          port: ${{ secrets.VPS_PORT }}
+          key_path: id_ed25519
+          script: |
+            echo "🛑 Stopping old preview container if exists..."
+            docker stop safe-edu-pr-${{ needs.build-preview-image.outputs.pr_number }} || true
+            docker rm safe-edu-pr-${{ needs.build-preview-image.outputs.pr_number }} || true
+
+      - name: Upload Nginx Configuration Script
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: root
+          port: ${{ secrets.VPS_PORT }}
+          key_path: id_ed25519
+          source: 'scripts/setup-nginx-preview.sh'
+          target: '/root/safe-edu-front-end/'
+
+      - name: Create Preview Environment File
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: root
+          port: ${{ secrets.VPS_PORT }}
+          key_path: id_ed25519
+          script: |
+            echo "📝 Creating preview environment file..."
+
+            # Copy production env file
+            cp /root/safe-edu-front-end/.env /root/safe-edu-front-end/.env.pr-${{ needs.build-preview-image.outputs.pr_number }}
+
+            # Override NEXT_PUBLIC_BASE_URL for this PR
+            sed -i "s|NEXT_PUBLIC_BASE_URL=.*|NEXT_PUBLIC_BASE_URL=https://${{ needs.build-preview-image.outputs.preview_url }}|g" \
+              /root/safe-edu-front-end/.env.pr-${{ needs.build-preview-image.outputs.pr_number }}
+
+      - name: Start Preview Container
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: root
+          port: ${{ secrets.VPS_PORT }}
+          key_path: id_ed25519
+          script: |
+            echo "🚀 Starting preview container for PR #${{ needs.build-preview-image.outputs.pr_number }}..."
+
+            docker run -d \
+              --name safe-edu-pr-${{ needs.build-preview-image.outputs.pr_number }} \
+              --env-file /root/safe-edu-front-end/.env.pr-${{ needs.build-preview-image.outputs.pr_number }} \
+              --network safe-edu-network \
+              --health-cmd="curl -f http://localhost:3002 || exit 1" \
+              --health-interval=10s \
+              --health-timeout=5s \
+              --health-retries=3 \
+              -p ${{ needs.build-preview-image.outputs.preview_port }}:3002 \
+              ghcr.io/${{ github.repository_owner }}/safe-edu-front-end:pr-${{ needs.build-preview-image.outputs.pr_number }}
+
+            echo "⏳ Waiting for container to be ready..."
+            sleep 15
+
+            attempts=0
+            max_attempts=60
+
+            # Wait for container to be healthy and logs show ready
+            until docker logs safe-edu-pr-${{ needs.build-preview-image.outputs.pr_number }} 2>&1 | grep -q "Ready in\|Local:"; do
+              # Check if container is still running
+              if ! docker ps -q -f name=safe-edu-pr-${{ needs.build-preview-image.outputs.pr_number }} | grep -q .; then
+                echo "❌ Container has stopped unexpectedly"
+                docker logs safe-edu-pr-${{ needs.build-preview-image.outputs.pr_number }} --tail 100
+                exit 1
+              fi
+
+              if [ "$attempts" -ge "$max_attempts" ]; then
+                echo "❌ Container failed to start within timeout"
+                docker logs safe-edu-pr-${{ needs.build-preview-image.outputs.pr_number }} --tail 100
+                exit 1
+              fi
+
+              echo "⏳ Still waiting... ($((attempts + 1))/$max_attempts)"
+              attempts=$((attempts + 1))
+              sleep 10
+            done
+
+            echo "✅ Preview container is ready!"
+            echo "📊 Container status:"
+            docker ps -f name=safe-edu-pr-${{ needs.build-preview-image.outputs.pr_number }}
+
+      - name: Cleanup Old Nginx Config
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: root
+          port: ${{ secrets.VPS_PORT }}
+          key_path: id_ed25519
+          script: |
+            echo "🧹 Cleaning up old Nginx config for PR #${{ needs.build-preview-image.outputs.pr_number }}..."
+
+            # Remove old config files for this PR
+            rm -f /etc/nginx/sites-available/safe-edu-pr-${{ needs.build-preview-image.outputs.pr_number }}
+            rm -f /etc/nginx/sites-enabled/safe-edu-pr-${{ needs.build-preview-image.outputs.pr_number }}
+
+            # Test nginx config and clean up broken configs from other PRs if needed
+            if ! nginx -t 2>&1; then
+              echo "⚠️  Nginx config has errors, checking for broken PR configs..."
+
+              # Find all PR config files
+              for config in /etc/nginx/sites-enabled/safe-edu-pr-*; do
+                if [ -f "$config" ]; then
+                  # Temporarily disable this config and test
+                  rm -f "$config"
+
+                  if nginx -t 2>/dev/null; then
+                    echo "🗑️  Removed broken config: $(basename $config)"
+                  else
+                    # Re-enable if it wasn't the problem
+                    ln -sf "/etc/nginx/sites-available/$(basename $config)" "$config" 2>/dev/null || true
+                  fi
+                fi
+              done
+
+              # Final test
+              if nginx -t 2>/dev/null; then
+                systemctl reload nginx && echo "✅ Nginx cleaned and reloaded"
+              else
+                echo "⚠️  Some nginx errors remain, will try with new config"
+              fi
+            else
+              systemctl reload nginx && echo "✅ Nginx reloaded after cleanup"
+            fi
+
+            echo "✅ Cleanup complete"
+
+      - name: Configure Nginx for Preview
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: root
+          port: ${{ secrets.VPS_PORT }}
+          key_path: id_ed25519
+          script: |
+            PR_NUMBER="${{ needs.build-preview-image.outputs.pr_number }}"
+            PREVIEW_PORT="${{ needs.build-preview-image.outputs.preview_port }}"
+            PREVIEW_URL="safe-edu-pr-${PR_NUMBER}.safe-edu.site"
+
+            echo "🔧 Configuring Nginx for PR #${PR_NUMBER}"
+            echo "   Port: ${PREVIEW_PORT}"
+            echo "   URL: ${PREVIEW_URL}"
+
+            chmod +x /root/safe-edu-front-end/scripts/setup-nginx-preview.sh
+            /root/safe-edu-front-end/scripts/setup-nginx-preview.sh "${PR_NUMBER}" "${PREVIEW_PORT}" "${PREVIEW_URL}"
+
+  comment-preview-url:
+    needs: [build-preview-image, deploy-preview]
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Comment PR with Preview URL
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = ${{ needs.build-preview-image.outputs.pr_number }};
+            const previewPort = '${{ needs.build-preview-image.outputs.preview_port }}';
+            const previewUrl = `safe-edu-pr-${prNumber}.safe-edu.site`;
+
+            const body = `## 🚀 Preview Deployment Ready!
+
+            Your PR has been deployed to a preview environment:
+
+            - **Preview URL**: http://${previewUrl}
+            - **Port**: ${previewPort}
+            - **Container**: \`safe-edu-pr-${prNumber}\`
+
+            This preview will be automatically removed when the PR is closed or merged.
+
+            ---
+            🤖 *Deployed by GitHub Actions*`;
+
+            // Check if comment already exists
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+            });
+
+            const existingComment = comments.data.find(
+              comment => comment.body.includes('🚀 Preview Deployment Ready!')
+            );
+
+            if (existingComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existingComment.id,
+                body: body,
+              });
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: body,
+              });
+            }
