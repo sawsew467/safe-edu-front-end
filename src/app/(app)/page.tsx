@@ -121,7 +121,7 @@ async function AppPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <div>
               <h1 className="text-4xl md:text-6xl font-bold mb-4 text-primary uppercase">
-                Nâng cao nhận thức xã hội
+                Nâng cao nhận thức xã hội 🤡
               </h1>
               <p className="text-xl mb-8 text-black dark:text-white">
                 Tài nguyên giáo dục về phòng chống ma túy, bạo lực học đường và
