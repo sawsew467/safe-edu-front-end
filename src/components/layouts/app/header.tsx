@@ -47,6 +47,12 @@ async function AppHeader() {
           >
             Cuộc thi
           </Link>
+          <Link
+            className="text-sm font-medium hover:text-[#8BC34A]"
+            href="/phan-anh"
+          >
+            Phản ánh
+          </Link>
         </nav>
         <div className="flex items-center gap-4">
           <ThemeSwitcher />

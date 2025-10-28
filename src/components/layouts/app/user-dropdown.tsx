@@ -38,6 +38,9 @@ function UserDropdown() {
   const handleGetProfile = () => {
     router.push(`/trang-ca-nhan/${user?.username}`);
   };
+  const handleGetMyReport = () => {
+    router.push(`/phan-anh-cua-toi`);
+  };
   const handleSignOut = () => {
     deleteAllClientCookie();
 
@@ -93,6 +96,11 @@ function UserDropdown() {
         <DropdownMenuItem>
           <button className="w-full text-left" onClick={handleGetProfile}>
             Trang cá nhân
+          </button>
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <button className="w-full text-left" onClick={handleGetMyReport}>
+            Phản ánh của tôi
           </button>
         </DropdownMenuItem>
         <DropdownMenuItem>
