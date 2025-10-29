@@ -42,11 +42,6 @@ export function RequireLoginModal({
     router.push("/dang-ky");
   };
 
-  const handleSkip = () => {
-    onOpenChange(false);
-    onSkip?.();
-  };
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
@@ -84,35 +79,14 @@ export function RequireLoginModal({
           <Button className="w-full" type="button" onClick={handleLogin}>
             Đăng nhập
           </Button>
-          {showSkip ? (
-            <div className="flex gap-2 w-full">
-              <Button
-                className="flex-1"
-                type="button"
-                variant="outline"
-                onClick={handleSkip}
-              >
-                Tiếp tục không đăng nhập
-              </Button>
-              <Button
-                className="flex-1"
-                type="button"
-                variant="secondary"
-                onClick={handleRegister}
-              >
-                Đăng ký
-              </Button>
-            </div>
-          ) : (
-            <Button
-              className="w-full"
-              type="button"
-              variant="secondary"
-              onClick={handleRegister}
-            >
-              Chưa có tài khoản? Đăng ký ngay
-            </Button>
-          )}
+          <Button
+            className="w-full m-0"
+            type="button"
+            variant="secondary"
+            onClick={handleRegister}
+          >
+            Chưa có tài khoản? Đăng ký ngay
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
