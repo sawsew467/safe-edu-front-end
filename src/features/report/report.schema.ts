@@ -20,9 +20,7 @@ export const reportSchema = z.object({
     .min(1, "Chọn ít nhất một nguồn thông tin"),
   information_reliability: z.string().optional(),
   additional_details: z.string().optional(),
-  contact_option: z.boolean().optional(),
-  contact_info: z.string().optional(),
-  external_contact_info: z.string().optional(),
+  contact_infor: z.string().optional(),
   organizationId: z.string().min(1, "Vui lòng chọn trường học"),
 });
 

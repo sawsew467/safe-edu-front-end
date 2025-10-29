@@ -22,6 +22,7 @@ import {
   EmergencyContact,
 } from "../emergency-contact.api";
 import { EMERGENCY_CONTACT_ROLES } from "../emergency-contact.data";
+import { translateEmergencyRole } from "../lib/translation-utils";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -103,14 +104,19 @@ export function EmergencyContactManager({
 
   const handleSubmit = async () => {
     try {
+      const data = {
+        ...formData,
+        ...(isGlobal ? {} : { role: formData?.name }),
+      };
+
       if (editingContact) {
         await updateContact({
           id: editingContact?._id,
-          data: formData,
+          data,
         }).unwrap();
         toast.success("Cập nhật liên hệ thành công");
       } else {
-        await createContact(formData).unwrap();
+        await createContact(data).unwrap();
         toast.success("Thêm liên hệ thành công");
       }
       setShowAddDialog(false);
@@ -138,7 +144,11 @@ export function EmergencyContactManager({
         header: isGlobal ? "Cơ quan/Đơn vị" : "Chức vụ",
         cell: ({ row }) => (
           <div className="flex items-center gap-2">
-            <span className="font-medium">{row.original.name}</span>
+            <span className="font-medium">
+              {isGlobal
+                ? row.original.name
+                : translateEmergencyRole(row.original.name)}
+            </span>
           </div>
         ),
         meta: {
@@ -169,27 +179,6 @@ export function EmergencyContactManager({
         ),
         meta: {
           filterVariant: "search",
-        },
-      },
-      {
-        accessorKey: "organizationId",
-        header: "Phạm vi",
-        cell: ({ row }) =>
-          !row.original.organizationId ? (
-            <Badge variant="secondary">Toàn Quốc</Badge>
-          ) : (
-            <Badge variant="outline">Trường</Badge>
-          ),
-        meta: {
-          filterVariant: "select",
-        },
-        filterFn: (row, id, value) => {
-          // Convert organizationId to display value for filtering
-          const scope = !row.original.organizationId
-            ? "global"
-            : "organization";
-
-          return value.includes(scope);
         },
       },
       {

@@ -81,7 +81,7 @@ export function ReportDetail({ report }: ReportDetailProps) {
   };
 
   return (
-    <div className="container mx-auto space-y-6">
+    <div className="space-y-6">
       {/* Header */}
       <motion.div
         animate={{ opacity: 1, y: 0 }}
@@ -359,19 +359,16 @@ export function ReportDetail({ report }: ReportDetailProps) {
           )}
 
           {/* Contact Information */}
-          {report?.contactOption && (
+          {report?.contactInfo && (
             <Card>
               <CardHeader>
                 <CardTitle>Thông tin liên hệ</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm">
-                  {report?.contactInfo
-                    ? `Liên hệ qua: ${report?.contactInfo}`
-                    : report?.externalContactInfo
-                      ? `Email/Mã người dùng: ${report?.externalContactInfo}`
-                      : "Người báo cáo muốn được liên hệ bí mật"}
+                <p className="text-sm text-muted-foreground mb-1">
+                  Số điện thoại / Email
                 </p>
+                <p className="font-medium">{report?.contactInfo}</p>
               </CardContent>
             </Card>
           )}

@@ -66,7 +66,7 @@ export function MyReportDetail({ reportId }: MyReportDetailProps) {
 
   if (error && !isFetching) {
     return (
-      <div className="container mx-auto py-8">
+      <div className="py-8">
         <Card className="border-destructive">
           <CardContent className="flex items-center gap-3 py-6">
             <AlertCircle className="h-5 w-5 text-destructive" />
@@ -388,19 +388,16 @@ export function MyReportDetail({ reportId }: MyReportDetailProps) {
           />
 
           {/* Contact Information */}
-          {report?.contactOption && (
+          {report?.contactInfo && (
             <Card>
               <CardHeader>
                 <CardTitle>Thông tin liên hệ</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm">
-                  {report?.contactInfo
-                    ? `Liên hệ qua: ${report?.contactInfo}`
-                    : report?.externalContactInfo
-                      ? `Email/Mã người dùng: ${report?.externalContactInfo}`
-                      : "Bạn đã chọn muốn được liên hệ bí mật"}
+                <p className="text-sm text-muted-foreground mb-1">
+                  Số điện thoại / Email
                 </p>
+                <p className="font-medium">{report?.contactInfo}</p>
               </CardContent>
             </Card>
           )}

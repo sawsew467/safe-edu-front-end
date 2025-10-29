@@ -1,14 +1,10 @@
-import {
-  Card,
-  CardContent,
-  CardHeader,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function ReportDetailSkeleton() {
   return (
-    <div className="container mx-auto space-y-6">
+    <div className="space-y-6">
       {/* Header */}
       <div>
         <Skeleton className="h-10 w-32 mb-4" />

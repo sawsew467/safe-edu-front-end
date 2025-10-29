@@ -23,7 +23,7 @@ export interface ReportFormData {
   information_sources: string[];
   information_reliability: string;
   contact_option: boolean;
-  contact_info?: string;
+  contact_infor?: string;
   school_id: string;
 }
 
@@ -76,9 +76,7 @@ export interface Report {
   informationSources: string[];
   informationReliability?: string;
   additionalDetails?: string;
-  contactOption: boolean;
   contactInfo?: string;
-  externalContactInfo?: string;
   organizationId: string | Organization;
   alertLevel: number;
   hasEvidence: boolean;

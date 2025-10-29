@@ -25,7 +25,6 @@ import {
   CURRENT_SITUATION_OPTIONS,
   INFORMATION_SOURCES,
   RELIABILITY_OPTIONS,
-  CONTACT_PREFERENCES,
 } from "../report.data";
 import { ReportFormSchema, reportSchema } from "../report.schema";
 import { useCreateReportMutation } from "../report.user.api";
@@ -71,25 +70,9 @@ import { useAppSelector } from "@/hooks/redux-toolkit";
 
 export function ReportForm() {
   const { access_token } = useAppSelector((state) => state.auth);
-  const reportSchemaWithRefine = reportSchema.refine(
-    (data) => {
-      if (data.contact_option && data.contact_info === "external_email") {
-        return Boolean(
-          data.external_contact_info &&
-            data.external_contact_info.trim().length > 0,
-        );
-      }
-
-      return true;
-    },
-    {
-      message: "Vui lòng cung cấp thông tin liên hệ khi chọn tùy chọn liên hệ",
-      path: ["external_contact_info"],
-    },
-  );
 
   const form = useForm<ReportFormSchema>({
-    resolver: zodResolver(reportSchemaWithRefine),
+    resolver: zodResolver(reportSchema),
     defaultValues: {
       gender: "Male",
       relationship_to_victim: "Same class",
@@ -100,7 +83,7 @@ export function ReportForm() {
       current_situation: "Ended",
       information_sources: [],
       information_reliability: "Certain",
-      contact_option: false,
+      contact_infor: "",
       class_grade: "",
       organizationId: "",
     },
@@ -130,7 +113,6 @@ export function ReportForm() {
   const watched = watch();
   const watchedImpact = watched.impact_level;
   const watchedSituation = watched.current_situation;
-  const watchedContactInfo = watched.contact_info;
 
   useEffect(() => {
     if (!hasCheckedAuth && !isFetchingUser) {
@@ -149,16 +131,6 @@ export function ReportForm() {
   }, []);
 
   useEffect(() => {
-    if (!watched.contact_option) return;
-
-    if (user) {
-      setValue("contact_info", "");
-    } else {
-      setValue("contact_info", "external_email");
-    }
-  }, [user, watched.contact_option]);
-
-  useEffect(() => {
     if (watchedImpact && watchedSituation) {
       const level = calculateAlertLevel(
         watchedImpact,
@@ -171,7 +143,7 @@ export function ReportForm() {
   }, [watchedImpact, watchedSituation, evidenceFiles.length]);
 
   const updateFormData = (
-    field: keyof z.infer<typeof reportSchemaWithRefine>,
+    field: keyof z.infer<typeof reportSchema>,
     value: any,
   ) => {
     setValue(field as any, value);
@@ -201,9 +173,7 @@ export function ReportForm() {
         information_sources: payloadValues.information_sources,
         information_reliability: payloadValues.information_reliability,
         additional_details: payloadValues.additional_details,
-        contact_option: payloadValues.contact_option,
-        contact_info: payloadValues.contact_info,
-        external_contact_info: payloadValues.external_contact_info,
+        contact_infor: payloadValues.contact_infor,
         organizationId: payloadValues.organizationId,
         has_evidence: evidenceFiles.length > 0,
         alert_level: alertLevel,
@@ -653,6 +623,27 @@ export function ReportForm() {
                 </div>
 
                 <div className="space-y-2">
+                  <Label
+                    className="text-gray-700 dark:text-gray-100"
+                    htmlFor="contact_infor"
+                  >
+                    Thông tin liên hệ (tùy chọn)
+                  </Label>
+                  <p className="text-xs text-muted-foreground mb-2">
+                    Nhập số điện thoại hoặc email của bạn nếu muốn nhà trường
+                    liên hệ để trao đổi thêm. Thông tin sẽ được giữ bí mật.
+                  </p>
+                  <Input
+                    id="contact_infor"
+                    placeholder="VD: 0912345678 hoặc example@email.com"
+                    value={watched.contact_infor || ""}
+                    onChange={(e) =>
+                      updateFormData("contact_infor", e.target.value)
+                    }
+                  />
+                </div>
+
+                <div className="space-y-2">
                   <Label className="text-gray-700 dark:text-gray-100">
                     Bằng chứng (tùy chọn)
                   </Label>
@@ -682,109 +673,6 @@ export function ReportForm() {
                       updateFormData("additional_details", e.target.value)
                     }
                   />
-                </div>
-
-                <div className="space-y-3">
-                  <Label className="text-gray-700 dark:text-gray-100">
-                    Thông tin hỗ trợ
-                  </Label>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      checked={watched.contact_option}
-                      id="contact-option"
-                      onCheckedChange={(checked) =>
-                        updateFormData("contact_option", checked === true)
-                      }
-                    />
-                    <Label
-                      className="font-normal cursor-pointer text-gray-800 dark:text-gray-200"
-                      htmlFor="contact-option"
-                    >
-                      Tôi muốn Nhà trường giữ liên hệ bí mật để xác minh thêm
-                    </Label>
-                  </div>
-                  {watched.contact_option && (
-                    <FormField
-                      control={control}
-                      name="contact_info"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <motion.div
-                              animate={{ opacity: 1, height: "auto" }}
-                              initial={{ opacity: 0, height: 0 }}
-                            >
-                              {user ? (
-                                <RadioGroup
-                                  value={field.value}
-                                  onValueChange={field.onChange}
-                                >
-                                  <div className="flex flex-col gap-2">
-                                    {CONTACT_PREFERENCES.map((option) => (
-                                      <div
-                                        key={option.value}
-                                        className="flex items-center space-x-2"
-                                      >
-                                        <RadioGroupItem
-                                          id={`reliability-${option.value}`}
-                                          value={option.value}
-                                        />
-                                        <Label
-                                          className="font-normal cursor-pointer"
-                                          htmlFor={`reliability-${option.value}`}
-                                        >
-                                          {option.label}
-                                        </Label>
-                                      </div>
-                                    ))}
-                                    {watchedContactInfo ===
-                                      "external_email" && (
-                                      <FormField
-                                        control={control}
-                                        name="external_contact_info"
-                                        render={({ field }) => (
-                                          <FormItem>
-                                            <FormControl>
-                                              <Input
-                                                className="mt-2"
-                                                placeholder="Email của bạn"
-                                                value={field.value || ""}
-                                                onChange={field.onChange}
-                                              />
-                                            </FormControl>
-                                            <FormMessage className="text-red-500 text-sm" />
-                                          </FormItem>
-                                        )}
-                                      />
-                                    )}
-                                  </div>
-                                </RadioGroup>
-                              ) : (
-                                <FormField
-                                  control={control}
-                                  name="external_contact_info"
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormControl>
-                                        <Input
-                                          className="mt-2"
-                                          placeholder="Email của bạn"
-                                          value={field.value || ""}
-                                          onChange={field.onChange}
-                                        />
-                                      </FormControl>
-                                      <FormMessage className="text-red-500 text-sm" />
-                                    </FormItem>
-                                  )}
-                                />
-                              )}
-                            </motion.div>
-                          </FormControl>
-                          <FormMessage className="text-red-500 text-sm" />
-                        </FormItem>
-                      )}
-                    />
-                  )}
                 </div>
 
                 <div className="pt-4 border-t">

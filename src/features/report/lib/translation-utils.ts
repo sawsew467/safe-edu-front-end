@@ -9,6 +9,7 @@ import {
   CURRENT_SITUATION_OPTIONS,
   RELIABILITY_OPTIONS,
 } from "../report.data";
+import { EMERGENCY_CONTACT_ROLES } from "../emergency-contact.data";
 
 /**
  * Tạo map từ value (tiếng Anh) sang label (tiếng Việt)
@@ -35,6 +36,7 @@ const timeMap = createTranslationMap(TIME_OPTIONS);
 const impactLevelMap = createTranslationMap(IMPACT_LEVEL_OPTIONS);
 const currentSituationMap = createTranslationMap(CURRENT_SITUATION_OPTIONS);
 const reliabilityMap = createTranslationMap(RELIABILITY_OPTIONS);
+const emergencyRolesMap = createTranslationMap(EMERGENCY_CONTACT_ROLES);
 
 /**
  * Map hình thức bạo lực từ tiếng Anh sang tiếng Việt
@@ -97,6 +99,13 @@ export const translateCurrentSituation = (value: string): string => {
  */
 export const translateReliability = (value: string): string => {
   return reliabilityMap.get(value) || value;
+};
+
+/**
+ * Map chức vụ liên hệ khẩn cấp từ tiếng Anh sang tiếng Việt
+ */
+export const translateEmergencyRole = (value: string): string => {
+  return emergencyRolesMap.get(value) || value;
 };
 
 /**
