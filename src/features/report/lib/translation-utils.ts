@@ -110,6 +110,7 @@ export const translateStatus = (value: string): string => {
     Resolved: "Đã giải quyết",
     Rejected: "Đã từ chối",
     "Evidence Added": "Đã thêm bằng chứng",
+    "Update Details": "Đã cập nhật mô tả",
   };
 
   return statusMap[value] || value;

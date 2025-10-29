@@ -8,7 +8,6 @@ import {
   Loader2,
   Phone,
   Mail,
-  User,
   Globe,
   Building2,
 } from "lucide-react";
@@ -139,10 +138,12 @@ export function EmergencyContactManager({
         header: isGlobal ? "Cơ quan/Đơn vị" : "Chức vụ",
         cell: ({ row }) => (
           <div className="flex items-center gap-2">
-            <User className="h-4 w-4 text-muted-foreground" />
             <span className="font-medium">{row.original.name}</span>
           </div>
         ),
+        meta: {
+          filterVariant: "select",
+        },
       },
       {
         accessorKey: "phoneNumber",
@@ -153,6 +154,9 @@ export function EmergencyContactManager({
             <span>{row.original.phoneNumber}</span>
           </div>
         ),
+        meta: {
+          filterVariant: "search",
+        },
       },
       {
         accessorKey: "email",
@@ -163,16 +167,30 @@ export function EmergencyContactManager({
             <span>{row.original.email}</span>
           </div>
         ),
+        meta: {
+          filterVariant: "search",
+        },
       },
       {
         accessorKey: "organizationId",
         header: "Phạm vi",
         cell: ({ row }) =>
           !row.original.organizationId ? (
-            <Badge variant="secondary">Global</Badge>
+            <Badge variant="secondary">Toàn Quốc</Badge>
           ) : (
             <Badge variant="outline">Trường</Badge>
           ),
+        meta: {
+          filterVariant: "select",
+        },
+        filterFn: (row, id, value) => {
+          // Convert organizationId to display value for filtering
+          const scope = !row.original.organizationId
+            ? "global"
+            : "organization";
+
+          return value.includes(scope);
+        },
       },
       {
         id: "actions",

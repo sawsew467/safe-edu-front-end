@@ -1,13 +1,17 @@
 import React from "react";
 
+import UserProvider from "./provider";
+
 import AppLayout from "@/components/layouts/app/app-layout";
-import { ChatButton } from "@/features/chatbot/components/chat-button";
+import { ChatButton } from "@/features/chatbot";
 function AppRootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <AppLayout>
-      {children}
-      <ChatButton />
-    </AppLayout>
+    <UserProvider>
+      <AppLayout>
+        {children}
+        <ChatButton />
+      </AppLayout>
+    </UserProvider>
   );
 }
 

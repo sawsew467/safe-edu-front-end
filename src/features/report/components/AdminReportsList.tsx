@@ -9,11 +9,13 @@ import { useGetAllReportsQuery } from "../report.admin.api";
 import { Report } from "../report.type";
 import { VIOLENCE_TYPES } from "../report.data";
 import { getAlertInfo } from "../lib/alert-logic";
+import { getVietnameseStatus, getStatusConfig } from "../constants/status";
 
 import { AlertIcon } from "./AlertIcon";
 
 import CardList from "@/components/ui/data-card";
 import { Badge } from "@/components/ui/badge";
+import { filterDateRange } from "@/utils/table";
 
 const getAlertLevelBadge = (level: number) => {
   const alertInfo = getAlertInfo(level as 1 | 2 | 3 | 4);
@@ -36,22 +38,7 @@ const getAlertLevelBadge = (level: number) => {
 };
 
 const getStatusBadge = (status: string) => {
-  const configs: Record<
-    string,
-    {
-      label: string;
-      variant: "default" | "secondary" | "destructive" | "outline";
-    }
-  > = {
-    Pending: { label: "Đang chờ xử lý", variant: "secondary" },
-    "In Progress": { label: "Đang xử lý", variant: "default" },
-    Resolved: { label: "Đã giải quyết", variant: "outline" },
-    Rejected: { label: "Đã từ chối", variant: "destructive" },
-  };
-  const config = configs[status] || {
-    label: status,
-    variant: "outline" as const,
-  };
+  const config = getStatusConfig(status);
 
   return <Badge variant={config.variant}>{config.label}</Badge>;
 };
@@ -116,10 +103,16 @@ export function AdminReportsList() {
         accessorKey: "victimName",
         header: "Nạn nhân",
         cell: ({ row }) => row?.original?.victimName || "Không tiết lộ",
+        meta: {
+          filterVariant: "search",
+        },
       },
       {
         accessorKey: "classGrade",
         header: "Lớp",
+        meta: {
+          filterVariant: "select",
+        },
       },
       {
         accessorKey: "violenceTypes",
@@ -131,29 +124,69 @@ export function AdminReportsList() {
             ))}
           </div>
         ),
+        meta: {
+          filterVariant: "select",
+        },
+        filterFn: (row, id, value) => {
+          const violenceTypes = row.original.violenceTypes || [];
+
+          return value.some((filterValue: string) =>
+            violenceTypes.includes(filterValue),
+          );
+        },
       },
       {
         accessorKey: "alertLevel",
         header: "Mức độ",
         cell: ({ row }) => getAlertLevelBadge(row?.original?.alertLevel),
+        accessorFn: (row) => {
+          const alertInfo = getAlertInfo(row.alertLevel as 1 | 2 | 3 | 4);
+
+          return alertInfo?.name || "";
+        },
+        meta: {
+          filterVariant: "select",
+        },
+        filterFn: (row, id, value) => {
+          const alertInfo = getAlertInfo(
+            row.original.alertLevel as 1 | 2 | 3 | 4,
+          );
+
+          return alertInfo?.name === value;
+        },
       },
       {
         accessorKey: "status",
         header: "Trạng thái",
         cell: ({ row }) => getStatusBadge(row?.original?.status),
+        accessorFn: (row) => {
+          return getVietnameseStatus(row.status);
+        },
+        meta: {
+          filterVariant: "select",
+        },
+        filterFn: (row, id, value) => {
+          const statusInVietnamese = getVietnameseStatus(row.original.status);
+
+          return statusInVietnamese === value;
+        },
       },
       {
         accessorKey: "created_at",
         header: "Ngày tạo",
         cell: ({ row }) =>
           new Date(row?.original?.created_at).toLocaleDateString("vi-VN"),
+        meta: {
+          filterVariant: "dateRange",
+        },
+        filterFn: filterDateRange,
       },
     ],
     [],
   );
 
   return (
-    <div className="container mx-auto py-8 space-y-6">
+    <div className="mx-auto space-y-6">
       {/* Header */}
       <motion.div
         animate={{ opacity: 1, y: 0 }}

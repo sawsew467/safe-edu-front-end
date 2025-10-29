@@ -15,17 +15,17 @@ import { Button } from "@/components/ui/button";
 
 interface EmergencyModalProps {
   open: boolean;
-  onConfirm: () => void;
-  onCancel: () => void;
+  onClose: () => void;
+  onOpenAIChat: () => void;
 }
 
 export function EmergencyModal({
   open,
-  onConfirm,
-  onCancel,
+  onClose,
+  onOpenAIChat,
 }: EmergencyModalProps) {
   return (
-    <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onCancel()}>
+    <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <DialogContent className="sm:max-w-md">
         <motion.div
           animate={{ scale: 1, opacity: 1 }}
@@ -60,15 +60,15 @@ export function EmergencyModal({
             <Button
               className="w-full sm:w-auto"
               variant="outline"
-              onClick={onCancel}
+              onClick={onClose}
             >
-              Quay lại
+              Đóng
             </Button>
             <Button
-              className="w-full sm:w-auto bg-amber-600 hover:bg-amber-700"
-              onClick={onConfirm}
+              className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700"
+              onClick={onOpenAIChat}
             >
-              Xác nhận gửi
+              Tư vấn AI khẩn cấp
             </Button>
           </DialogFooter>
         </motion.div>

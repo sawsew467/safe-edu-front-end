@@ -1,6 +1,9 @@
 export const EMERGENCY_CONTACT_ROLES = [
-  { value: "Ban giám hiệu", label: "Ban giám hiệu" },
-  { value: "Hiệu trưởng", label: "Hiệu trưởng" },
-  { value: "Phó hiệu trưởng", label: "Phó hiệu trưởng" },
-  { value: "Giáo viên", label: "Giáo viên" },
+  { value: "board-of-directors", label: "Ban giám hiệu" },
+  { value: "principal", label: "Hiệu trưởng" },
+  { value: "vice-principal", label: "Phó hiệu trưởng" },
+  {
+    value: "student-affairs-officer",
+    label: "Cán bộ công tác học sinh/sinh viên",
+  },
 ];

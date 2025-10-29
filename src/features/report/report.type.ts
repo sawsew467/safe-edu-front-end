@@ -75,6 +75,7 @@ export interface Report {
   currentSituation?: string;
   informationSources: string[];
   informationReliability?: string;
+  additionalDetails?: string;
   contactOption: boolean;
   contactInfo?: string;
   externalContactInfo?: string;

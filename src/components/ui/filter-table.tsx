@@ -174,9 +174,14 @@ const FilterItem = <TData, TValue>({
           <Label className="mb-2 block">{headerfn}</Label>
           <Select
             value={columnFilterValue?.toString()}
-            onValueChange={(e: string) =>
-              column.setFilterValue(e === "none" ? undefined : e)
-            }
+            onValueChange={(e: string) => {
+              if (e === "none") {
+                column.setFilterValue(undefined);
+              } else {
+                // For alertLevel column, we need to pass the value as string to match the filterFn
+                column.setFilterValue(e);
+              }
+            }}
           >
             <SelectTrigger>
               <SelectValue placeholder={`Chọn một trường`} />

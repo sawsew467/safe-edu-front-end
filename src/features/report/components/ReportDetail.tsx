@@ -324,6 +324,25 @@ export function ReportDetail({ report }: ReportDetailProps) {
             </CardContent>
           </Card>
 
+          {/* Additional Details */}
+          {report?.additionalDetails && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="h-5 w-5" />
+                  Mô tả chi tiết
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="bg-muted p-4 rounded-lg">
+                  <p className="text-sm whitespace-pre-wrap">
+                    {report?.additionalDetails}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           {/* Evidence */}
           {report?.hasEvidence && (
             <Card>

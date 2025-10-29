@@ -32,6 +32,7 @@ import { AlertIcon } from "./AlertIcon";
 import { StatusTimeline } from "./StatusTimeline";
 import { EvidenceViewer } from "./EvidenceViewer";
 import { AddEvidenceSection } from "./AddEvidenceSection";
+import { UpdateAdditionalDetails } from "./UpdateAdditionalDetails";
 import { ReportDetailSkeleton } from "./ReportDetailSkeleton";
 
 import {
@@ -357,6 +358,13 @@ export function MyReportDetail({ reportId }: MyReportDetailProps) {
               )}
             </CardContent>
           </Card>
+
+          {/* Additional Details - Editable */}
+          <UpdateAdditionalDetails
+            currentDetails={report?.additional_details}
+            currentStatus={report?.status}
+            reportId={reportId}
+          />
 
           {/* Evidence */}
           {report?.hasEvidence && (

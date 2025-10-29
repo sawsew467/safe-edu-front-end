@@ -7,6 +7,7 @@ import {
   XCircle,
   FilePlus,
   FileImage,
+  BookCheck,
 } from "lucide-react";
 
 import { translateStatus } from "../lib/translation-utils";
@@ -80,6 +81,7 @@ export function StatusTimeline({
       "In Progress": "bg-blue-500",
       Resolved: "bg-green-500",
       Rejected: "bg-red-500",
+      "Update Details": "bg-yellow-500",
     };
 
     return colorMap[status] || "bg-amber-500";
@@ -99,6 +101,7 @@ export function StatusTimeline({
       "In Progress": <RefreshCw className={iconClass} />,
       Resolved: <CheckCircle2 className={iconClass} />,
       Rejected: <XCircle className={iconClass} />,
+      "Update Details": <BookCheck className={iconClass} />,
     };
 
     return iconMap[status] || <FileImage className={iconClass} />;

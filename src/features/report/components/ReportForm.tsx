@@ -28,14 +28,18 @@ import {
 } from "../report.data";
 import { ReportFormSchema, reportSchema } from "../report.schema";
 import { useCreateReportMutation } from "../report.user.api";
+import { generateEmergencyPrompt } from "../lib/prompt-generator";
 
 import { EvidenceUploader } from "./EvidenceUploader";
 import { EmergencyModal } from "./EmergencyModal";
 import { SuccessModal } from "./SuccessModal";
 
 import { Button } from "@/components/ui/button";
+import { RequireLoginModal } from "@/features/auth/components/login/require-login-modal";
+import { useChat } from "@/features/chatbot";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Form,
   FormControl,
@@ -62,8 +66,10 @@ import {
 } from "@/components/ui/card";
 import SelectOrganization from "@/components/ui/selectOrganization";
 import { useGetUserQuery } from "@/features/users/api/student.api";
+import { useAppSelector } from "@/hooks/redux-toolkit";
 
 export function ReportForm() {
+  const { access_token } = useAppSelector((state) => state.auth);
   const reportSchemaWithRefine = reportSchema.refine(
     (data) => {
       if (data.contact_option && data.contact_info === "external_email") {
@@ -106,17 +112,33 @@ export function ReportForm() {
   const [showEmergencyModal, setShowEmergencyModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [createdReportId, setCreatedReportId] = useState<string>("");
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [hasCheckedAuth, setHasCheckedAuth] = useState(false);
 
   const [createReport, { isLoading: isSubmitting }] = useCreateReportMutation();
+  const { openEmergencyChat } = useChat();
 
-  const { user } = useGetUserQuery(undefined, {
-    selectFromResult: ({ data }) => ({ user: data?.data }),
+  const { user, isFetchingUser } = useGetUserQuery(undefined, {
+    selectFromResult: ({ data, isFetching }) => ({
+      user: data?.data,
+      isFetchingUser: isFetching,
+    }),
   });
 
   const watched = watch();
   const watchedImpact = watched.impact_level;
   const watchedSituation = watched.current_situation;
   const watchedContactInfo = watched.contact_info;
+
+  useEffect(() => {
+    if (!hasCheckedAuth && !isFetchingUser) {
+      setHasCheckedAuth(true);
+
+      if (!access_token && !user) {
+        setShowLoginModal(true);
+      }
+    }
+  }, [hasCheckedAuth, user, isFetchingUser, access_token]);
 
   useEffect(() => {
     if (!watched.contact_option) return;
@@ -148,12 +170,6 @@ export function ReportForm() {
   };
 
   const onSubmit = async (values: ReportFormSchema) => {
-    if (alertLevel === 4) {
-      setShowEmergencyModal(true);
-
-      return;
-    }
-
     await submitReport(values);
   };
 
@@ -176,6 +192,7 @@ export function ReportForm() {
         current_situation: payloadValues.current_situation,
         information_sources: payloadValues.information_sources,
         information_reliability: payloadValues.information_reliability,
+        additional_details: payloadValues.additional_details,
         contact_option: payloadValues.contact_option,
         contact_info: payloadValues.contact_info,
         external_contact_info: payloadValues.external_contact_info,
@@ -186,16 +203,44 @@ export function ReportForm() {
       };
 
       const result = await createReport(reportPayload).unwrap();
+      const reportData = result?.data;
 
-      setCreatedReportId(result?.data?.id);
-      setShowEmergencyModal(false);
-      setShowSuccessModal(true);
+      setCreatedReportId(reportData?.id);
+
+      // Check if the response has alertLevel 4 - show emergency modal
+      if (reportData?.alertLevel === 4) {
+        setShowEmergencyModal(true);
+      } else {
+        setShowSuccessModal(true);
+      }
     } catch (error: any) {
       toast.error(
         error?.data?.message || "Gửi báo cáo thất bại. Vui lòng thử lại.",
       );
-      setShowEmergencyModal(false);
     }
+  };
+
+  const handleOpenAIChat = () => {
+    const values = getValues();
+    const prompt = generateEmergencyPrompt({
+      violenceTypes: values.violence_types,
+      violenceOther: values.violence_other,
+      location: values.location,
+      locationOther: values.location_other,
+      impactLevel: values.impact_level,
+      currentSituation: values.current_situation,
+      classGrade: values.class_grade,
+      additionalDetails: values.additional_details,
+      alertLevel: 4,
+    });
+
+    setShowEmergencyModal(false);
+    openEmergencyChat(prompt);
+  };
+
+  const handleCloseEmergencyModal = () => {
+    setShowEmergencyModal(false);
+    setShowSuccessModal(true);
   };
 
   return (
@@ -604,12 +649,30 @@ export function ReportForm() {
                     Bằng chứng (tùy chọn)
                   </Label>
                   <p className="text-xs text-muted-foreground mb-2">
-                    Tải lên ảnh, video hoặc ảnh chụp màn hình (tối đa 10MB mỗi
-                    file)
+                    Tải lên ảnh hoặc ảnh chụp màn hình (tối đa 10MB mỗi file)
                   </p>
                   <EvidenceUploader
                     files={evidenceFiles}
                     onChange={setEvidenceFiles}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-gray-700 dark:text-gray-100">
+                    Mô tả chi tiết (tùy chọn)
+                  </Label>
+                  <p className="text-xs text-muted-foreground mb-2">
+                    Mô tả thêm về sự việc. Nếu có video bằng chứng, bạn có thể
+                    gửi link video (Google Drive, YouTube...) vào đây
+                  </p>
+                  <Textarea
+                    className="min-h-[120px]"
+                    placeholder="VD: Sự việc xảy ra vào giờ ra chơi, tôi thấy... Hoặc gửi link video bằng chứng nếu có: https://drive.google.com/..."
+                    rows={5}
+                    value={watched.additional_details || ""}
+                    onChange={(e) =>
+                      updateFormData("additional_details", e.target.value)
+                    }
                   />
                 </div>
 
@@ -745,8 +808,8 @@ export function ReportForm() {
 
       <EmergencyModal
         open={showEmergencyModal}
-        onCancel={() => setShowEmergencyModal(false)}
-        onConfirm={handleSubmit(submitReport)}
+        onClose={handleCloseEmergencyModal}
+        onOpenAIChat={handleOpenAIChat}
       />
 
       {alertLevel && (
@@ -762,6 +825,20 @@ export function ReportForm() {
           }}
         />
       )}
+
+      <RequireLoginModal
+        description="Vui lòng đăng nhập hoặc tạo tài khoản để có thể gửi báo cáo bạo lực học đường. Thông tin của bạn sẽ được bảo mật tuyệt đối."
+        open={showLoginModal}
+        showSkip={false}
+        title="Yêu cầu đăng nhập"
+        onOpenChange={(open) => {
+          // Không cho đóng modal khi chưa đăng nhập
+          if (!open && !user) {
+            return;
+          }
+          setShowLoginModal(open);
+        }}
+      />
     </>
   );
 }
