@@ -20,6 +20,8 @@ interface RequireLoginModalProps {
   description?: string;
   showSkip?: boolean;
   onSkip?: () => void;
+  showContinueWithoutLogin?: boolean;
+  onContinueWithoutLogin?: () => void;
 }
 
 export function RequireLoginModal({
@@ -28,7 +30,9 @@ export function RequireLoginModal({
   title = "Yêu cầu đăng nhập",
   description = "Bạn cần đăng nhập để sử dụng tính năng này. Đăng nhập để theo dõi báo cáo và nhận thông báo cập nhật.",
   showSkip = true,
-  onSkip,
+  onSkip: _onSkip,
+  showContinueWithoutLogin = false,
+  onContinueWithoutLogin,
 }: RequireLoginModalProps) {
   const router = useRouter();
 
@@ -40,6 +44,15 @@ export function RequireLoginModal({
   const handleRegister = () => {
     onOpenChange(false);
     router.push("/dang-ky");
+  };
+
+  const handleContinueWithoutLogin = () => {
+    onOpenChange(false);
+    if (onContinueWithoutLogin) {
+      onContinueWithoutLogin();
+    } else {
+      router.push("/");
+    }
   };
 
   return (
@@ -80,13 +93,23 @@ export function RequireLoginModal({
             Đăng nhập
           </Button>
           <Button
-            className="w-full m-0"
+            className="w-full !m-0"
             type="button"
             variant="secondary"
             onClick={handleRegister}
           >
             Chưa có tài khoản? Đăng ký ngay
           </Button>
+          {showContinueWithoutLogin && (
+            <Button
+              className="w-full !m-0"
+              type="button"
+              variant="outline"
+              onClick={handleContinueWithoutLogin}
+            >
+              Tiếp tục không đăng nhập
+            </Button>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>

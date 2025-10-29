@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import { Loader2, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 import { EvidenceFile } from "../report.type";
 import {
@@ -115,6 +116,7 @@ export function ReportForm() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [hasCheckedAuth, setHasCheckedAuth] = useState(false);
 
+  const router = useRouter();
   const [createReport, { isLoading: isSubmitting }] = useCreateReportMutation();
   const { openEmergencyChat } = useChat();
 
@@ -139,6 +141,12 @@ export function ReportForm() {
       }
     }
   }, [hasCheckedAuth, user, isFetchingUser, access_token]);
+
+  // Reset auth check when component mounts or when returning to page
+  useEffect(() => {
+    setHasCheckedAuth(false);
+    setShowLoginModal(false);
+  }, []);
 
   useEffect(() => {
     if (!watched.contact_option) return;
@@ -829,10 +837,14 @@ export function ReportForm() {
       <RequireLoginModal
         description="Vui lòng đăng nhập hoặc tạo tài khoản để có thể gửi báo cáo bạo lực học đường. Thông tin của bạn sẽ được bảo mật tuyệt đối."
         open={showLoginModal}
+        showContinueWithoutLogin={true}
         showSkip={false}
         title="Yêu cầu đăng nhập"
+        onContinueWithoutLogin={() => {
+          setShowLoginModal(false);
+          router.push("/");
+        }}
         onOpenChange={(open) => {
-          // Không cho đóng modal khi chưa đăng nhập
           if (!open && !user) {
             return;
           }

@@ -4,6 +4,7 @@ import Image from "next/image";
 import { cookies } from "next/headers";
 
 import UserDropdown from "./user-dropdown";
+import { MobileMenu } from "./mobile-menu";
 
 import ThemeSwitcher from "@/components/layouts/dashboard/theme-switcher";
 import { Button } from "@/components/ui/button";
@@ -56,18 +57,21 @@ async function AppHeader() {
         </nav>
         <div className="flex items-center gap-4">
           <ThemeSwitcher />
-          {access_token ? (
-            <UserDropdown />
-          ) : (
-            <>
-              <Link href="/dang-nhap">
-                <Button variant="outline">Đăng nhập</Button>
-              </Link>
-              <Link href="/dang-ky">
-                <Button variant="default">Đăng ký</Button>
-              </Link>
-            </>
-          )}
+          <MobileMenu hasAuthToken={!!access_token} />
+          <div className="hidden md:flex items-center gap-4">
+            {access_token ? (
+              <UserDropdown />
+            ) : (
+              <>
+                <Link href="/dang-nhap">
+                  <Button variant="outline">Đăng nhập</Button>
+                </Link>
+                <Link href="/dang-ky">
+                  <Button variant="default">Đăng ký</Button>
+                </Link>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </header>
