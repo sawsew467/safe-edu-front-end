@@ -12,11 +12,12 @@ function AuthLayout({ children }: { children: React.ReactNode }) {
 
   const router = useRouter();
 
-  const data = useAppSelector((state) => state.auth);
+  const { current_organization } = useAppSelector((state) => state.auth);
 
   useLayoutEffect(() => {
     if (accessToken) {
-      router.replace("/quan-tri/nguoi-dung");
+      if (current_organization === null) router.replace("/quan-tri/nguoi-dung");
+      else router.replace(`/quan-tri/to-chuc/${current_organization.id}`);
     }
   }, [accessToken]);
 

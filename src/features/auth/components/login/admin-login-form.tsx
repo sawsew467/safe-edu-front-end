@@ -36,9 +36,9 @@ export function LoginForm() {
     try {
       const resFirebase: any = await signInWithPopup(
         auth,
-        provider.providerGoogle
+        provider.providerGoogle,
       );
-      
+
       const res = await signInWithGoogle({
         token: resFirebase.user.accessToken,
         avatar: resFirebase.user.photoURL,
@@ -51,10 +51,12 @@ export function LoginForm() {
       };
 
       setClientCookie(constants.USER_INFO, JSON.stringify(firebaseUser));
-      dispatch(setUserInfo({
-        ...firebaseUser,
-        displayName: res?.data?.fullName
-      }));
+      dispatch(
+        setUserInfo({
+          ...firebaseUser,
+          displayName: res?.data?.fullName,
+        }),
+      );
       dispatch(setUserRole(res?.data?.accessToken));
       dispatch(setAccessToken(res?.data?.accessToken));
       dispatch(setRefreshToken(res?.data?.refreshToken));
@@ -62,6 +64,7 @@ export function LoginForm() {
 
       if (res?.data?.role === "Manager") {
         router.push("/quan-tri/to-chuc/" + res?.data?.organizations?.[0]?.id);
+
         return;
       }
 

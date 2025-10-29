@@ -3,7 +3,9 @@
 import * as React from "react";
 import {
   ChartPie,
+  Contact,
   File,
+  Flag,
   LibraryBig,
   Newspaper,
   Pyramid,
@@ -60,6 +62,16 @@ const adminSideBarItems = [
     icon: LibraryBig,
   },
   {
+    name: "Báo Cáo Bạo lực học đường",
+    url: "/bao-cao-bao-luc",
+    icon: Flag,
+  },
+  {
+    name: "Thông tin liên lạc khẩn cấp",
+    url: "/thong-tin-lien-lac-khan-cap",
+    icon: Contact,
+  },
+  {
     name: "Tài liệu",
     url: "/tai-lieu",
     icon: File,
@@ -76,6 +88,16 @@ const managerSideBarItems = [
     name: "Cuộc thi",
     url: "/cuoc-thi",
     icon: Pyramid,
+  },
+  {
+    name: "Báo Cáo Bạo lực học đường",
+    url: "/bao-cao-bao-luc",
+    icon: Flag,
+  },
+  {
+    name: "Thông tin liên lạc khẩn cấp",
+    url: "/thong-tin-lien-lac-khan-cap",
+    icon: Contact,
   },
 ];
 
@@ -111,7 +133,7 @@ export function AppSidebar({
         <div
           className={cn(
             "flex gap-2 items-center transition-all",
-            open ? "p-2" : "p-0"
+            open ? "p-2" : "p-0",
           )}
         >
           <Image
@@ -132,7 +154,7 @@ export function AppSidebar({
                 <SidebarMenuButton
                   asChild
                   className={cn(
-                    item.url === `/${rootPath}` && "bg-sidebar-accent"
+                    item.url === `/${rootPath}` && "bg-sidebar-accent",
                   )}
                 >
                   <Link href={`/quan-tri${item.url}`}>

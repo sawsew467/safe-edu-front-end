@@ -14,7 +14,7 @@ const baseQuery = fetchBaseQuery({
   prepareHeaders: (headers, { getState }) => {
     const accessToken = getClientCookie(constants.ACCESS_TOKEN_ADMIN);
     const currentOrganizationRaw = getClientCookie(
-      constants.CURRENT_ORGANIZATION
+      constants.CURRENT_ORGANIZATION,
     );
     const currentOrganization = currentOrganizationRaw
       ? JSON.parse(currentOrganizationRaw)
@@ -36,7 +36,7 @@ const baseQuery = fetchBaseQuery({
 export const baseQueryWithReauth: typeof baseQuery = async (
   args: string | FetchArgs,
   api: BaseQueryApi,
-  extraOptions: {}
+  extraOptions: {},
 ) => {
   let result = await baseQuery(args, api, extraOptions);
 
@@ -51,7 +51,7 @@ export const baseQueryWithReauth: typeof baseQuery = async (
           Authorization: `Bearer ${refresh_token}`,
           "Content-Type": "application/json",
         },
-      }
+      },
     ).then((res) => res.json());
 
     const newAccessToken = refreshResult?.data?.access_token;
@@ -100,5 +100,7 @@ export const baseApiAdmin = createApi({
     "Picture",
     "Comment",
     "Documents",
+    "Reports",
+    "EmergencyContacts",
   ],
 });

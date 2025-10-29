@@ -87,5 +87,6 @@ export const baseApi = createApi({
     "Question",
     "Picture",
     "Comment",
+    "Reports",
   ],
 });

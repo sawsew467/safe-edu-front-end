@@ -50,41 +50,67 @@ const findConsultingTool = {
 };
 
 async function executeFindKnowledgeTool({ query }: { query: string }) {
-  const results: any = await searchInCollection("knowledge", query);
+  try {
+    const results: any = await searchInCollection("knowledge", query);
 
-  const filteredResults = results?.filter((res: any) => res.score >= 0.3);
+    // Check if search was successful and results is an array
+    if (
+      !results ||
+      !Array.isArray(results) ||
+      (results as any).success === false
+    ) {
+      return "Không có kết quả phù hợp.";
+    }
 
-  if (!filteredResults || filteredResults.length === 0) {
-    return "Không có kết quả phù hợp.";
+    const filteredResults = results.filter((res: any) => res.score >= 0.3);
+
+    if (!filteredResults || filteredResults.length === 0) {
+      return "Không có kết quả phù hợp.";
+    }
+
+    return filteredResults
+      .slice(0, 5)
+      .map((res: any) => {
+        return `📄 [${res.payload.document_name}](${res.payload.file_url})\n\nLoại tài liệu: ${res.payload.type === "OFFICIAL" ? "Chính thống" : "Tham khảo"}\n\n${res.payload.content}`;
+      })
+      .join("\n\n");
+  } catch {
+    return "Không thể tìm kiếm kiến thức lúc này. Vui lòng thử lại sau.";
   }
-
-  return filteredResults
-    .slice(0, 5)
-    .map((res: any, i: number) => {
-      return `📄 [${res.payload.document_name}](${res.payload.file_url})\n\nLoại tài liệu: ${res.payload.type === "OFFICIAL" ? "Chính thống" : "Tham khảo"}\n\n${res.payload.content}`;
-    })
-    .join("\n\n");
 }
 
 async function executeFindConsultingTool({ query }: { query: string }) {
-  const results: any = await searchInCollection("consulting", query);
+  try {
+    const results: any = await searchInCollection("consulting", query);
 
-  const filteredResults = results?.filter((res: any) => res.score >= 0.3);
+    // Check if search was successful and results is an array
+    if (
+      !results ||
+      !Array.isArray(results) ||
+      (results as any).success === false
+    ) {
+      return "Không có kết quả phù hợp.";
+    }
 
-  if (!filteredResults || filteredResults.length === 0) {
-    return "Không có kết quả phù hợp.";
+    const filteredResults = results.filter((res: any) => res.score >= 0.3);
+
+    if (!filteredResults || filteredResults.length === 0) {
+      return "Không có kết quả phù hợp.";
+    }
+
+    return filteredResults
+      .slice(0, 5)
+      .map((res: any, i: number) => {
+        return `Thông tin tham khảo ${i + 1}: ${res.payload.content}\n\n`;
+      })
+      .join("\n\n");
+  } catch {
+    return "Không thể tìm kiếm thông tin tư vấn lúc này. Vui lòng thử lại sau.";
   }
-
-  return filteredResults
-    .slice(0, 5)
-    .map((res: any, i: number) => {
-      return `Thôn tin tham khảo ${i + 1}: ${res.payload.content}\n\n`;
-    })
-    .join("\n\n");
 }
 
 export async function POST(req: Request) {
-  const { messages, images } = await req.json();
+  const { messages } = await req.json();
 
   const systemMessage = {
     role: "system",

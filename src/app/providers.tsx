@@ -7,6 +7,7 @@ import { Toaster } from "sonner";
 import { ThemeProvider } from "next-themes";
 
 import { store } from "@/redux/store";
+import { ChatProvider } from "@/features/chatbot";
 
 export interface ProvidersProps {
   children: React.ReactNode;
@@ -15,7 +16,12 @@ export interface ProvidersProps {
 export function Providers({ children }: ProvidersProps) {
   return (
     <React.Suspense>
-      <ThemeProvider enableSystem attribute="class" defaultTheme="system">
+      <ThemeProvider
+        enableSystem
+        attribute="class"
+        defaultTheme="system"
+        storageKey="color-theme"
+      >
         <AppProgressBar
           shallowRouting
           color="#75A815"
@@ -23,8 +29,10 @@ export function Providers({ children }: ProvidersProps) {
           options={{ showSpinner: false }}
         />
         <Provider store={store}>
-          <Toaster closeButton richColors position="top-right" />
-          {children}
+          <ChatProvider>
+            <Toaster closeButton richColors position="top-right" />
+            {children}
+          </ChatProvider>
         </Provider>
       </ThemeProvider>
     </React.Suspense>

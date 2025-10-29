@@ -45,36 +45,39 @@ const CompetitionsModule = () => {
   const { current_organization } = useAppSelector((state) => state.auth);
 
   const router = useRouter();
-  const { competitions, isFetching } = useGetAllCompetitionsQuery({
-    pageNumber: 1,
-    pageSize: 999,
-  }, {
-    selectFromResult: ({ data, isFetching }) => {
-      const now = new Date();
-
-      return {
-        competitions:
-          data?.data
-            ?.filter(
-              (item: Competitions) =>
-                !current_organization ||
-                item.organizationId?._id === current_organization?.id
-            )
-            ?.map((item: Competitions) => ({
-              ...item,
-              status: !item?.isActive
-                ? StatusCompetition.UnActive
-                : new Date(item?.startDate) > now
-                  ? StatusCompetition.Upcoming
-                  : new Date(item?.endDate) < now
-                    ? StatusCompetition.Outgoing
-                    : StatusCompetition.Ongoing,
-            }))
-            ?.sort(sortByStatus) ?? [],
-        isFetching,
-      };
+  const { competitions, isFetching } = useGetAllCompetitionsQuery(
+    {
+      pageNumber: 1,
+      pageSize: 999,
     },
-  });
+    {
+      selectFromResult: ({ data, isFetching }) => {
+        const now = new Date();
+
+        return {
+          competitions:
+            data?.data
+              ?.filter(
+                (item: Competitions) =>
+                  !current_organization ||
+                  item.organizationId?._id === current_organization?.id,
+              )
+              ?.map((item: Competitions) => ({
+                ...item,
+                status: !item?.isActive
+                  ? StatusCompetition.UnActive
+                  : new Date(item?.startDate) > now
+                    ? StatusCompetition.Upcoming
+                    : new Date(item?.endDate) < now
+                      ? StatusCompetition.Outgoing
+                      : StatusCompetition.Ongoing,
+              }))
+              ?.sort(sortByStatus) ?? [],
+          isFetching,
+        };
+      },
+    },
+  );
 
   const handleRowClick = ({ data }: { data: Competitions }) => {
     router.push(`/quan-tri/cuoc-thi/${data._id}`);

@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { Send, X, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { Attachment } from "ai";
@@ -24,6 +24,8 @@ import { cn } from "@/lib/utils";
 interface ChatDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  initialPrompt?: string;
+  shouldClearMessages?: boolean;
 }
 
 interface Message {
@@ -33,11 +35,17 @@ interface Message {
   images?: string[]; // array URL của ảnh đính kèm
 }
 
-export function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
+export function ChatDialog({
+  open,
+  onOpenChange,
+  initialPrompt,
+  shouldClearMessages,
+}: ChatDialogProps) {
   const [images, setImages] = useState<File[]>([]);
   const [imageUrls, setImageUrls] = useState<Attachment[]>([]);
 
   const [messages, setMessages] = useState<Message[]>([]);
+  const [hiddenMessages, setHiddenMessages] = useState<Set<string>>(new Set());
 
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -45,9 +53,23 @@ export function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const [uploadImage, { isLoading: isUploading }] = useUploadImageMutation();
+  const [uploadImage] = useUploadImageMutation();
 
-  const handleSendMessage = async (userMessage: string) => {
+  useEffect(() => {
+    if (open && shouldClearMessages) {
+      // Clear all existing messages for emergency chat
+      setMessages([]);
+      setHiddenMessages(new Set());
+    }
+  }, [open, shouldClearMessages]);
+
+  useEffect(() => {
+    if (open && initialPrompt && messages.length === 0) {
+      handleSendMessage(initialPrompt, true);
+    }
+  }, [open, initialPrompt, messages.length]);
+
+  const handleSendMessage = async (userMessage: string, isHidden = false) => {
     if (!userMessage.trim()) return;
 
     // Add user message to chat
@@ -61,6 +83,12 @@ export function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
     let tempMessages = [...messages, newUserMessage];
 
     setMessages(tempMessages);
+
+    // If this is a hidden message, add its ID to hiddenMessages set
+    if (isHidden) {
+      setHiddenMessages((prev) => new Set(prev).add(newUserMessage.id));
+    }
+
     setIsLoading(true);
 
     // Prepare all messages for the API call
@@ -90,7 +118,7 @@ export function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
 
         setMessages(tempMessages);
       })
-      .catch((err) => {
+      .catch(() => {
         const errorMessage: Message = {
           id: Date.now().toString() + "-error",
           role: "assistant",
@@ -136,8 +164,8 @@ export function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
               },
             ]);
           }
-        } catch (error) {
-          console.error("Failed to upload image:", error);
+        } catch {
+          // Silently fail for image upload errors
         }
       }
     }
@@ -186,41 +214,43 @@ export function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
               </div>
             ) : (
               <div className="space-y-4">
-                {messages.map((message) => (
-                  <div
-                    key={message.id}
-                    className={`flex flex-col ${message.role === "user" ? "items-end" : "items-start"}`}
-                  >
+                {messages
+                  .filter((message) => !hiddenMessages.has(message.id))
+                  .map((message) => (
                     <div
-                      className={`max-w-[80%] rounded-2xl px-4 py-3 ${
-                        message.role === "user"
-                          ? "bg-primary text-white dark:text-black"
-                          : "bg-gray-100 text-gray-800"
-                      }`}
+                      key={message.id}
+                      className={`flex flex-col ${message.role === "user" ? "items-end" : "items-start"}`}
                     >
-                      <div className="whitespace-pre-wrap text-sm">
-                        <ReactMarkdown className="prose">
-                          {message.content}
-                        </ReactMarkdown>
+                      <div
+                        className={`max-w-[80%] rounded-2xl px-4 py-3 ${
+                          message.role === "user"
+                            ? "bg-primary text-white dark:text-black"
+                            : "bg-gray-100 text-gray-800"
+                        }`}
+                      >
+                        <div className="whitespace-pre-wrap text-sm">
+                          <ReactMarkdown className="prose">
+                            {message.content}
+                          </ReactMarkdown>
+                        </div>
                       </div>
+                      {message.images && message.images.length > 0 && (
+                        <div className="mt-2 flex flex-wrap gap-2 justify-end">
+                          {message.images.map((url, idx) => (
+                            <Image
+                              key={idx}
+                              alt={`uploaded-${idx}`}
+                              className="rounded object-cover aspect-video "
+                              height={200}
+                              src={url}
+                              unoptimized={true}
+                              width={200}
+                            />
+                          ))}
+                        </div>
+                      )}
                     </div>
-                    {message.images && message.images.length > 0 && (
-                      <div className="mt-2 flex flex-wrap gap-2 justify-end">
-                        {message.images.map((url, idx) => (
-                          <Image
-                            key={idx}
-                            alt={`uploaded-${idx}`}
-                            className="rounded object-cover aspect-video "
-                            height={200}
-                            src={url}
-                            unoptimized={true}
-                            width={200}
-                          />
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
+                  ))}
 
                 {isLoading && (
                   <div className="flex justify-start">
