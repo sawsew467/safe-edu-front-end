@@ -1,6 +1,6 @@
 "use client";
 
-import { Users, BookOpen, Newspaper, Building2 } from "lucide-react";
+import { Users, BookOpen, Newspaper, Globe } from "lucide-react";
 import {
   Area,
   AreaChart,
@@ -16,8 +16,8 @@ import {
   useGetCountLibraryViewsQuery,
   useGetCountNewsViewsQuery,
   useGetCountOrganizationByProvinceQuery,
-  useGetCountOrganizationsQuery,
   useGetCountUsersQuery,
+  useGetTotalVisitQuery,
   useGetVisitStats7DaysQuery,
 } from "../api";
 
@@ -64,12 +64,12 @@ export function Overview() {
     },
   );
 
-  const { totalOrganizations } = useGetCountOrganizationsQuery(
+  const { totalVisits } = useGetTotalVisitQuery(
     {},
     {
       selectFromResult({ data }) {
         return {
-          totalOrganizations: data?.data,
+          totalVisits: data?.data?.total,
         };
       },
     },
@@ -139,11 +139,11 @@ export function Overview() {
       </Card>
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Tổng số tổ chức</CardTitle>
-          <Building2 className="h-4 w-4 text-muted-foreground" />
+          <CardTitle className="text-sm font-medium">Lượt truy cập</CardTitle>
+          <Globe className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{totalOrganizations}</div>
+          <div className="text-2xl font-bold">{totalVisits}</div>
           {/* <p className="text-xs text-muted-foreground">
             +5% so với tháng trước
           </p> */}
