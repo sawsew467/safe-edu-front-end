@@ -90,6 +90,13 @@ export const newsAPI = baseApiAdmin.injectEndpoints({
         method: "POST",
       }),
     }),
+    getTotalVisit: build.query({
+      query: () => ({
+        url: `/visit/stats/total`,
+        method: "GET",
+        flashError: true,
+      }),
+    }),
   }),
 });
 
@@ -105,4 +112,5 @@ export const {
   useGetProvinceStatsQuery,
   useVisitMutation,
   useProvinceVisitMutation,
+  useGetTotalVisitQuery,
 } = newsAPI;
