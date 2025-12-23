@@ -71,6 +71,19 @@ export const columns: ColumnDef<Student>[] = [
     },
   },
   {
+    accessorKey: "class_name",
+    header: "Lớp",
+    cell: ({ row }) => {
+      const className: string = row.getValue("class_name");
+
+      return className ? (
+        <div className="font-medium">{className}</div>
+      ) : (
+        <p className="text-red-500">*Chưa có lớp</p>
+      );
+    },
+  },
+  {
     accessorKey: "phone_number",
     header: "SDT",
     cell: ({ row }) => {

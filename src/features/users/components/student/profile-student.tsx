@@ -239,6 +239,23 @@ export default function ProfilePage() {
                     </p>
                   </div>
                 </MotionDiv>
+                {data?.class_name && (
+                  <MotionDiv
+                    animate={{ x: 0, opacity: 1 }}
+                    className="flex items-center gap-3"
+                    initial={{ x: -20, opacity: 0 }}
+                    transition={{ delay: 0.5 }}
+                    whileHover={{ x: 5 }}
+                  >
+                    <School className="h-5 w-5 text-muted-foreground" />
+                    <div>
+                      <p className="text-sm font-medium">Lớp</p>
+                      <p className="text-sm text-muted-foreground">
+                        {data?.class_name}
+                      </p>
+                    </div>
+                  </MotionDiv>
+                )}
               </CardContent>
             </MotionCard>
 

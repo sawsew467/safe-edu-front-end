@@ -68,6 +68,19 @@ export const columns: ColumnDef<Citizens>[] = [
     },
   },
   {
+    accessorKey: "email",
+    header: "Email",
+    cell: ({ row }) => {
+      const email: string = row.getValue("email");
+
+      return email ? (
+        <p>{email}</p>
+      ) : (
+        <p className="text-red-500">*Chưa có email</p>
+      );
+    },
+  },
+  {
     accessorKey: "date_of_birth",
     header: "Ngày sinh",
     cell: ({ row }) => {

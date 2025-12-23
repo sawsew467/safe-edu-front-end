@@ -84,6 +84,19 @@ export const authAPI = baseApiAdmin.injectEndpoints({
         return ["Admin"];
       },
     }),
+    importAdminsFromExcel: build.mutation({
+      query: (formData: FormData) => ({
+        url: "/admin/import-excel",
+        method: "POST",
+        body: formData,
+        flashError: true,
+      }),
+      invalidatesTags: (result, error) => {
+        if (error) return [];
+
+        return ["Admin"];
+      },
+    }),
   }),
 });
 
@@ -94,4 +107,5 @@ export const {
   useUpdateAdminMutation,
   useDeleteAdminMutation,
   useActiveAdminMutation,
+  useImportAdminsFromExcelMutation,
 } = authAPI;

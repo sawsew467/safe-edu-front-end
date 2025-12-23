@@ -131,6 +131,7 @@ export type Student = {
   username: string;
   phone_number: string;
   organizationId: Organization;
+  class_name: string;
   avatar: string;
   date_of_birth: string;
   gender: "Male" | "Female" | "Other";
@@ -175,6 +176,7 @@ export type Citizens = {
   avatar: string;
   date_of_birth: string;
   gender: "Male" | "Female" | "Other";
+  email?: string;
   current_refresh_token: string;
   achievements: Array<any>;
   registration_competition: Array<any>;

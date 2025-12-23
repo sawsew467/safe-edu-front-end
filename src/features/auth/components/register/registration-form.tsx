@@ -121,7 +121,7 @@ export default function RegistrationForm({
       phone_number: "",
       email: "",
       terms: false,
-      ...(userType === "student" ? { organizationId: "" } : {}),
+      ...(userType === "student" ? { organizationId: "", class_name: "" } : {}),
     },
   });
 
@@ -358,6 +358,24 @@ export default function RegistrationForm({
                           placeholder="Chọn tổ chức"
                           value={field.value ?? ""}
                           onValueChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-500 text-sm" />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="class_name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-gray-700 dark:text-gray-100 flex gap-2">
+                        Lớp<p className="text-red-500">*</p>
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="Nhập tên lớp (VD: 10A1)"
                         />
                       </FormControl>
                       <FormMessage className="text-red-500 text-sm" />

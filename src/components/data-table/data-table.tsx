@@ -31,6 +31,8 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   isLoading?: boolean;
+  showToolbar?: boolean;
+  showPagination?: boolean;
 }
 
 export const LoadingTable = ({ length }: { length: number }) => (
@@ -67,6 +69,8 @@ export default function DataTable<TData, TValue>({
   columns,
   data,
   isLoading = false,
+  showToolbar = true,
+  showPagination = true,
 }: DataTableProps<TData, TValue>) {
   "use no memo";
 
@@ -103,7 +107,7 @@ export default function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
-      {!isLoading && <DataTableToolbar table={table} />}
+      {!isLoading && showToolbar && <DataTableToolbar table={table} />}
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -154,7 +158,7 @@ export default function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      {!isLoading && <DataTablePagination table={table} />}
+      {!isLoading && showPagination && <DataTablePagination table={table} />}
     </div>
   );
 }
