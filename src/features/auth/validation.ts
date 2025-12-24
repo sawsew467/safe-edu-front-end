@@ -106,6 +106,10 @@ export const studentRegistrationSchema = z
   .object({
     organizationId: z.string().optional(),
     provinceId: z.string().optional(),
+    class_name: z
+      .string()
+      .min(1, { message: "Vui lòng nhập tên lớp" })
+      .max(50, { message: "Tên lớp không được quá 50 ký tự" }),
     username: z
       .string()
       .min(1, { message: "Vui lòng nhập tên đăng nhập" })
