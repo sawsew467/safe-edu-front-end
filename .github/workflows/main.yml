@@ -53,3 +53,8 @@ jobs:
     needs: write-env
     uses: ./.github/workflows/deploy-to-vps-start-app.yml
     secrets: inherit
+
+  setup-nginx-ssl:
+    needs: start-app
+    uses: ./.github/workflows/deploy-to-vps-nginx-ssl.yml
+    secrets: inherit

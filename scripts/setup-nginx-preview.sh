@@ -12,7 +12,7 @@ if [ -z "$PR_NUMBER" ] || [ -z "$PREVIEW_PORT" ] || [ -z "$PREVIEW_URL" ]; then
   exit 1
 fi
 
-echo "🔧 Configuring Nginx for Safe Edu PR #${PR_NUMBER}"
+echo "🔧 Configuring Nginx for PR #${PR_NUMBER}"
 echo "   - URL: ${PREVIEW_URL}"
 echo "   - Port: ${PREVIEW_PORT}"
 
@@ -76,7 +76,7 @@ if ! systemctl reload nginx; then
   exit 1
 fi
 
-echo "✅ Nginx configured successfully for Safe Edu PR #${PR_NUMBER}"
+echo "✅ Nginx configured successfully for PR #${PR_NUMBER}"
 echo "🌐 Preview available at: http://${PREVIEW_URL}"
 echo ""
 echo "📋 To enable HTTPS, run:"
