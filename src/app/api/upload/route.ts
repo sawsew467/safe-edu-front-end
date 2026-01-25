@@ -1,5 +1,3 @@
-import { uploadFileToStore } from "@/services/gemini/actions";
-
 export const maxDuration = 60;
 
 export async function OPTIONS() {
