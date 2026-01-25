@@ -103,4 +103,15 @@ body {
   li {
     @apply flex;
   }
+
+  /* Video YouTube responsive */
+  iframe.ql-video,
+  iframe[src*="youtube"],
+  iframe[src*="youtu.be"] {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    border-radius: 8px;
+  }
 }

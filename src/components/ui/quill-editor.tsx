@@ -9,9 +9,11 @@ import { toast } from "sonner";
 import { useUploadImageMutation } from "@/services/common/upload/api.upload";
 import ImageResize from "@/lib/editor/imageResize";
 import ImageUpload from "@/lib/editor/imageUpload";
+import VideoResize from "@/lib/editor/videoResize";
 
 Quill.register("modules/imageResize", ImageResize);
 Quill.register("modules/imageUpload", ImageUpload);
+Quill.register("modules/videoResize", VideoResize);
 
 export interface EditorContentChanged {
   html: string;
@@ -174,6 +176,7 @@ export default function QuillEditor({
           imageUpload: {
             image: handleUploadImage,
           },
+          videoResize: {},
           clipboard: {
             matchVisual: false,
           },

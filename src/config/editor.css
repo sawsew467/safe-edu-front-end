@@ -12,3 +12,14 @@
   /* background: var(--); */
   color: #fff !important;
 }
+
+/* Fix tooltip bị che bởi sidebar */
+.ql-tooltip {
+  z-index: 9999 !important;
+  left: 0 !important;
+  /* transform: translateX(-50%); */
+}
+
+.ql-tooltip input[type="text"] {
+  min-width: 300px;
+}
