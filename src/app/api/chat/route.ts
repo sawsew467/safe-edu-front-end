@@ -1,6 +1,7 @@
 import { geminiClient } from "@/services/gemini";
 import { getAllStoreNames } from "@/services/gemini/actions";
 
+export const dynamic = "force-dynamic";
 export const maxDuration = 30;
 
 export async function OPTIONS() {

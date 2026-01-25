@@ -3,6 +3,7 @@ import {
   getOrCreateFileSearchStore,
 } from "@/services/gemini/actions";
 
+export const dynamic = "force-dynamic";
 export const maxDuration = 30;
 
 export async function OPTIONS() {

@@ -98,7 +98,7 @@ export default function GeminiFilesPage() {
   const fetchFiles = async () => {
     setLoading(true);
     try {
-      const response = await fetch("/api-gemini/files");
+      const response = await fetch("/api/files");
       const result = await response.json();
 
       setData(result);
@@ -120,7 +120,7 @@ export default function GeminiFilesPage() {
     setIsDeleting(true);
     try {
       // Try to delete using document name (more reliable)
-      const response = await fetch("/api-gemini/ai-knowledge", {
+      const response = await fetch("/api/ai-knowledge", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -201,7 +201,7 @@ export default function GeminiFilesPage() {
           formData.append("fileType", fileType);
           formData.append("id", uniqueId);
 
-          const response = await fetch("/api-gemini/upload", {
+          const response = await fetch("/api/upload", {
             method: "POST",
             body: formData,
           });
