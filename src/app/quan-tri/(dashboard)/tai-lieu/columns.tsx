@@ -62,11 +62,10 @@ export const columns: ColumnDef<Document>[] = [
     cell: ({ row }) => {
       return (
         <Badge
-          className={`transition-all  ${
-            row.getValue("isUploaded")
+          className={`transition-all  ${row.getValue("isUploaded")
               ? "bg-green-500 hover:bg-green-400 text-white"
               : "bg-red-500 hover:bg-red-400 text-white"
-          }`}
+            }`}
         >
           {row.getValue("isUploaded") ? "Đã nạp" : "Chưa nạp"}
         </Badge>
@@ -112,7 +111,7 @@ const ActionRow = ({ row }: { row: Row<Document> }) => {
   const handleDeleteDocument = async (file: Document) => {
     try {
       setIsDeleting(true);
-      await fetch("/api/ai-knowledge", {
+      await fetch("/api-gemini/ai-knowledge", {
         method: "DELETE",
         body: JSON.stringify({ file: file }),
       });
@@ -130,7 +129,7 @@ const ActionRow = ({ row }: { row: Row<Document> }) => {
   const handleUploadDocument = async (file: Document) => {
     try {
       setIsUploading(true);
-      const response = await fetch("/api/ai-knowledge", {
+      const response = await fetch("/api-gemini/ai-knowledge", {
         method: "POST",
         body: JSON.stringify({ file: file }),
       });

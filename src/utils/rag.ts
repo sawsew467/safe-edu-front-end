@@ -6,6 +6,8 @@ import { Document } from "@/features/documents/type";
 export const readPDFContent = async (file: Document) => {
   const response = await fetch(file?.file_url);
 
+  console.log("🚀 ~ readPDFContent ~ response:", response);
+
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }

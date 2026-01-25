@@ -101,7 +101,7 @@ body {
   }
 
   li {
-    @apply flex;
+    /* @apply flex; */
   }
 
   /* Video YouTube responsive */

@@ -1,8 +1,5 @@
-import OpenAI from "openai";
-
-import { searchInCollection } from "@/services/qdrant/actions";
-
-const client = new OpenAI();
+import { geminiClient } from "@/services/gemini";
+import { getAllStoreNames } from "@/services/gemini/actions";
 
 export const maxDuration = 30;
 
@@ -17,113 +14,11 @@ export async function OPTIONS() {
   });
 }
 
-const findKnowledgeTool = {
-  name: "findKnowledgeTool",
-  description:
-    "Tìm kiếm kiến thức chính thống phù hợp với mô tả của người dùng",
-  parameters: {
-    type: "object",
-    properties: {
-      query: {
-        type: "string",
-        description: "Mô tả câu hỏi mà người dùng đang tìm",
-      },
-    },
-    required: ["query"],
-  },
-};
-
-const findConsultingTool = {
-  name: "findConsultingTool",
-  description:
-    "Tìm kiếm thông tin về tư vấn tâm lý phù hợp với mô tả của người dùng",
-  parameters: {
-    type: "object",
-    properties: {
-      query: {
-        type: "string",
-        description: "Mô tả câu hỏi mà người dùng đang tìm",
-      },
-    },
-    required: ["query"],
-  },
-};
-
-async function executeFindKnowledgeTool({ query }: { query: string }) {
-  try {
-    const results: any = await searchInCollection("knowledge", query);
-
-    // Check if search was successful and results is an array
-    if (
-      !results ||
-      !Array.isArray(results) ||
-      (results as any).success === false
-    ) {
-      return "Không có kết quả phù hợp.";
-    }
-
-    const filteredResults = results.filter((res: any) => res.score >= 0.3);
-
-    if (!filteredResults || filteredResults.length === 0) {
-      return "Không có kết quả phù hợp.";
-    }
-
-    return filteredResults
-      .slice(0, 5)
-      .map((res: any) => {
-        return `📄 [${res.payload.document_name}](${res.payload.file_url})\n\nLoại tài liệu: ${res.payload.type === "OFFICIAL" ? "Chính thống" : "Tham khảo"}\n\n${res.payload.content}`;
-      })
-      .join("\n\n");
-  } catch {
-    return "Không thể tìm kiếm kiến thức lúc này. Vui lòng thử lại sau.";
-  }
-}
-
-async function executeFindConsultingTool({ query }: { query: string }) {
-  try {
-    const results: any = await searchInCollection("consulting", query);
-
-    // Check if search was successful and results is an array
-    if (
-      !results ||
-      !Array.isArray(results) ||
-      (results as any).success === false
-    ) {
-      return "Không có kết quả phù hợp.";
-    }
-
-    const filteredResults = results.filter((res: any) => res.score >= 0.3);
-
-    if (!filteredResults || filteredResults.length === 0) {
-      return "Không có kết quả phù hợp.";
-    }
-
-    return filteredResults
-      .slice(0, 5)
-      .map((res: any, i: number) => {
-        return `Thông tin tham khảo ${i + 1}: ${res.payload.content}\n\n`;
-      })
-      .join("\n\n");
-  } catch {
-    return "Không thể tìm kiếm thông tin tư vấn lúc này. Vui lòng thử lại sau.";
-  }
-}
-
-export async function POST(req: Request) {
-  const { messages } = await req.json();
-
-  const systemMessage = {
-    role: "system",
-    content: `
+const SYSTEM_PROMPT = `
 🚨 QUY TẮC GIỚI HẠN CHỦ ĐỀ TUYỆT ĐỐI
 - CHỈ trả lời các chủ đề: BẠO LỰC HỌC ĐƯỜNG, MA TÚY, BÌNH ĐẲNG GIỚI
 - Với mọi chủ đề khác: "Xin lỗi, mình chỉ hỗ trợ các vấn đề về bạo lực học đường, ma túy và bình đẳng giới. Bạn có thể chia sẻ về những chủ đề này không?"
 - LUÔN kiểm tra câu hỏi có liên quan đến 3 chủ đề trên TRƯỚC KHI phản hồi
-
-❗️QUY TẮC ƯU TIÊN TOOL
-- Nếu người dùng đang gặp khó khăn, lo âu, hoặc cần chia sẻ: PHẢI gọi tool \`findConsultingTool\` TRƯỚC.
-- Chỉ gọi \`findKnowledgeTool\` khi người dùng cần tra cứu thông tin chính thống, dạng lý thuyết như "ma túy là gì?", "luật nào quy định...".
-- TUYỆT ĐỐI KHÔNG dùng kiến thức nội tại của AI để trả lời thay thế tài liệu chính thống.
 
 ---
 
@@ -146,15 +41,15 @@ Bạn là SafeEdu AI – người bạn tinh tế trong bóng tối của nhữn
 
 ---
 
-📚 SỬ DỤNG TOOL
-- Luôn gọi \`findConsultingTool\` trước để tìm tư vấn phù hợp.
-- Chỉ dùng \`findKnowledgeTool\` nếu câu hỏi yêu cầu kiến thức chính thống.
-- Nếu không tìm được tài liệu: phản hồi lịch sự và mời người dùng mô tả kỹ hơn.
+📚 SỬ DỤNG TÀI LIỆU
+- Bạn có quyền truy cập vào kho tài liệu chính thống và tài liệu tư vấn thông qua File Search.
+- Khi trả lời, hãy tham khảo thông tin từ tài liệu được cung cấp.
+- Nếu không tìm được tài liệu phù hợp: phản hồi lịch sự và mời người dùng mô tả kỹ hơn.
 
-📌 Cách trích dẫn chính thống:
-→ *"Theo [Tên tài liệu](URL)"*
+📌 Cách trích dẫn:
+→ *"Theo tài liệu tham khảo..."*
 
-🛑 Không dùng kiến thức ngôn ngữ mô hình để trả lời nếu không có dữ liệu chính thống từ \`findKnowledgeTool\`.
+🛑 Hạn chế sử dụng kiến thức nội tại nếu có thể tìm thấy thông tin trong tài liệu.
 
 ---
 
@@ -193,130 +88,122 @@ Khi gặp tình huống NGHIÊM TRỌNG (bạo lực, tự tử, nghiện nặng
 - Luôn hỗ trợ, an ủi, truyền động lực
 - Không dùng từ ngữ chuyên môn phức tạp
 - Dạng markdown, dễ đọc
-  `,
-  };
+`;
 
-  const chatCompletionResponse = await client.chat.completions.create({
-    model: "gpt-4o",
-    messages: [systemMessage, ...messages],
-    tools: [
-      { type: "function", function: findKnowledgeTool },
-      { type: "function", function: findConsultingTool },
-    ],
-    tool_choice: "auto",
-  });
+export async function POST(req: Request) {
+  try {
+    const { messages } = await req.json();
 
-  const chatCompletionResult = chatCompletionResponse.choices[0];
+    if (!messages || !Array.isArray(messages)) {
+      return new Response(
+        JSON.stringify({ error: "Invalid messages format" }),
+        {
+          status: 400,
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Content-Type": "application/json",
+          },
+        },
+      );
+    }
 
-  if (chatCompletionResult.finish_reason === "tool_calls") {
-    const toolCalls: any = chatCompletionResult.message.tool_calls;
+    // Get all File Search Store names
+    const storeNames = await getAllStoreNames();
 
-    const toolResponses = await Promise.all(
-      toolCalls.map(async (toolCall: any) => {
-        const { name, arguments: rawArgs } = toolCall.function;
-        const args = JSON.parse(rawArgs);
-
-        if (name === "findKnowledgeTool") {
-          const output = await executeFindKnowledgeTool(args);
-
-          return {
-            tool_call_id: toolCall.id,
-            output,
-          };
-        }
-
-        if (name === "findConsultingTool") {
-          const output = await executeFindConsultingTool(args);
-
-          return {
-            tool_call_id: toolCall.id,
-            output,
-          };
-        }
-
-        return {
-          tool_call_id: toolCall.id,
-          output: "Công cụ không được hỗ trợ.",
-        };
+    // Format messages for Gemini
+    // Gemini uses "user" and "model" roles (not "assistant")
+    const formattedMessages = messages.map(
+      (msg: { role: string; content: string }) => ({
+        role: msg.role === "assistant" ? "model" : "user",
+        parts: [{ text: msg.content }],
       }),
     );
 
-    const secondResponse = await client.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        systemMessage,
-        ...messages,
+    // Add system prompt to the first user message or create a new one
+    const systemContent = {
+      role: "user",
+      parts: [
         {
-          role: "assistant",
-          tool_calls: chatCompletionResult.message.tool_calls,
+          text: `[System Instructions]\n${SYSTEM_PROMPT}\n\n[End System Instructions]\n\nHãy tuân thủ các hướng dẫn trên trong suốt cuộc trò chuyện.`,
         },
-        ...toolResponses.map((res) => ({
-          role: "tool",
-          tool_call_id: res.tool_call_id,
-          content: res.output,
-        })),
       ],
-    });
+    };
 
-    return new Response(JSON.stringify(secondResponse), {
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Content-Type": "application/json",
+    const modelAck = {
+      role: "model",
+      parts: [
+        {
+          text: "Tôi đã hiểu và sẽ tuân thủ các hướng dẫn. Tôi là SafeEdu AI, sẵn sàng hỗ trợ bạn về các vấn đề bạo lực học đường, ma túy và bình đẳng giới.",
+        },
+      ],
+    };
+
+    // Build conversation history
+    const contents = [systemContent, modelAck, ...formattedMessages];
+
+    // Generate response with File Search tool
+    const response = await geminiClient.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents,
+      config: {
+        tools:
+          storeNames.length > 0
+            ? [
+                {
+                  fileSearch: {
+                    fileSearchStoreNames: storeNames,
+                  },
+                },
+              ]
+            : undefined,
       },
     });
+
+    const responseText = response.text || "Không có phản hồi";
+
+    // Return response in format compatible with mobile app
+    // The current API returns either:
+    // 1. { choices: [{ message: { content } }] } when tool calls happen
+    // 2. { content: string } when no tool calls
+
+    // Gemini File Search handles RAG internally, so we return the simpler format
+    // but also include the OpenAI-compatible format for maximum compatibility
+    return new Response(
+      JSON.stringify({
+        content: responseText,
+        choices: [
+          {
+            message: {
+              content: responseText,
+              role: "assistant",
+            },
+            finish_reason: "stop",
+          },
+        ],
+      }),
+      {
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  } catch (error) {
+    console.error("POST /api-gemini/chat error:", error);
+
+    return new Response(
+      JSON.stringify({
+        error: "Chat failed",
+        content: "Xin lỗi, có lỗi xảy ra. Vui lòng thử lại sau.",
+        message: error instanceof Error ? error.message : "Unknown error",
+      }),
+      {
+        status: 500,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json",
+        },
+      },
+    );
   }
-
-  return new Response(
-    JSON.stringify({
-      content: chatCompletionResult.message.content ?? "Không có phản hồi",
-    }),
-    {
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Content-Type": "application/json",
-      },
-    },
-  );
-
-  // const formattedMessages = messages.map((msg: any) => {
-  //   return {
-  //     role: msg.role,
-  //     content: msg.content,
-  //   };
-  // });
-
-  // const imageBlocks = images.map((img: any) => ({
-  //   role: "user",
-  //   content: [
-  //     {
-  //       type: "text",
-  //       text: "Hình ảnh đính kèm. Hãy phân tích ảnh này liên quan đến bạo lực học đường, ma túy hoặc bình đẳng giới.",
-  //     },
-  //     {
-  //       type: "image_url",
-  //       image_url: {
-  //         url: img.url,
-  //       },
-  //     },
-  //   ],
-  // }));
-
-  // const response = await client.chat.completions.create({
-  //   model: "gpt-4o",
-  //   messages: [systemMessage, ...formattedMessages, ...imageBlocks],
-  // });
-
-  // const result = response.choices[0];
-
-  // return new Response(
-  //   JSON.stringify({
-  //     content: result.message.content ?? "Không có phản hồi",
-  //   }),
-  //   {
-  //     headers: {
-  //       "Access-Control-Allow-Origin": "*",
-  //       "Content-Type": "application/json",
-  //     },
-  //   }
-  // );
 }

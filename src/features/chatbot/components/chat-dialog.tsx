@@ -141,7 +141,7 @@ export function ChatDialog({
       const { data } = await uploadImage(formData).unwrap();
 
       return data?.data;
-    } catch {}
+    } catch { }
   }, []);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -222,11 +222,10 @@ export function ChatDialog({
                       className={`flex flex-col ${message.role === "user" ? "items-end" : "items-start"}`}
                     >
                       <div
-                        className={`max-w-[80%] rounded-2xl px-4 py-3 ${
-                          message.role === "user"
+                        className={`max-w-[80%] rounded-2xl px-4 py-3 ${message.role === "user"
                             ? "bg-primary text-white dark:text-black"
                             : "bg-gray-100 text-gray-800"
-                        }`}
+                          }`}
                       >
                         <div className="whitespace-pre-wrap text-sm">
                           <ReactMarkdown className="prose">

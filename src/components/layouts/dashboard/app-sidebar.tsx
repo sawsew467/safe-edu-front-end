@@ -2,9 +2,9 @@
 
 import * as React from "react";
 import {
+  Bot,
   ChartPie,
   Contact,
-  File,
   Flag,
   LibraryBig,
   Newspaper,
@@ -71,10 +71,15 @@ const adminSideBarItems = [
     url: "/thong-tin-lien-lac-khan-cap",
     icon: Contact,
   },
+  // {
+  //   name: "Tài liệu",
+  //   url: "/tai-lieu",
+  //   icon: File,
+  // },
   {
-    name: "Tài liệu",
-    url: "/tai-lieu",
-    icon: File,
+    name: "Gemini AI",
+    url: "/gemini-files",
+    icon: Bot,
   },
 ];
 
