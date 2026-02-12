@@ -39,6 +39,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import useBreadcrumb from "@/hooks/useBreadcrumb";
+import { ColumnDef } from "@tanstack/react-table";
 
 function SignupLinksManagement() {
   const router = useRouter();
@@ -79,11 +80,11 @@ function SignupLinksManagement() {
     }
   };
 
-  const columns = [
+  const columns: ColumnDef<SignupLink>[] = [
     {
       accessorKey: "start_date",
       header: "Ngày bắt đầu",
-      cell: ({ row }: any) => {
+      cell: ({ row }) => {
         const date = new Date(row.getValue("start_date"));
 
         return format(date, "dd/MM/yyyy HH:mm", { locale: vi });
@@ -92,7 +93,7 @@ function SignupLinksManagement() {
     {
       accessorKey: "expiration_date",
       header: "Ngày hết hạn",
-      cell: ({ row }: any) => {
+      cell: ({ row }) => {
         const date = new Date(row.getValue("expiration_date"));
 
         return format(date, "dd/MM/yyyy HH:mm", { locale: vi });
@@ -101,13 +102,18 @@ function SignupLinksManagement() {
     {
       accessorKey: "is_revoked",
       header: "Trạng thái",
-      cell: ({ row }: any) => {
+      cell: ({ row }) => {
         const isRevoked = row.getValue("is_revoked");
+
+        const isActive =
+          row?.original?.start_date <= new Date().toISOString() && !isRevoked;
 
         return isRevoked ? (
           <span className="text-red-500 font-medium">Đã thu hồi</span>
-        ) : (
+        ) : isActive ? (
           <span className="text-green-500 font-medium">Đang hoạt động</span>
+        ) : (
+          <span className="text-orange-500 font-medium">Chưa hoạt động</span>
         );
       },
     },
