@@ -8,10 +8,14 @@ export const rtkQueryErrorLogger: Middleware =
     if (isRejectedWithValue(action)) {
       const payload = action.payload as {
         status?: number;
-        data?: { message?: string };
+        data?: { message?: string; error?: { details?: string[] } };
       };
       const statusCode = payload?.status;
-      const message = payload?.data?.message;
+      const message = payload?.data?.error?.details
+        ? typeof payload.data.error.details === "string"
+          ? payload.data.error.details
+          : payload.data.error.details.join(", ")
+        : payload?.data?.message;
 
       if (statusCode !== 401)
         toast.error(message || "Có lỗi xảy ra trong quá trình xử lý yêu cầu");

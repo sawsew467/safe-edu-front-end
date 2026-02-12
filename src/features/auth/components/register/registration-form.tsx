@@ -45,6 +45,8 @@ import DateInputForm from "@/components/ui/date-input-form";
 interface RegistrationFormProps {
   userType: "student" | "citizen";
   onBack: () => void;
+  organizationId?: string | null;
+  isValidLink?: boolean;
 }
 
 type OrganizationOptions = {
@@ -56,6 +58,8 @@ type OrganizationOptions = {
 export default function RegistrationForm({
   userType,
   onBack,
+  isValidLink,
+  organizationId,
 }: RegistrationFormProps) {
   const router = useRouter();
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -112,16 +116,18 @@ export default function RegistrationForm({
     reValidateMode: "onSubmit",
     mode: "onSubmit",
     defaultValues: {
-      last_name: "",
-      first_name: "",
+      full_name: "",
       date_of_birth: new Date().toISOString(),
       username: "",
       password: "",
-      confirmPassword: "",
       phone_number: "",
-      email: "",
       terms: false,
-      ...(userType === "student" ? { organizationId: "", class_name: "" } : {}),
+      ...(userType === "student"
+        ? {
+            organizationId: organizationId || "",
+            class_name: "",
+          }
+        : {}),
     },
   });
 
@@ -135,6 +141,19 @@ export default function RegistrationForm({
     }
   }, [provinces.length, organizations.length, selectProvince]);
 
+  // Set province when organizationId from token is available
+  React.useEffect(() => {
+    if (organizationId && organizations.length > 0) {
+      const selectedOrg = organizations.find(
+        (org: OrganizationOptions) => org.value === organizationId,
+      );
+      if (selectedOrg?.province_id) {
+        setSelectProvince(selectedOrg.province_id);
+        form.setValue("provinceId", selectedOrg.province_id);
+      }
+    }
+  }, [organizationId, organizations.length]);
+
   const handleSubmit = async (
     data: StudentRegistrationFormValues | CitizenRegistrationFormValues,
   ) => {
@@ -143,18 +162,24 @@ export default function RegistrationForm({
 
     try {
       // Simulate API call
-      const { provinceId, confirmPassword, terms, ...rest } =
+      const { provinceId, terms, full_name, ...rest } =
         data as StudentRegistrationFormValues;
 
+      const first_name = full_name.split(" ")[0];
+      const last_name = full_name.split(" ").slice(1).join(" ");
+
       if (!rest.phone_number) delete rest.phone_number;
-      if (!rest.email) delete rest.email;
       if (userType === "student") {
         res = await createStudentAccount({
           ...rest,
+          first_name: first_name || "",
+          last_name: last_name || "",
         }).unwrap();
       } else {
         res = await createCitizenAccount({
           ...rest,
+          first_name: first_name || "",
+          last_name: last_name || "",
         }).unwrap();
       }
 
@@ -224,39 +249,21 @@ export default function RegistrationForm({
             className="space-y-4"
             onSubmit={form.handleSubmit(handleSubmit)}
           >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="first_name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-gray-700 dark:text-gray-100 flex gap-2">
-                      Họ <p className="text-red-500">*</p>
-                    </FormLabel>
-                    <FormControl>
-                      <Input {...field} placeholder="Nguyễn" />
-                    </FormControl>
-                    <FormMessage className="text-red-500 text-sm" />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="last_name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-gray-700 dark:text-gray-100 flex gap-2">
-                      Tên<p className="text-red-500">*</p>
-                    </FormLabel>
-                    <FormControl>
-                      <Input {...field} placeholder="Văn A" />
-                    </FormControl>
-                    <FormMessage className="text-red-500 text-sm" />
-                  </FormItem>
-                )}
-              />
-            </div>
+            <FormField
+              control={form.control}
+              name="full_name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-gray-700 dark:text-gray-100 flex gap-2">
+                    Họ và tên <p className="text-red-500">*</p>
+                  </FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder="Nguyễn Văn A" />
+                  </FormControl>
+                  <FormMessage className="text-red-500 text-sm" />
+                </FormItem>
+              )}
+            />
 
             <FormField
               control={form.control}
@@ -298,72 +305,57 @@ export default function RegistrationForm({
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel className="text-gray-700 dark:text-gray-100 flex gap-2">
-                    Email
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Nhập email"
-                      {...field}
-                      value={field.value ?? ""}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
 
             {userType === "student" && (
               <>
-                <FormField
-                  control={form.control}
-                  name="provinceId"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-gray-700 dark:text-gray-100 flex gap-2">
-                        Tỉnh / Thành phố
-                        <p className="text-red-500">*</p>
-                      </FormLabel>
-                      <FormControl>
-                        <Combobox
-                          options={provinces}
-                          placeholder="Chọn tỉnh / thành phố"
-                          value={field.value ?? ""}
-                          onValueChange={(e: string) => {
-                            field.onChange(e);
-                            setSelectProvince(e);
-                          }}
-                        />
-                      </FormControl>
-                      <FormMessage className="text-red-500 text-sm" />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="organizationId"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-gray-700 dark:text-gray-100 flex gap-2">
-                        Trường<p className="text-red-500">*</p>
-                      </FormLabel>
-                      <FormControl>
-                        <Combobox
-                          options={organizationsByProvince}
-                          placeholder="Chọn tổ chức"
-                          value={field.value ?? ""}
-                          onValueChange={field.onChange}
-                        />
-                      </FormControl>
-                      <FormMessage className="text-red-500 text-sm" />
-                    </FormItem>
-                  )}
-                />
+                {!isValidLink && (
+                  <>
+                    <FormField
+                      control={form.control}
+                      name="provinceId"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-gray-700 dark:text-gray-100 flex gap-2">
+                            Tỉnh / Thành phố
+                            <p className="text-red-500">*</p>
+                          </FormLabel>
+                          <FormControl>
+                            <Combobox
+                              options={provinces}
+                              placeholder="Chọn tỉnh / thành phố"
+                              value={field.value ?? ""}
+                              onValueChange={(e: string) => {
+                                field.onChange(e);
+                                setSelectProvince(e);
+                              }}
+                            />
+                          </FormControl>
+                          <FormMessage className="text-red-500 text-sm" />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="organizationId"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-gray-700 dark:text-gray-100 flex gap-2">
+                            Trường<p className="text-red-500">*</p>
+                          </FormLabel>
+                          <FormControl>
+                            <Combobox
+                              options={organizationsByProvince}
+                              placeholder="Chọn tổ chức"
+                              value={field.value ?? ""}
+                              onValueChange={field.onChange}
+                            />
+                          </FormControl>
+                          <FormMessage className="text-red-500 text-sm" />
+                        </FormItem>
+                      )}
+                    />
+                  </>
+                )}
                 <FormField
                   control={form.control}
                   name="class_name"
@@ -409,21 +401,6 @@ export default function RegistrationForm({
                   </FormLabel>
                   <FormControl>
                     <PasswordInput {...field} placeholder="Nhập password" />
-                  </FormControl>
-                  <FormMessage className="text-red-500 text-sm" />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="confirmPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-gray-700 dark:text-gray-100 flex gap-2">
-                    Xác nhận mật khẩu<p className="text-red-500">*</p>
-                  </FormLabel>
-                  <FormControl>
-                    <PasswordInput {...field} placeholder="xác nhập password" />
                   </FormControl>
                   <FormMessage className="text-red-500 text-sm" />
                 </FormItem>
