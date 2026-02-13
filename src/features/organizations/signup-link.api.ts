@@ -18,41 +18,64 @@ export const signupLinkAPI = baseApiAdmin.injectEndpoints({
       GenerateSignupLinkRequest
     >({
       query: (data) => ({
-        url: "/organizations/generate-link-sign-up",
+        url: "/signup-links/generate-link-sign-up",
         method: "POST",
         body: data,
         flashError: true,
       }),
       invalidatesTags: (result, error) => {
         if (error) return [];
-        return ["Organizations"];
+        return ["signup-links"];
+      },
+    }),
+    generateAdminSignupLink: build.mutation<
+      GenerateSignupLinkResponse,
+      GenerateSignupLinkRequest
+    >({
+      query: (data) => ({
+        url: "/signup-links/admin/generate-link-sign-up",
+        method: "POST",
+        body: data,
+        flashError: true,
+      }),
+      invalidatesTags: (result, error) => {
+        if (error) return [];
+        return ["signup-links"];
       },
     }),
     getActiveSignupLinks: build.query<GetActiveSignupLinksResponse, void>({
       query: () => ({
-        url: "/organizations/signup-links/active",
+        url: "/signup-links/active",
         method: "GET",
         flashError: true,
       }),
-      providesTags: ["Organizations"],
+      providesTags: ["signup-links"],
+    }),
+    getActiveAdminSignupLinks: build.query<GetActiveSignupLinksResponse, void>({
+      query: () => ({
+        url: "/signup-links/admin/active",
+        method: "GET",
+        flashError: true,
+      }),
+      providesTags: ["signup-links"],
     }),
     getSignupLinkById: build.query<GenerateSignupLinkResponse, string>({
       query: (id) => ({
-        url: `/organizations/signup-links/${id}`,
+        url: `/signup-links/${id}`,
         method: "GET",
         flashError: true,
       }),
-      providesTags: (result, error, id) => [{ type: "Organizations", id }],
+      providesTags: (result, error, id) => [{ type: "signup-links", id }],
     }),
     revokeSignupLink: build.mutation<RevokeSignupLinkResponse, string>({
       query: (id) => ({
-        url: `/organizations/signup-links/${id}/revoke`,
+        url: `/signup-links/${id}/revoke`,
         method: "PATCH",
         flashError: true,
       }),
       invalidatesTags: (result, error) => {
         if (error) return [];
-        return ["Organizations"];
+        return ["signup-links"];
       },
     }),
   }),
@@ -63,7 +86,7 @@ export const publicSignupLinkAPI = baseApi.injectEndpoints({
   endpoints: (build) => ({
     validateSignupLink: build.query<ValidateSignupLinkResponse, string>({
       query: (token) => ({
-        url: `/organizations/validate-signup-link/${token}`,
+        url: `/signup-links/validate/${token}`,
         method: "GET",
         flashError: true,
       }),
@@ -76,6 +99,8 @@ export const {
   useGetActiveSignupLinksQuery,
   useGetSignupLinkByIdQuery,
   useRevokeSignupLinkMutation,
+  useGenerateAdminSignupLinkMutation,
+  useGetActiveAdminSignupLinksQuery,
 } = signupLinkAPI;
 
 export const { useValidateSignupLinkQuery } = publicSignupLinkAPI;

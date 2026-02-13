@@ -29,9 +29,24 @@ function SignupLinkQRView({ link, onClose, showCloseButton = false }: Props) {
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(signupUrl);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      // Check if clipboard API is available
+      if (!navigator?.clipboard) {
+        // Fallback for older browsers or non-HTTPS contexts
+        const textArea = document.createElement("textarea");
+        textArea.value = signupUrl;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-999999px";
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textArea);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } else {
+        await navigator.clipboard.writeText(signupUrl);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      }
     } catch (err) {
       console.error("Failed to copy:", err);
     }

@@ -102,5 +102,6 @@ export const baseApiAdmin = createApi({
     "Documents",
     "Reports",
     "EmergencyContacts",
+    "signup-links",
   ],
 });

@@ -48,6 +48,11 @@ const adminSideBarItems = [
     icon: School,
   },
   {
+    name: "Quản lý link đăng ký",
+    url: "/link-dang-ky",
+    icon: Link2,
+  },
+  {
     name: "Cuộc thi",
     url: "/cuoc-thi",
     icon: Pyramid,

@@ -36,6 +36,7 @@ export interface SignupLink {
 }
 
 export interface GenerateSignupLinkRequest {
+  organizationId?: string;
   startDate: string;
   expirationDate: string;
 }
