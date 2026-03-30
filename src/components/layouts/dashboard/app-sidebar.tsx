@@ -7,6 +7,7 @@ import {
   Contact,
   Flag,
   LibraryBig,
+  Link2,
   Newspaper,
   Pyramid,
   School,
@@ -45,6 +46,11 @@ const adminSideBarItems = [
     name: "Tổ chức",
     url: "/to-chuc",
     icon: School,
+  },
+  {
+    name: "Quản lý link đăng ký",
+    url: "/link-dang-ky",
+    icon: Link2,
   },
   {
     name: "Cuộc thi",
@@ -88,6 +94,11 @@ const managerSideBarItems = [
     name: "Tổ chức",
     url: "/to-chuc",
     icon: School,
+  },
+  {
+    name: "Quản lý link đăng ký",
+    url: "/link-dang-ky",
+    icon: Link2,
   },
   {
     name: "Cuộc thi",

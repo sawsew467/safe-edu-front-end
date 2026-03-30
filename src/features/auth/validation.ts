@@ -118,14 +118,7 @@ export const studentRegistrationSchema = z
           "Tên đăng nhập chỉ được chứa chữ cái không dấu, số, dấu gạch dưới và dấu gạch ngang",
       }),
     password: z.string().min(1, { message: "Vui lòng nhập mật khẩu" }),
-    confirmPassword: z
-      .string()
-      .min(1, { message: "Vui lòng xác nhận mật khẩu" }),
     terms: z.boolean(),
-    last_name: z
-      .string()
-      .min(1, { message: "Vui lòng nhập họ" })
-      .max(50, { message: "Họ không được quá 50 ký tự" }),
     phone_number: z
       .union([
         z.string().regex(phoneRegex, "Số điện thoại không hợp lệ!"),
@@ -133,14 +126,7 @@ export const studentRegistrationSchema = z
         z.literal(""),
       ])
       .optional(),
-    email: z
-      .union([
-        z.string().email({ message: "Email không hợp lệ" }),
-        z.null(),
-        z.literal(""),
-      ])
-      .optional(),
-    first_name: z
+    full_name: z
       .string()
       .min(1, { message: "Vui lòng nhập tên" })
       .max(50, { message: "Tên không được quá 50 ký tự" }),
@@ -154,26 +140,10 @@ export const studentRegistrationSchema = z
       ])
       .optional(),
   })
-  .refine((data) => data.confirmPassword === data.password, {
-    message: "Mật khẩu không khớp",
-    path: ["confirmPassword"],
-  })
   .refine((data) => data.terms === true, {
     message: "Bạn phải đồng ý với điều khoản và điều kiện",
     path: ["terms"],
-  })
-  .refine(
-    (data) =>
-      /[A-Z]/.test(data.password) &&
-      /[a-z]/.test(data.password) &&
-      /[0-9]/.test(data.password) &&
-      /[^A-Za-z0-9]/.test(data.password),
-    {
-      message:
-        "Mật khẩu phải có ít nhất 1 chữ in hoa, 1 chữ thường, 1 số và 1 ký tự đặc biệt",
-      path: ["password"],
-    },
-  );
+  });
 
 export type SignUpFormValues = z.infer<typeof studentRegistrationSchema>;
 
@@ -188,9 +158,6 @@ export const citizenRegistrationSchema = z
           "Tên đăng nhập chỉ được chứa chữ cái không dấu, số, dấu gạch dưới và dấu gạch ngang",
       }),
     password: z.string().min(1, { message: "Vui lòng nhập mật khẩu" }),
-    confirmPassword: z
-      .string()
-      .min(1, { message: "Vui lòng xác nhận mật khẩu" }),
     terms: z.boolean(),
     phone_number: z
       .union([
@@ -199,18 +166,7 @@ export const citizenRegistrationSchema = z
         z.literal(""),
       ])
       .optional(),
-    email: z
-      .union([
-        z.string().email({ message: "Email không hợp lệ" }),
-        z.null(),
-        z.literal(""),
-      ])
-      .optional(),
-    last_name: z
-      .string()
-      .min(1, { message: "Vui lòng nhập họ" })
-      .max(50, { message: "Họ không được quá 50 ký tự" }),
-    first_name: z
+    full_name: z
       .string()
       .min(1, { message: "Vui lòng nhập tên" })
       .max(50, { message: "Tên không được quá 50 ký tự" }),
@@ -224,26 +180,10 @@ export const citizenRegistrationSchema = z
       ])
       .optional(),
   })
-  .refine((data) => data.confirmPassword === data.password, {
-    message: "Mật khẩu không khớp",
-    path: ["confirmPassword"],
-  })
   .refine((data) => data.terms === true, {
     message: "Bạn phải đồng ý với điều khoản và điều kiện",
     path: ["terms"],
-  })
-  .refine(
-    (data) =>
-      /[A-Z]/.test(data.password) &&
-      /[a-z]/.test(data.password) &&
-      /[0-9]/.test(data.password) &&
-      /[^A-Za-z0-9]/.test(data.password),
-    {
-      message:
-        "Mật khẩu phải có ít nhất 1 chữ in hoa, 1 chữ thường, 1 số và 1 ký tự đặc biệt",
-      path: ["password"],
-    },
-  );
+  });
 
 export type StudentRegistrationFormValues = z.infer<
   typeof studentRegistrationSchema

@@ -38,7 +38,7 @@ export enum ManagerRole {
   admin = "Admin",
   supervision = "Supervision",
   manager = "Manager",
-  unkown = "Unkown",
+  unknown = "Unknown",
 }
 export enum Status {
   Active = "Hoạt động",
