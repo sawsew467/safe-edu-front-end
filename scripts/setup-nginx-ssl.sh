@@ -2,7 +2,7 @@
 
 set -e
 
-DOMAIN="safe-edu.site"
+DOMAIN="safeedu.site"
 APP_PORT=3002
 NGINX_CONF="/etc/nginx/sites-available/${DOMAIN}"
 NGINX_ENABLED="/etc/nginx/sites-enabled/${DOMAIN}"
